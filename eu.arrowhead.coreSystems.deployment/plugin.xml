@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="eu.arrowhead.coreSystems.deployment.commands.category"
+            name="Sample Category">
+      </category>
+      <command
+            categoryId="eu.arrowhead.coreSystems.deployment.commands.category"
+            name="Sample Command"
+            id="eu.arrowhead.coreSystems.deployment.commands.sampleCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.arrowhead.coresystems.deployment.handlers.Generation"
+            commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="eu.arrowhead.coreSystems.deployment.menus.sampleMenu"
+               label="Sample Menu"
+               mnemonic="M">
+            <command
+                  commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand"
+                  id="eu.arrowhead.coreSystems.deployment.menus.sampleCommand"
+                  mnemonic="S">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="eu.arrowhead.coreSystems.deployment.toolbars.sampleToolbar">
+            <command
+                  id="eu.arrowhead.coreSystems.deployment.toolbars.sampleCommand"
+                  commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand"
+                  icon="icons/sample.png"
+                  tooltip="Say hello world">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+</plugin>
