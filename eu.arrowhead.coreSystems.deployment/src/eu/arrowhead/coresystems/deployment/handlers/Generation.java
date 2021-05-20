@@ -14,7 +14,10 @@ public class Generation extends AbstractHandler {
 	protected Shell shell;
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-			MainWIndow window = new MainWIndow();
+			
+		//ModelParser.readmodel();
+		ModelParser.modelReader();
+		ScriptDeployment window = new ScriptDeployment();
 
 			window.execute(shell);
 	

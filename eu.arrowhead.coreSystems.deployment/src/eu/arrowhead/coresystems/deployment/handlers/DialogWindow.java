@@ -22,9 +22,10 @@ public class DialogWindow extends TitleAreaDialog{
 	private Text txtDirectory;
 	
 	private String directory = "";
-
-	private static String contactName = "";
-	private static String contactEmail = "";
+	private static String os = "";
+	private static String language = "";
+	private static Boolean mandatorySys = false;
+	private static Boolean supportSys = false;
 	private GridData gridData_1;
 
 	
@@ -41,9 +42,6 @@ public class DialogWindow extends TitleAreaDialog{
         
     }
 	
-	public String getDirectory() {
-		return directory;
-	}
 
 	
 
@@ -142,11 +140,25 @@ public class DialogWindow extends TitleAreaDialog{
 	        super.okPressed();
 	    }
 	 
-	public String getContactEmail() {
-		return contactEmail;
-	}
+	 
+	 //GETS
+		public String getDirectory() {
+			return directory; 
+		}
+		
+		public String getOs() {
+			return os; 
+		}
+		
+		public String getLanguage() {
+			return language; 
+		}
+		
+		public Boolean getMandatorySys() {
+			return mandatorySys; 
+		}
+		public Boolean getSupportSys() {
+			return supportSys; 
+		}
 
-	public String getContactName() {
-		return contactName;
-	}
 }

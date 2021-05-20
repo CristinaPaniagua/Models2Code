@@ -34,34 +34,53 @@ import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
-public class MainWIndow {
+public class ScriptDeployment {
 
 	protected static Shell shell;
 	private Text Directory;
-	protected String directory=null;
+	private String directory = "";
+	private String os = "";
+	private String language = "";
+	private Boolean mandatorySys = false;
+	private Boolean supportSys = false;
 	
 	 
 	 @Execute
 	    public void execute(Shell shell) {
 	
 		 DialogWindow dialog= new DialogWindow(shell);
-         //dialog.open();
-			//dialog.createDialogArea(shell);
          if (dialog.open() == Window.OK) {
             System.out.println("OK");
+            
             directory=dialog.getDirectory();
+            os=dialog.getOs();
+            language=dialog.getLanguage();
+            mandatorySys=dialog.getMandatorySys();
+            supportSys=dialog.getSupportSys();
+            
 
 			if(!(directory == null || directory.isEmpty())) {
 			   VelocityEngine velocityEngine = new VelocityEngine();
 
 			   velocityEngine.setProperty( "resource.loader", "class" );
 			   velocityEngine.setProperty( "class.resource.loader.class"," org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
-			      velocityEngine.init();
-			      Template t = velocityEngine.getTemplate("main/resources/templates/coreSysJava.vm");
+			   velocityEngine.init();
+			   Template t=null;
+			   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+				   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaLinux.vm");
+			   }else {
+				   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaWindows.vm");
+			   }
 			       VelocityContext context = new VelocityContext();
 			       context.put("outputDirectory", directory);
 			       try{
-			        Writer writer = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.coreSystems.deployment\\testscript.bat"));
+			    	   Writer writer=null;
+			    	   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+			    		   writer = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.coreSystems.deployment\\testscript.sh"));
+					   }else {
+						   writer = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.coreSystems.deployment\\testscript.bat"));
+					   }   
+			       
 			           t.merge(context, writer);
 			           writer.flush();
 			           writer.close();
