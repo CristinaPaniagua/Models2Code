@@ -44,7 +44,7 @@ public class ModelParser {
 		            Package sourcePackage = (Package) objModel;
 		           // sourcePackagedElements = sourcePackage.getPackagedElements();
 		        }
-		        
+		         
 		        for (PackageableElement element : sourcePackagedElements){
 		        	
 		            //for nested package
@@ -53,6 +53,7 @@ public class ModelParser {
 		             (org.eclipse.uml2.uml.Package) element;
 		                EList<PackageableElement> nestedPackagedElements = 
 		           nestedPackage.getPackagedElements();
+		               
 		                for (PackageableElement nestedElement : nestedPackagedElements){
 		                  //  printModelDetails(nestedElement);
 		                	System.out.println(element.getName());
@@ -62,6 +63,7 @@ public class ModelParser {
 		            	
 		            	System.out.println(element.getName());
 		            	getDetails(element);
+		           
 		            }
 		        }
 
@@ -80,6 +82,7 @@ public class ModelParser {
 					System.out.println("local cloud "+ lc.getBase_Class());
 					
 					 localcloud.setLcName(element.getName());
+					
 					 
 				EList<Property> system_parts = classifier.getAllAttributes();
 
@@ -106,9 +109,12 @@ public class ModelParser {
 							}
 						
 						}
-						localcloud.setSystems(sysList);
-						localClouds.add(localcloud);
+						
 					}
+					localcloud.setSystems(sysList);
+					localClouds.add(localcloud);
+				
+				
 				} else System.out.println("No local cloud" );
 			}else System.out.println("No class" );
 		}else System.out.println("No classifier");

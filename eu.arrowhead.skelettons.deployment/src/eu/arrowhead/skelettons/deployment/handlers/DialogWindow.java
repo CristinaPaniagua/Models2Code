@@ -42,7 +42,7 @@ public class DialogWindow extends TitleAreaDialog{
 		super(parentShell);
 		// TODO Auto-generated constructor stub
 	}
-	
+	 
 	
 	public void create() {
 		super.create();
