@@ -1,0 +1,1 @@
+START D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\folderGen.bat

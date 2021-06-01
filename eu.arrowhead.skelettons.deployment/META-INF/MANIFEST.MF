@@ -19,13 +19,25 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.uml2.uml.resources;bundle-version="5.5.0",
  org.eclipse.uml2.uml.validation;bundle-version="5.5.0",
  org.eclipse.uml2.codegen.ecore;bundle-version="2.5.2",
- org.eclipse.papyrus.designer.languages.arrowhead.codegen.profile
+ org.eclipse.papyrus.arrowhead.profile;bundle-version="1.0.0"
 Automatic-Module-Name: eu.arrowhead.skelettons.deployment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .,
  commons-lang3-3.1.jar,
  org.slf4j.jar,
- velocity-engine-core-2.3.jar
+ velocity-engine-core-2.3.jar,
+ jackson-databind-2.11.0.jar,
+ jackson-core-2.11.0.jar,
+ javapoet-1.10.0.jar,
+ javax.ws.rs-api-2.1.jar,
+ jackson-datatype-jsr310-2.12.3.jar,
+ annotations-2.7.0.jar,
+ jackson-jaxrs-json-provider-2.9.7.jar,
+ jackson-dataformat-cbor-2.11.0.jar,
+ jackson-dataformat-csv-2.11.0.jar,
+ jackson-dataformat-xml-2.9.8.jar,
+ jackson-dataformat-smile-2.11.0.jar,
+ client-library-4.1.3.2.jar
 Export-Package: org.apache.commons.lang3;uses:="org.apache.commons.lang3.builder,org.apache.commons.lang3.text.translate",
  org.apache.commons.lang3.builder;uses:="org.apache.commons.lang3.tuple",
  org.apache.commons.lang3.concurrent;uses:="org.apache.commons.lang3.builder,new org.apache.commons.lang3.concurrent",
