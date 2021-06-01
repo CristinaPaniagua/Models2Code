@@ -9,8 +9,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.papyrus.designer.languages.arrowhead.codegen.profile.ahtsysmlprofile.DeployedSystem;
-import org.eclipse.papyrus.designer.languages.arrowhead.codegen.profile.ahtsysmlprofile.LocalCloud;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
@@ -25,15 +25,22 @@ import eu.arrowhead.skelettons.deployment.dto.LocalCloudDTO;
 
 public class ModelParser {
 
-	private static ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
+	public ModelParser() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	private ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
 	
 	
-	public static void modelReader() {
+	public  void modelReader() {
 		
 		 ModelLoader umlModel= new ModelLoader();
 		  
 		        
-		        Object objModel = umlModel.loadModel("D:\\SysMLPlugins\\Code\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml");
+		        Object objModel = umlModel.loadModel("D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml");
 		        Model sourceModel;
 		        EList<PackageableElement> sourcePackagedElements = null;
 		        
@@ -69,7 +76,7 @@ public class ModelParser {
 
 	}
 	
-	public static void getDetails(PackageableElement element) {
+	public void getDetails(PackageableElement element) {
 		 LocalCloudDTO localcloud=new LocalCloudDTO();
 		 ArrayList<String> sysList = new ArrayList<String>();
 		if (element instanceof Classifier) {
@@ -77,7 +84,8 @@ public class ModelParser {
 
 			if (classifier instanceof Class) {
 
-				LocalCloud lc = UMLUtil.getStereotypeApplication(classifier, LocalCloud.class);
+				LocalCLoudDesignDescription lc = UMLUtil.getStereotypeApplication(classifier, LocalCLoudDesignDescription.class);
+				
 				if (lc != null) {
 					System.out.println("local cloud "+ lc.getBase_Class());
 					
@@ -88,7 +96,7 @@ public class ModelParser {
 
 				
 					for (Property system_part : system_parts) {
-						DeployedSystem depSys = UMLUtil.getStereotypeApplication(system_part, DeployedSystem.class);
+						DeployedEntity depSys = UMLUtil.getStereotypeApplication(system_part, DeployedEntity.class);
 						if (depSys != null) {
 							
 							
@@ -122,7 +130,7 @@ public class ModelParser {
 	
 	
 
-	public static ArrayList<LocalCloudDTO> getLocalClouds() {
+	public  ArrayList<LocalCloudDTO> getLocalClouds() {
 		return localClouds;
 	}
 }

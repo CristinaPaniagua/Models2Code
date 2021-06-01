@@ -1,0 +1,6 @@
+D:
+cd ${outputDirectory}
+mkdir ${name}_ApplicationSystems
+cd ${name}_ApplicationSystems
+${createFolders}
+copy D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\.project ${outputDirectory}\\${name}_ApplicationSystems

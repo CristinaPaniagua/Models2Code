@@ -2,6 +2,8 @@ package eu.arrowhead.skelettons.deployment.handlers;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -30,15 +32,17 @@ public class DialogWindow extends TitleAreaDialog{
 	private Text txtDirectory;
 	
 	private String directory = "";
-	private static String os = "";
+	private static String name = "";
 	private static String language = "";
 	private static Boolean mandatorySys = false;
 	private static Boolean supportSys = false;
 	private GridData gridData_1;
 	private  ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
 	private int selectedLC;
-	
-	public  DialogWindow(Shell parentShell ) {
+	private String[] selectedSys= null;
+	private int[] selectedSysType= null;
+	private Text text;
+	DialogWindow(Shell parentShell ) {
 		super(parentShell);
 		// TODO Auto-generated constructor stub
 	}
@@ -60,6 +64,7 @@ public class DialogWindow extends TitleAreaDialog{
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
         GridData gd_container = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd_container.widthHint = 609;
         gd_container.heightHint = 550;
         container.setLayoutData(gd_container);
         GridLayout layout = new GridLayout(2, false);
@@ -67,6 +72,7 @@ public class DialogWindow extends TitleAreaDialog{
         
         //Description
         Label lbldescription = new Label(container, SWT.NONE);
+        lbldescription.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lbldescription.setText("Directory:");
         
         txtDirectory = new Text(container, SWT.BORDER);
@@ -78,15 +84,24 @@ public class DialogWindow extends TitleAreaDialog{
             directory = descriptionText;
         });
         
+        Label lblName = new Label(container, SWT.NONE);
+        lblName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        lblName.setText("Name:");
+        
+    
+        
+        text = new Text(container, SWT.BORDER);
+        GridData gd_text = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+        gd_text.widthHint = 438;
+        text.setLayoutData(gd_text);
+        text.addModifyListener(e -> {
+            Text textWidget = (Text) e.getSource();
+            String descriptionText = textWidget.getText();
+            name = descriptionText;
+        });
         
         
-        //Systems
-        Label lbltitle = new Label(container, SWT.NONE);
-        lbltitle.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-        lbltitle.setText("Local Cloud:");
-        
-        List list = new List(container, SWT.BORDER | SWT.V_SCROLL);
-        
+        //local cloud and systems
         String[] lcNames = new String[localClouds.size()];
         System.out.println(localClouds.size());
         for(int i=0; i<localClouds.size();i++) {
@@ -94,22 +109,26 @@ public class DialogWindow extends TitleAreaDialog{
         	lcNames[i]=localClouds.get(i).getLcName();
         }
         
+        Label lbltitle = new Label(container, SWT.NONE);
+        lbltitle.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
+        lbltitle.setText("Local Cloud:");
+        
+        List list = new List(container, SWT.BORDER | SWT.V_SCROLL);
+        
         list.setItems(lcNames);
         GridData gd_list = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_list.widthHint = 299;
+        gd_list.widthHint = 332;
         gd_list.heightHint = 100;
         list.setLayoutData(gd_list);
         
-
-        
        
         Label lblSystems = new Label(container, SWT.NONE);
-        lblSystems.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        lblSystems.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
         lblSystems.setText("Systems:");
         List listsys = new List(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
         listsys.setItems(" ");
         GridData gd_listsys = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_listsys.widthHint = 299;
+        gd_listsys.widthHint = 331;
         gd_listsys.heightHint = 100;
         listsys.setLayoutData(gd_listsys);
         
@@ -131,6 +150,20 @@ public class DialogWindow extends TitleAreaDialog{
             }
         });
         
+        
+        
+        
+        //listener
+        listsys.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+            	selectedSys=listsys.getSelection();
+            }
+        });
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        
+        
         //language
         Group grpLanguage = new Group(container, SWT.NULL);
         grpLanguage.setText("Programming Language");
@@ -138,12 +171,10 @@ public class DialogWindow extends TitleAreaDialog{
         gridLayout.numColumns = 3;
         grpLanguage.setLayout(gridLayout);
         gridData_1 = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        gridData_1.widthHint = 510;
+        gridData_1.widthHint = 359;
         gridData_1.verticalAlignment = SWT.TOP;
         gridData_1.horizontalAlignment = SWT.LEFT;
-        gridData_1.heightHint = 69;
-        gridData_1.verticalSpan = 2;
-        gridData_1.horizontalSpan = 3;
+        gridData_1.heightHint = 31;
         grpLanguage.setLayoutData(gridData_1);
         
         Button btnRadioButton_3 = new Button(grpLanguage, SWT.RADIO);
@@ -154,22 +185,48 @@ public class DialogWindow extends TitleAreaDialog{
         new Label(grpLanguage, SWT.NONE);
         
         
- 
+  
         return container;
     }
 	 @Override
 	    protected void okPressed() {
+		
 		 Shell shell= new Shell();
 	       if(directory == null || directory.isEmpty()) {
 	      		 MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
 	      		messageBox.setMessage("Please enter directory"+ directory);
 	              messageBox.open();
 	      	}else {
-	      		MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WORKING);
-	              messageBox.setText("Info");
-	              messageBox.setMessage(directory);
-	              messageBox.open();
-	      	}
+	      		selectedSysType=new int[selectedSys.length];
+	      		Object[] options = {"Provider",
+	                    "Consumer",
+	                    "Provider-Consumer"};
+	      		// type 0-provider, 1-consumer, 2 both 
+	      		
+	for(int i=0; i<selectedSys.length;i++) {
+		
+		String sysname=selectedSys[i];
+  		int selectedOption=-1;
+  		while(selectedOption==-1) {
+  			selectedOption= JOptionPane.showOptionDialog(null,
+      				"Select the type of application system:",
+      				sysname,
+      				JOptionPane.YES_NO_CANCEL_OPTION,
+      				JOptionPane.QUESTION_MESSAGE,
+      				null,
+      				options,
+      				options[2]);
+  			selectedSysType[i]=selectedOption;
+      		System.out.println("selected value= "+selectedOption);
+  			}
+	      		
+	}
+	      		
+	      		
+	      		}
+	   
+	    	
+	
 	        super.okPressed();
 	    }
 	 
@@ -179,8 +236,8 @@ public class DialogWindow extends TitleAreaDialog{
 			return directory; 
 		}
 		
-		public String getOs() {
-			return os; 
+		public String getName() {
+			return name; 
 		}
 		
 		public String getLanguage() {
@@ -202,6 +259,26 @@ public class DialogWindow extends TitleAreaDialog{
 
 		public void setLocalClouds(ArrayList<LocalCloudDTO> localClouds) {
 			this.localClouds = localClouds;
+		}
+
+
+		public int[] getSelectedSysType() {
+			return selectedSysType;
+		}
+
+
+		public void setSelectedSysType(int[] selectedSysType) {
+			this.selectedSysType = selectedSysType;
+		}
+
+
+		public String[] getSelectedSys() {
+			return selectedSys;
+		}
+
+
+		public void setSelectedSys(String[] selectedSys) {
+			this.selectedSys = selectedSys;
 		}
 
 }
