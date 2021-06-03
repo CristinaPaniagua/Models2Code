@@ -39,6 +39,7 @@ public class DialogWindow extends TitleAreaDialog{
 	private GridData gridData_1;
 	private  ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
 	private int selectedLC;
+	private String selectedLCName="";
 	private String[] selectedSys= null;
 	private int[] selectedSysType= null;
 	private Text text;
@@ -136,14 +137,15 @@ public class DialogWindow extends TitleAreaDialog{
         list.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
             	 selectedLC=list.getSelectionIndex();
+            	 selectedLCName=lcNames[selectedLC];
             	listsys.removeAll();
                  
                  String[] sysNames = new String[localClouds.get(selectedLC).getSystems().size()];
                  System.out.println(selectedLC+" "+localClouds.get(selectedLC).getSystems().size());
                  for(int i=0; i<localClouds.get(selectedLC).getSystems().size();i++) {
                  	
-                 	sysNames[i]=localClouds.get(selectedLC).getSystems().get(i);
-                 	listsys.add(localClouds.get(selectedLC).getSystems().get(i));
+                 	sysNames[i]=localClouds.get(selectedLC).getSystems().get(i)[0];
+                 	listsys.add(localClouds.get(selectedLC).getSystems().get(i)[0]);
                  }
                  
                  
@@ -197,18 +199,17 @@ public class DialogWindow extends TitleAreaDialog{
 	      		messageBox.setMessage("Please enter directory"+ directory);
 	              messageBox.open();
 	      	}else {
+	      		/* WINDOW TO ASK ABOUT THE TYPE OF SYSTEM --NO NEEDED
 	      		selectedSysType=new int[selectedSys.length];
 	      		Object[] options = {"Provider",
 	                    "Consumer",
 	                    "Provider-Consumer"};
-	      		// type 0-provider, 1-consumer, 2 both 
-	      		
-	for(int i=0; i<selectedSys.length;i++) {
+	      		for(int i=0; i<selectedSys.length;i++) {
 		
-		String sysname=selectedSys[i];
-  		int selectedOption=-1;
-  		while(selectedOption==-1) {
-  			selectedOption= JOptionPane.showOptionDialog(null,
+				String sysname=selectedSys[i];
+  				int selectedOption=-1;
+  				while(selectedOption==-1) {
+  				selectedOption= JOptionPane.showOptionDialog(null,
       				"Select the type of application system:",
       				sysname,
       				JOptionPane.YES_NO_CANCEL_OPTION,
@@ -218,11 +219,12 @@ public class DialogWindow extends TitleAreaDialog{
       				options[2]);
   			selectedSysType[i]=selectedOption;
       		System.out.println("selected value= "+selectedOption);
+      		
   			}
 	      		
 	}
 	      		
-	      		
+	*/      		
 	      		}
 	   
 	    	
@@ -279,6 +281,26 @@ public class DialogWindow extends TitleAreaDialog{
 
 		public void setSelectedSys(String[] selectedSys) {
 			this.selectedSys = selectedSys;
+		}
+
+
+		public int getSelectedLC() {
+			return selectedLC;
+		}
+
+
+		public void setSelectedLC(int selectedLC) {
+			this.selectedLC = selectedLC;
+		}
+
+
+		public String getSelectedLCName() {
+			return selectedLCName;
+		}
+
+
+		public void setSelectedLCName(String selectedLCName) {
+			this.selectedLCName = selectedLCName;
 		}
 
 }

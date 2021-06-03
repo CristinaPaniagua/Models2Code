@@ -6,9 +6,9 @@ public class LocalCloudDTO {
 
 
 	private String lcName=" ";
-	private ArrayList<String> systems = new ArrayList<String>();
+	private ArrayList<String[]> systems = new ArrayList<String[]>();
 
-	public LocalCloudDTO(String lcName, ArrayList<String> systems) {
+	public LocalCloudDTO(String lcName, ArrayList<String[]> systems) {
 		super();
 		this.lcName = lcName;
 		this.systems = systems;
@@ -27,11 +27,11 @@ public class LocalCloudDTO {
 		this.lcName = lcName;
 	}
 
-	public ArrayList<String> getSystems() {
+	public ArrayList<String[]> getSystems() {
 		return systems;
 	}
 
-	public void setSystems(ArrayList<String> systems) {
+	public void setSystems(ArrayList<String[]> systems) {
 		this.systems = systems;
 	}
 

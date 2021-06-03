@@ -36,6 +36,7 @@ import eu.arrowhead.skelettons.deployment.handlers.ScriptDeployment;
 import eu.arrowhead.skelettons.deployment.dto.LocalCloudDTO;
 import eu.arrowhead.skelettons.deployment.generator.ConsumerGenAppList;
 import eu.arrowhead.skelettons.deployment.generator.ConsumerGenMain;
+import eu.arrowhead.skelettons.deployment.generator.InterfaceMetadata;
 import eu.arrowhead.skelettons.deployment.generator.ProviderGenMain;
 
 import org.eclipse.swt.events.SelectionAdapter;
@@ -56,9 +57,17 @@ public class ScriptDeployment {
 	private  ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
 	private String[] selectedSys= null;
 	private int[] selectedSysType= null;
+	private int selectedLC;
 	 @Execute
-	    public void execute(Shell shell,ArrayList<LocalCloudDTO> localClouds) {
+	    public void execute(Shell shell) {
 	
+		 ModelParser MP= new ModelParser();
+			MP.modelReader();
+		    ArrayList<String []> systemServiceRegistry= MP.getSystemServiceRegistry();
+			ArrayList<InterfaceMetadata> interfaces= MP.getInterfaces();
+			ArrayList<LocalCloudDTO> localClouds= MP.getLocalClouds();
+		 
+		 
 		 DialogWindow dialog= new DialogWindow(shell);
 		 dialog.setLocalClouds(localClouds);
 		 
@@ -66,9 +75,10 @@ public class ScriptDeployment {
             System.out.println("OK");
              
             directory=dialog.getDirectory();
-           name=dialog.getName();
+            name=dialog.getName();
             selectedSys=dialog.getSelectedSys();
-            selectedSysType=dialog.getSelectedSysType();
+            selectedSysType= new int[selectedSys.length];
+            selectedLC=dialog.getSelectedLC();
             final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 
@@ -90,13 +100,25 @@ public class ScriptDeployment {
 			       String modules= "";
 			       String folders= "";
 			       String type="";
+			       System.out.println("size systems:"+localClouds.get(selectedLC).getSystems().size());
+		    	   System.out.println("size selection:"+selectedSys.length);
 			       for (int j=0; j<selectedSys.length;j++) {
-			    	   if(selectedSysType[j]==0||selectedSysType[j]==2) {
-			    		   type="_Provider";
+			    	  
+			    	   for (int i=0; i<localClouds.get(selectedLC).getSystems().size();i++) {
+			    		   
+			    		   if(selectedSys[j].equals(localClouds.get(selectedLC).getSystems().get(i)[0])) {
+			    			   System.out.println(localClouds.get(selectedLC).getSystems().get(i)[0]+":"+localClouds.get(selectedLC).getSystems().get(i)[1]);
+			    			   if(localClouds.get(selectedLC).getSystems().get(i)[1].equals("Provider")) {
+			    				   selectedSysType[j]=0;
+					    		   type="_Provider";
+					    	   }
+					    	   else {
+					    		   selectedSysType[j]=1;
+					    		   type="_Consumer";
+					    	   }
+			    		   }
 			    	   }
-			    	   else {
-			    		   type="_Consumer";
-			    	   }
+			    	  
 			    	   modules=modules+"    <module>"+selectedSys[j]+type+"</module>\r\n";
 			    	   folders=folders+ "mkdir "+ selectedSys[j]+type+"\r\n";
 			       }
@@ -120,7 +142,7 @@ public class ScriptDeployment {
 			           
 			           ConsumerGenAppList gen=new ConsumerGenAppList();
 			           for (int j=0; j<selectedSys.length;j++) {
-				    	   if(selectedSysType[j]==0||selectedSysType[j]==2) {
+				    	   if(selectedSysType[j]==0) {
 				    		   //pom
 				    		   Template tpomPro=velocityEngine.getTemplate("templates/pomProvider.vm");
 				    		   while(!new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Provider").exists()) {}
@@ -146,7 +168,7 @@ public class ScriptDeployment {
 				    		   while(!new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+selectedSys[j]+"_Provider").exists()) {}
 				    		   //gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ProviderGenMain genMainP =new ProviderGenMain();
-				               genMainP.generateProviderMain(directory,name,selectedSys[j]);
+				               genMainP.generateProviderMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
 				    	   }
 				    	   else {
 				    		   //pom
@@ -175,7 +197,7 @@ public class ScriptDeployment {
 				    		   while(!new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Consumer\\src\\main\\java\\eu\\arrowhead\\"+selectedSys[j]+"_Consumer").exists()) {}
 				    		   gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ConsumerGenMain genMainC =new ConsumerGenMain();
-				               genMainC.generateConsumerMain(directory,name,selectedSys[j]);
+				               genMainC.generateConsumerMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
 				    	   }
 				    	   
 				           

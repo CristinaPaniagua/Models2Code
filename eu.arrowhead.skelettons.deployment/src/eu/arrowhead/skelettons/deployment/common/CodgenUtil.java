@@ -154,7 +154,7 @@ public final class CodgenUtil {
          
          if(type.equalsIgnoreCase("String")) t=String.class;
          else if (type.equalsIgnoreCase("Boolean")) t=Boolean.class;
-         else if (type.equalsIgnoreCase("Integer")) t=int.class;
+         else if (type.equalsIgnoreCase("Integer")||type.equalsIgnoreCase("int")) t=int.class;
          else if (type.equalsIgnoreCase("Byte")) t=Byte.class;
          else if (type.equalsIgnoreCase("Double")) t=double.class;
          else if (type.equalsIgnoreCase("Float")) t=float.class;
