@@ -16,6 +16,8 @@ import java.util.List;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.widgets.Button;
@@ -40,9 +42,11 @@ public class ScriptDeployment {
 	private Text Directory;
 	private String directory = "";
 	private String os = "";
+	private String disk = "";
 	private String language = "";
 	private Boolean mandatorySys = false;
 	private Boolean supportSys = false;
+	private Boolean skipTest = false;
 	
 	 
 	 @Execute
@@ -50,6 +54,8 @@ public class ScriptDeployment {
 	
 		 DialogWindow dialog= new DialogWindow(shell);
          if (dialog.open() == Window.OK) {
+        	 
+        	if(!dialog.getBadDirectory()){
             System.out.println("OK");
             
             directory=dialog.getDirectory();
@@ -57,28 +63,53 @@ public class ScriptDeployment {
             language=dialog.getLanguage();
             mandatorySys=dialog.getMandatorySys();
             supportSys=dialog.getSupportSys();
+            disk=dialog.getDisk();
+            skipTest=dialog.getSkipTest();
             
-
+            final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
+ 
 			if(!(directory == null || directory.isEmpty())) {
 			   VelocityEngine velocityEngine = new VelocityEngine();
 
-			   velocityEngine.setProperty( "resource.loader", "class" );
-			   velocityEngine.setProperty( "class.resource.loader.class"," org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
+			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 			   velocityEngine.init();
 			   Template t=null;
-			   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
-				   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaLinux.vm");
-			   }else {
-				   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaWindows.vm");
-			   }
-			       VelocityContext context = new VelocityContext();
-			       context.put("outputDirectory", directory);
+			   VelocityContext context = new VelocityContext();
+			   context.put("outputDirectory", directory);
+			  if(mandatorySys) {
+				  if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+					   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaLinux.vm");
+				   }else {
+					   disk=dialog.getDisk();
+					   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaWindows.vm");
+					   context.put("disk", disk);
+				   }
+			  }else {
+				  if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+					   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaLinux.vm");
+				   }else {
+					   disk=dialog.getDisk();
+					   t = velocityEngine.getTemplate("main/resources/templates/allSysJavaWindows.vm");
+					   context.put("disk", disk);
+				   }
+			  }
+			   
+			      if(skipTest) {
+			    	  context.put("skipTest","-DskipTests");
+			    	  
+			      }else {
+			    	  context.put("skipTest","  ");
+			      }
+			       
+			      
 			       try{
 			    	   Writer writer=null;
 			    	   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
-			    		   writer = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.coreSystems.deployment\\testscript.sh"));
+			    		   writer = new FileWriter (new File("D:\\SysMLPlugins\\ModelstoCode\\eu.arrowhead.coreSystems.deployment\\src\\resources\\corescript.sh"));
 					   }else {
-						   writer = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.coreSystems.deployment\\testscript.bat"));
+						   writer = new FileWriter (new File("D:\\SysMLPlugins\\ModelstoCode\\eu.arrowhead.coreSystems.deployment\\src\\resources\\corescript.bat"));
 					   }   
 			       
 			           t.merge(context, writer);
@@ -96,8 +127,12 @@ public class ScriptDeployment {
 			            
 			}else dialog.open();
 			
+			
+			// set back default class loader
+	         Thread.currentThread().setContextClassLoader(oldContextClassLoader);
             }
-     
+	 }
+      
 	 }
 	 
 
@@ -109,7 +144,7 @@ public class ScriptDeployment {
 	       ExecutorService executor = Executors.newSingleThreadExecutor();
 	        ProcessBuilder processBuilder = new ProcessBuilder();
 	        System.out.println("Script generated");
-	        processBuilder.command("D:\\SysMLPlugins\\Scripts\\CoreSystems\\init.bat");
+	        processBuilder.command("D:\\SysMLPlugins\\ModelstoCode\\eu.arrowhead.coreSystems.deployment\\init.bat");
 	        
 	        try {
 

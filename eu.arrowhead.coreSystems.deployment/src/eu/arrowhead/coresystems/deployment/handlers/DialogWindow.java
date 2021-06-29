@@ -1,5 +1,7 @@
 package eu.arrowhead.coresystems.deployment.handlers;
 
+import java.io.File;
+
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -7,6 +9,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -15,6 +18,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 
 
@@ -24,9 +28,11 @@ public class DialogWindow extends TitleAreaDialog{
 	private String directory = "";
 	private static String os = "";
 	private static String language = "";
+	private static String disk="";
 	private static Boolean mandatorySys = false;
 	private static Boolean supportSys = false;
-	private GridData gridData_1;
+	private static Boolean skipTest = false;
+	private static Boolean badDirectory=false;
 
 	
 	public  DialogWindow(Shell parentShell) {
@@ -49,14 +55,17 @@ public class DialogWindow extends TitleAreaDialog{
     protected Control createDialogArea(Composite parent) {
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
+        container.setLayout(new GridLayout(3, false));
         GridData gd_container = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd_container.heightHint = 322;
         container.setLayoutData(gd_container);
-        GridLayout layout = new GridLayout(2, false);
-        container.setLayout(layout);
         
         //Description
         Label lbldescription = new Label(container, SWT.NONE);
+        lbldescription.setAlignment(SWT.RIGHT);
+        GridData gd_lbldescription = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_lbldescription.widthHint = 54;
+        lbldescription.setLayoutData(gd_lbldescription);
         lbldescription.setText("Directory:");
         
         txtDirectory = new Text(container, SWT.BORDER);
@@ -67,32 +76,54 @@ public class DialogWindow extends TitleAreaDialog{
             String descriptionText = textWidget.getText();
             directory = descriptionText;
         });
+        new Label(container, SWT.NONE);
         
         
         
         //Systems
         Label lbltitle = new Label(container, SWT.NONE);
-        lbltitle.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+        lbltitle.setAlignment(SWT.RIGHT);
+        GridData gd_lbltitle = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+        gd_lbltitle.widthHint = 55;
+        gd_lbltitle.heightHint = 24;
+        lbltitle.setLayoutData(gd_lbltitle);
         lbltitle.setText("Systems:");
         
-        List list = new List(container,SWT.MULTI |  SWT.BORDER | SWT.V_SCROLL);
-        list.setItems(new String[] {"Mandatory Core Systems", "Support Systems"});
-        GridData gd_list = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        gd_list.widthHint = 299;
-        gd_list.heightHint = 47;
-        list.setLayoutData(gd_list);
+        List list = new List(container,SWT.SINGLE|  SWT.BORDER | SWT.V_SCROLL);
+        list.setItems(new String[] {"Mandatory Core Systems", "Mandatory and Support Core Systems"});
+        
+        
+        //listener
+        list.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+            	String selectedSys=list.getSelection()[0];
+            
+            		if(selectedSys.equalsIgnoreCase("Mandatory Core Systems")){
+               			 mandatorySys=true;
+            			 supportSys =false;
+                		
+                	}
+            		if(selectedSys.equalsIgnoreCase("Mandatory and Support Core Systems")) { 
+            			 mandatorySys=false;
+            			 supportSys = true;
+            		}
+            	
+            	
+            }
+        });
         new Label(container, SWT.NONE);
         new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        
         
         //OS
         Group device = new Group(container, SWT.NULL);
+        device.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
         device.setText("Operating System");
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
         device.setLayout(gridLayout);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        gridData.horizontalSpan = 3;
-        device.setLayoutData(gridData);
         
         Button btnRadioButton = new Button(device, SWT.RADIO);
         btnRadioButton.setText("Windows");
@@ -104,23 +135,50 @@ public class DialogWindow extends TitleAreaDialog{
         btnRadioButton_2.setText("Mac");
         //language
         Group grpLanguage = new Group(container, SWT.NULL);
+        grpLanguage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 2));
         grpLanguage.setText("Programming Language");
         gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
         grpLanguage.setLayout(gridLayout);
-        gridData_1 = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        gridData_1.verticalSpan = 2;
-        gridData_1.horizontalSpan = 3;
-        grpLanguage.setLayoutData(gridData_1);
         
         Button btnRadioButton_3 = new Button(grpLanguage, SWT.RADIO);
         btnRadioButton_3.setText("Java");
         
         Button btnRadioButton_4 = new Button(grpLanguage, SWT.RADIO);
+        btnRadioButton_4.setEnabled(false);
         btnRadioButton_4.setText("C++");
         new Label(grpLanguage, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
         
+        Button btnCheckButton = new Button(container, SWT.CHECK);
+        GridData gd_btnCheckButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_btnCheckButton.widthHint = 297;
+        btnCheckButton.setLayoutData(gd_btnCheckButton);
+        btnCheckButton.addSelectionListener(new SelectionAdapter() {
+        	@Override
+        	public void widgetSelected(SelectionEvent e) {
+        		
+        		if(btnCheckButton.getSelection( ))
+                {    
+        			skipTest=true;
+                }
+                else
+                {
+                	skipTest=false;
+                }            
+        		
+        	}
+        });
+        btnCheckButton.setText("Skip Compilation Tests");
+        new Label(container, SWT.NONE);
         
+         
  
         return container;
     }
@@ -132,14 +190,63 @@ public class DialogWindow extends TitleAreaDialog{
 	      		messageBox.setMessage("Please enter directory"+ directory);
 	              messageBox.open();
 	      	}else {
-	      		MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WORKING);
-	              messageBox.setText("Info");
-	              messageBox.setMessage(directory);
-	              messageBox.open();
+	      		if(isValidDirectory(directory)) {
+	      			if(skipTest) System.out.println("Skipping tests");
+	      			MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WORKING);
+		              messageBox.setText("Info");
+		              messageBox.setMessage(directory);
+		              messageBox.open();
+		              badDirectory=false;
+	      		}else {
+	      			 MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
+	 	      		messageBox.setMessage("Directory no correct:"+directory);
+	 	              messageBox.open();
+	 	              badDirectory=true;
+	 	       
+	 	              
+	      		}
+	      		
 	      	}
 	        super.okPressed();
 	    }
 	 
+	 //AUXILIAR
+	 
+	 public boolean isValidDirectory(String directory) {
+		 File file = new File(directory);
+		 if (!file.isDirectory()) {
+			 return false;
+	 }else {
+		 if (file.exists()){
+			
+				 String cannonicalPath = "";
+				 try {
+					 cannonicalPath=file.getCanonicalPath();
+					 System.out.println("PATH:"+cannonicalPath);
+				 }catch(Exception e) {
+					 System.out.println("ERROR: no path"); 
+				 }
+				 
+				
+				
+				
+				 if(cannonicalPath.matches("[\n\r\t\0\f\'?*<>|\"/:]*")) {
+					 return false;
+			
+				 }else {
+					 disk=cannonicalPath.substring(0, 2);
+					 System.out.println("DISK:"+disk);
+					 return true;
+				}
+				
+				
+		 }
+		 return false;
+		    
+	}
+		 
+		   
+}
 	 
 	 //GETS
 		public String getDirectory() {
@@ -160,5 +267,19 @@ public class DialogWindow extends TitleAreaDialog{
 		public Boolean getSupportSys() {
 			return supportSys; 
 		}
+
+		public String getDisk() {
+			return disk;
+		}
+		
+		public Boolean getSkipTest() {
+			return skipTest; 
+		}
+
+		public Boolean getBadDirectory() {
+			return badDirectory; 
+		}
+	
+		
 
 }

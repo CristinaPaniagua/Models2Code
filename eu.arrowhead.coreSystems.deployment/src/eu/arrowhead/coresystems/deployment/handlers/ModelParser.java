@@ -8,8 +8,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.papyrus.designer.languages.arrowhead.codegen.profile.ahtsysmlprofile.DeployedSystem;
-import org.eclipse.papyrus.designer.languages.arrowhead.codegen.profile.ahtsysmlprofile.LocalCloud;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
@@ -32,7 +32,7 @@ public class ModelParser {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap()
 		   .put(UMLResource.FILE_EXTENSION, UMLResource.Factory.INSTANCE);
 
-		Resource res = set.getResource(URI.createFileURI("D:\\SysMLPlugins\\Code\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml"), true);
+		Resource res = set.getResource(URI.createFileURI("D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml"), true);
 		
 		
 		
@@ -52,7 +52,7 @@ public class ModelParser {
 		 ModelLoader umlModel= new ModelLoader();
 		  
 		        
-		        Object objModel = umlModel.loadModel("D:\\SysMLPlugins\\Code\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml");
+		        Object objModel = umlModel.loadModel("D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml");
 		        Model sourceModel;
 		        EList<PackageableElement> sourcePackagedElements = null;
 		        
@@ -93,14 +93,16 @@ public class ModelParser {
 
 			if (classifier instanceof Class) {
 
-				LocalCloud lc = UMLUtil.getStereotypeApplication(classifier, LocalCloud.class);
+
+				LocalCLoudDesignDescription lc = UMLUtil.getStereotypeApplication(classifier, LocalCLoudDesignDescription.class);
 				if (lc != null) {
-					System.out.println("local cloud "+ lc.getBase_Class());
+				
+					 
 				EList<Property> system_parts = classifier.getAllAttributes();
 
 				
 					for (Property system_part : system_parts) {
-						DeployedSystem depSys = UMLUtil.getStereotypeApplication(system_part, DeployedSystem.class);
+						DeployedEntity depSys = UMLUtil.getStereotypeApplication(system_part, DeployedEntity.class);
 						if (depSys != null) {
 							String id = depSys.getIdentifier();
 							String name = system_part.getName();
