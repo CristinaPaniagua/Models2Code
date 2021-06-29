@@ -165,8 +165,12 @@ public class OperationInt {
 		return opName;
 	}
 
-
-
+	public String getOpNameCapitalize() {
+		String name= getOpName();
+		String Name=name.substring(0, 1).toUpperCase()+ name.substring(1,name.length());
+		return Name;
+	}
+	
 	public void setOpName(String opName) {
 		this.opName = opName;
 	}

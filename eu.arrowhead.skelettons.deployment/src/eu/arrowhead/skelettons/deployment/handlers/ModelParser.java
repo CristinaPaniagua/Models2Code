@@ -150,7 +150,7 @@ public class ModelParser {
 											String[] registry= new String [3]; 
 											registry[0]=name;
 											registry[1]=AttType.getName();
-											System.out.println("System:"+name+ "--Service: "+AttType.getName());
+											
 											
 										
 										
@@ -158,20 +158,28 @@ public class ModelParser {
 											isProvider = true;
 											registry[2]="provider";
 										} else {
-											
-											//System.out.println("type: "+((Port) att).toString());
 											isConsumer = true;
 											registry[2]="consumer";
 										}
+										
+										
+										if(isProvider && isConsumer) {
+											registry[2]="provider";
+										}
+										System.out.println("System:"+registry[0]+ "--Service: "+registry[1]+"--type: "+registry[2]);
 										systemServiceRegistry.add(registry);
+																				
 										} 
 									}
+									
 								}
-							
 						
-							
-							if(isProvider) sysdetails [1]="Provider";
-							else sysdetails [1]="Consumer";
+								
+						System.out.println("P: "+ isProvider +"--C: "+isConsumer);
+							if(isProvider && isConsumer) {
+								sysdetails [1]="ProviderConsumer";
+							}else if(isProvider) { sysdetails [1]="Provider";}
+							else {sysdetails [1]="Consumer";}
 							
 							sysList.add(sysdetails);
 							System.out.println(sysdetails [0]+"---"+sysdetails [1]);
@@ -235,8 +243,21 @@ public class ModelParser {
 					System.out.println("Operation Name:"+ operation.getName());
 					op.setOpName(operation.getName());
 					op.setPathResource("/"+operation.getName());
-					op.setMethod("GET"); //TODO READ FROM operationKind
+					
+					//TODO READ FROM operationKind
+					if(op.getOpName().startsWith("get")||op.getOpName().startsWith("open")||op.getOpName().startsWith("close")) {
+						op.setMethod("GET");
+					}else if(op.getOpName().startsWith("set")||op.getOpName().startsWith("post")) {
+						op.setMethod("POST");
+					}else {
+						op.setMethod("POST");
+					}
+					
+					
+					 
+					
 					if(op.getMethod().equalsIgnoreCase("GET")) response=true;
+					else if(op.getMethod().equalsIgnoreCase("POST")) request=true;
 					else {
 						request=true;
 						response=true;
@@ -279,8 +300,8 @@ public class ModelParser {
 				        if (request) {
 				        	payload_request.add(ele);
 							metadata_request.add(metadata);
-							ElementsPayload elementsrequest = new ElementsPayload(payload_response,metadata_response);
-							elements_response.add(elementsrequest);
+							ElementsPayload elementsrequest = new ElementsPayload(payload_request,metadata_request);
+							elements_request.add(elementsrequest);
 							op.setElements_request(elements_request); 
 				        }
 						

@@ -1,0 +1,81 @@
+package eu.arrowhead.${packagename};
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/") 
+public class ServiceController {
+	
+	//=================================================================================================
+	// members
+
+	
+	
+
+	//=================================================================================================
+	// methods
+
+	
+
+	
+	//-------------------------------------------------------------------------------------------------
+	
+#foreach( $operation in $operations )
+	
+	#if($operation.getMethod() == "GET")
+	#if($operation.isResponse()==true)
+	@GetMapping(value="$operation.getPathResource()", produces = MediaType.APPLICATION_$operation.getMediatype_response()_VALUE)
+            public $operation.getOpNameCapitalize()ResponseDTO $operation.getOpName() () {
+            
+                      
+					//COMPLETE WITH YOU OWN CODE
+					
+			$operation.getOpNameCapitalize()ResponseDTO response= new $operation.getOpNameCapitalize()ResponseDTO();			
+					
+			return response;
+                }
+	#else 
+		@GetMapping(value="$operation.getPathResource()", produces = MediaType.APPLICATION_$operation.getMediatype_response()_VALUE)
+            public String $operation.getOpName() () {
+            
+                      
+					//COMPLETE WITH YOU OWN CODE
+					
+			 String response= "";
+               
+                return response;
+                }
+   #end
+	#else
+	#if($operation.isRequest()==true)
+    @PostMapping(value="$operation.getPathResource()", consumes = MediaType.APPLICATION_$operation.getMediatype_request()_VALUE, produces = MediaType.APPLICATION_$operation.getMediatype_response()_VALUE)
+	@ResponseBody public String $operation.getOpName() (@RequestBody final $operation.getOpNameCapitalize()RequestDTO request) {
+		
+		//COMPLETE WITH YOU OWN CODE
+               
+               String response= "";
+               
+                return response;
+	
+	}
+	#else
+	   @PostMapping(value="$operation.getPathResource()", consumes = MediaType.APPLICATION_$operation.getMediatype_request()_VALUE, produces = MediaType.APPLICATION_$operation.getMediatype_response()_VALUE)
+	@ResponseBody public String $operation.getOpName() (@RequestBody final String request) {
+		
+		//COMPLETE WITH YOU OWN CODE
+               
+               String response= "";
+               
+                return response;
+	
+	}
+	#end
+    #end    
+    #end    
+}

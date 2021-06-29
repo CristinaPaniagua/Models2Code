@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import eu.arrowhead.client.library.ArrowheadService;
 import eu.arrowhead.client.library.config.ApplicationInitListener;
 import eu.arrowhead.client.library.util.ClientCommonConstants;
-import eu.arrowhead.client.skeleton.provider.security.ProviderSecurityConfig;
+import eu.arrowhead.security.ProviderSecurityConfig;
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.core.CoreSystem;
@@ -83,11 +83,11 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 
 
 	//Register services into ServiceRegistry
-	
-		final ServiceRegistryRequestDTO ${serviceName}Request = createServiceRegistryRequest(${serviceName}, ${opPath}, HttpMethod.${Method});		
-		arrowheadService.forceRegisterServiceToServiceRegistry(${serviceName}Request);
+	#foreach( $operation in $operations )
+		final ServiceRegistryRequestDTO ${serviceName}_$operation.getOpName()_Request = createServiceRegistryRequest("${serviceName}","$operation.getPathResource()", HttpMethod.$operation.getMethod());		
+		arrowheadService.forceRegisterServiceToServiceRegistry(${serviceName}_$operation.getOpName()_Request);
 
-	
+	#end
 
 
 
@@ -137,19 +137,19 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		if (tokenSecurityFilterEnabled) {
 			systemRequest.setAuthenticationInfo(Base64.getEncoder().encodeToString(arrowheadService.getMyPublicKey().getEncoded()));
 			serviceRegistryRequest.setSecure(ServiceSecurityType.TOKEN);
-			serviceRegistryRequest.setInterfaces(List.of(CarProviderConstants.INTERFACE_SECURE));
+			serviceRegistryRequest.setInterfaces(List.of("HTTPS-SECURE-JSON"));
 		} else if (sslEnabled) {
 			systemRequest.setAuthenticationInfo(Base64.getEncoder().encodeToString(arrowheadService.getMyPublicKey().getEncoded()));
 			serviceRegistryRequest.setSecure(ServiceSecurityType.CERTIFICATE);
-			serviceRegistryRequest.setInterfaces(List.of(CarProviderConstants.INTERFACE_SECURE));
+			serviceRegistryRequest.setInterfaces(List.of("HTTPS-SECURE-JSON"));
 		} else {
 			serviceRegistryRequest.setSecure(ServiceSecurityType.NOT_SECURE);
-			serviceRegistryRequest.setInterfaces(List.of(CarProviderConstants.INTERFACE_INSECURE));
+			serviceRegistryRequest.setInterfaces(List.of("HTTP-INSECURE-JSON"));
 		}
 		serviceRegistryRequest.setProviderSystem(systemRequest);
 		serviceRegistryRequest.setServiceUri(serviceUri);
 		serviceRegistryRequest.setMetadata(new HashMap<>());
-		serviceRegistryRequest.getMetadata().put(CarProviderConstants.HTTP_METHOD, httpMethod.name());
+		serviceRegistryRequest.getMetadata().put( "http-method", httpMethod.name());
 		return serviceRegistryRequest;
 	}
 }

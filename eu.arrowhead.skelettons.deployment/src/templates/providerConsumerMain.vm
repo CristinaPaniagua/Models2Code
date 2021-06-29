@@ -40,7 +40,7 @@ import org.apache.http.util.EntityUtils;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead"})
-public class ${sysName}ConsumerMain implements ApplicationRunner {
+public class ${sysName}ProviderMain implements ApplicationRunner {
     
     //=================================================================================================
 	// members
@@ -51,18 +51,18 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
     @Autowired
 	protected SSLProperties sslProperties;
     
-    private final Logger logger = LogManager.getLogger(${sysName}ConsumerMain.class);
+    private final Logger logger = LogManager.getLogger(${sysName}ProviderMain.class);
     
     //=================================================================================================
 	// methods
 
 	//------------------------------------------------------------------------------------------------
     public static void main( final String[] args ) {
-    	SpringApplication.run(${sysName}ConsumerMain.class, args);
+    	SpringApplication.run(${sysName}ProviderMain.class, args);
     }
 
     //-------------------------------------------------------------------------------------------------
-   @Override
+    @Override
 	public void run(final ApplicationArguments args) throws Exception {
 	#foreach( $interface in $interfaces )
 	#set($operations=$interface.getOperations())
@@ -81,7 +81,9 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
     //-------------------------------------------------------------------------------------------------
     public void $interface.getID()_$operation.getOpName()_Consumption() {
     	logger.info("Orchestration request for " + "$interface.getID()" + " service:");
-    	final ServiceQueryFormDTO serviceQueryForm = new ServiceQueryFormDTO.Builder("$interface.getID()").interfaces(getInterface()).build();
+    	final ServiceQueryFormDTO serviceQueryForm = new ServiceQueryFormDTO.Builder("$interface.getID()")
+    																		.interfaces(getInterface())
+    																		.build();
     	
 		final Builder orchestrationFormBuilder = arrowheadService.getOrchestrationFormBuilder();
 		final OrchestrationFormRequestDTO orchestrationFormRequest = orchestrationFormBuilder.requestedService(serviceQueryForm)
@@ -107,7 +109,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 		 try{ 
 			
 			#if($operation.getMethod() == "GET")
-			String result= sendGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()");
+			String result= sendGET("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()");
 			#set($GET=$GET+1)
 			#elseif($operation.getMethod()== "POST")
 			#set($POST=$POST+1)
@@ -118,7 +120,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
             		$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
 					byte[] payload=mapper.writeValueAsBytes(request);
 				// SERVICE CONSUMPTION	
-					byte[] result= sendPost_Bytes("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+					byte[] result= sendPOST_Bytes("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
 				#elseif($operation.getMediatype_request()=="JSON")
 				//PAYLOAD
 					JsonFactory jsonFactory_objMapper = new JsonFactory();
@@ -159,7 +161,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
     
 	#if($GET==1)
 	//SERVICE CONSUMPTION METHOD
-	private static String sendGet(String url) throws IOException {
+	private static String sendGET(String url) throws IOException {
         
     	 CloseableHttpClient httpClient = HttpClients.createDefault();
     	 String result="";
@@ -192,7 +194,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 	#if($POST==1)
 	//SERVICE CONSUMPTION METHOD
 		 #if( $operation.getMediatype_request()== "CBOR")
-		 private static  byte[] sendPost_Bytes(String url, byte[]  payload) throws IOException {
+		 private static  byte[] sendPOST_Bytes(String url, byte[]  payload) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         byte[] result;
@@ -281,7 +283,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 		#end		
 	#else
 	//SERVICE CONSUMPTION METHOD
-   		//TODO PUT and DELETE methods 
+   		//TODO PUT and DELETE methods
 	#end
   
 	#end 
@@ -295,6 +297,8 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
     private String getInterface() {
     	return sslProperties.isSslEnabled() ? "HTTPS-SECURE-JSON" : "HTTP-INSECURE-JSON";
     }
+    
+   
     //-------------------------------------------------------------------------------------------------
     private void validateOrchestrationResult(final OrchestrationResultDTO orchestrationResult, final String serviceDefinitin) {
     	if (!orchestrationResult.getService().getServiceDefinition().equalsIgnoreCase(serviceDefinitin)) {

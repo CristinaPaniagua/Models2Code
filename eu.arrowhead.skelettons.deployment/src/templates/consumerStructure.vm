@@ -1,4 +1,4 @@
 %systemroot%\System32\xcopy  D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\consumer ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer /e
-D:
+${disk}
 cd ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer\src\main\java\eu\arrowhead
 mkdir ${sysName}_Consumer

@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 import eu.arrowhead.skelettons.deployment.handlers.ScriptDeployment;
 import eu.arrowhead.skelettons.deployment.dto.LocalCloudDTO;
+import eu.arrowhead.skelettons.deployment.generator.AppPropertiesGen;
 import eu.arrowhead.skelettons.deployment.generator.ConsumerGenAppList;
 import eu.arrowhead.skelettons.deployment.generator.ConsumerGenMain;
 import eu.arrowhead.skelettons.deployment.generator.InterfaceMetadata;
@@ -54,7 +55,7 @@ public class ScriptDeployment {
 	private String language = "";
 	private Boolean mandatorySys = false;
 	private Boolean supportSys = false;
-	private  ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
+	private String disk = "";
 	private String[] selectedSys= null;
 	private int[] selectedSysType= null;
 	private int selectedLC;
@@ -72,6 +73,9 @@ public class ScriptDeployment {
 		 dialog.setLocalClouds(localClouds);
 		 
          if (dialog.open() == Window.OK) {
+        	 
+        	 
+        	 if(!dialog.getBadDirectory()){	 
             System.out.println("OK");
              
             directory=dialog.getDirectory();
@@ -79,6 +83,7 @@ public class ScriptDeployment {
             selectedSys=dialog.getSelectedSys();
             selectedSysType= new int[selectedSys.length];
             selectedLC=dialog.getSelectedLC();
+            disk=dialog.getDisk();
             final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 
@@ -102,6 +107,7 @@ public class ScriptDeployment {
 			       String type="";
 			       System.out.println("size systems:"+localClouds.get(selectedLC).getSystems().size());
 		    	   System.out.println("size selection:"+selectedSys.length);
+		    	   
 			       for (int j=0; j<selectedSys.length;j++) {
 			    	  
 			    	   for (int i=0; i<localClouds.get(selectedLC).getSystems().size();i++) {
@@ -111,8 +117,10 @@ public class ScriptDeployment {
 			    			   if(localClouds.get(selectedLC).getSystems().get(i)[1].equals("Provider")) {
 			    				   selectedSysType[j]=0;
 					    		   type="_Provider";
-					    	   }
-					    	   else {
+					    	   }else if(localClouds.get(selectedLC).getSystems().get(i)[1].equals("ProviderConsumer")) {
+					    		   selectedSysType[j]=2;
+					    		   type="_Provider";
+					    	   }else {
 					    		   selectedSysType[j]=1;
 					    		   type="_Consumer";
 					    	   }
@@ -160,6 +168,7 @@ public class ScriptDeployment {
 				    		   contextFoldPro.put("outputDirectory", directory);
 				    		   contextFoldPro.put("name", name);
 				    		   contextFoldPro.put("sysName",selectedSys[j]);
+				    		   contextFoldPro.put("disk",disk);
 				    		   Writer writerFoldPro = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.skelettons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat"));
 				    		   tFoldPro.merge(contextFoldPro,writerFoldPro);
 				    		   writerFoldPro.flush();
@@ -169,8 +178,40 @@ public class ScriptDeployment {
 				    		   //gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ProviderGenMain genMainP =new ProviderGenMain();
 				               genMainP.generateProviderMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
-				    	   }
-				    	   else {
+				               AppPropertiesGen genpro = new AppPropertiesGen();
+				               genpro.GenerateAppProperties(directory,name,selectedSys[j]+"_Provider","provider"); 
+				    	   }else if(selectedSysType[j]==2) {
+				    		 //pom
+				    		   Template tpomPro=velocityEngine.getTemplate("templates/pomProvider.vm");
+				    		   while(!new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Provider").exists()) {}
+				    		   VelocityContext contextpomPro = new VelocityContext();
+				    		   contextpomPro.put("name", name);
+				    		   contextpomPro.put("sysName",selectedSys[j]);
+				    		   Writer  writerpomPro = new FileWriter (new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Provider\\pom.xml"));
+				    		   tpomPro.merge(contextpomPro,writerpomPro);
+				    		   writerpomPro.flush();
+				    		   writerpomPro.close();
+				    		   
+				    		   //Folder structure script
+				    		   Template tFoldPro=velocityEngine.getTemplate("templates/providerStructure.vm");
+				    		   VelocityContext contextFoldPro = new VelocityContext();
+				    		   contextFoldPro.put("outputDirectory", directory);
+				    		   contextFoldPro.put("name", name);
+				    		   contextFoldPro.put("sysName",selectedSys[j]);
+				    		   contextFoldPro.put("disk",disk);
+				    		   Writer writerFoldPro = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.skelettons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat"));
+				    		   tFoldPro.merge(contextFoldPro,writerFoldPro);
+				    		   writerFoldPro.flush();
+				    		   writerFoldPro.close();
+				    		   executebat("D:\\SysMLPlugins\\Code\\eu.arrowhead.skelettons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat");
+				    		   while(!new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+selectedSys[j]+"_Provider").exists()) {}
+				    		   //gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
+				    		   ProviderGenMain genMainP =new ProviderGenMain();
+				               genMainP.generateProvConsMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
+				               AppPropertiesGen genpro = new AppPropertiesGen();
+				               genpro.GenerateAppProperties(directory,name,selectedSys[j]+"_Provider","provider");
+				    		   
+				    	   } else {
 				    		   //pom
 				    		   Template tpomcon=velocityEngine.getTemplate("templates/pomConsumer.vm");
 				    		   while(!new File(directory+"\\"+name+"_ApplicationSystems\\"+selectedSys[j]+"_Consumer").exists()) {}
@@ -188,6 +229,7 @@ public class ScriptDeployment {
 				    		   contextFoldCon.put("outputDirectory", directory);
 				    		   contextFoldCon.put("name", name);
 				    		   contextFoldCon.put("sysName",selectedSys[j]);
+				    		   contextFoldCon.put("disk",disk);
 				    		   Writer writerFoldCon = new FileWriter (new File("D:\\SysMLPlugins\\Code\\eu.arrowhead.skelettons.deployment\\src\\resources\\"+selectedSys[j]+"ConsumerStructure.bat"));
 				    		   tFoldCon.merge(contextFoldCon,writerFoldCon);
 				    		   writerFoldCon.flush();
@@ -198,6 +240,9 @@ public class ScriptDeployment {
 				    		   gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ConsumerGenMain genMainC =new ConsumerGenMain();
 				               genMainC.generateConsumerMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
+				               AppPropertiesGen genpro = new AppPropertiesGen();
+				               genpro.GenerateAppProperties(directory,name,selectedSys[j]+"_Consumer","consumer"); 
+				    	   
 				    	   }
 				    	   
 				           
@@ -221,7 +266,8 @@ public class ScriptDeployment {
 			// set back default class loader
 	         Thread.currentThread().setContextClassLoader(oldContextClassLoader);
 			
-            }
+            }else System.out.println("Directory no correct");
+         }
      
 	 }
 	 

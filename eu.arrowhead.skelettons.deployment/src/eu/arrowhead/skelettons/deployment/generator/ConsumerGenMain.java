@@ -59,47 +59,27 @@ public class ConsumerGenMain {
 		}
 		
 		
-		
-		MD=serviceInterfaces.get(0);
-		System.out.println(MD.toString());
-		String service=MD.getID();
-		 ArrayList<OperationInt> operations = MD.getOperations();
-		for(int i=0; i< operations.size(); i++) {
-			OperationInt op = operations.get(i);
-			System.out.println("operation:"+op.getOpName());
-			//GENERATION PAYLOAD JAVA OBJECTS
-			if(op.isRequest()){
-		           ClassGenSimple Request=new ClassGenSimple();
-		       
-		             for(int k=0; k<op.elements_request.size();k++)
-		             {
-		                ArrayList<String[]> elements_request=op.elements_request.get(k).getElements();
-		               classesRequest.add(Request.classGen(elements_request,op.getOpName()+"RequestDTO"+k,Directory, name, system+"_Consumer"));
-		             }
-		            
-		  
-		       }
-		        
-		       
-		        if(op.isResponse()){
-		            ClassGenSimple Response=new ClassGenSimple();
-		      
-		                 for(int j=0; j<op.elements_response.size();j++)
-		                 {
-		                    ArrayList<String[]> elements_response=op.elements_response.get(j).getElements();
-		                    classesResponse=Response.classGen(elements_response,op.getOpName()+"ResponseDTO"+j,Directory, name, system+"_Consumer");
-		                 }
-		           
-		        }
-		        
-			
-			
-			
+		for (int p=0; p<serviceInterfaces.size(); p++) {
+			 InterfaceMetadata MDC=serviceInterfaces.get(p);
+				System.out.println(MDC.toString());
+				String service=MDC.getID();
+				
+					 ArrayList<OperationInt> operations = MDC.getOperations();
+					for(int i=0; i< operations.size(); i++) {
+						OperationInt op = operations.get(i);	
+						objectClassGen(Directory,  name,  system, op);
+					}
+	
 		}
+		        
+			
+			
+			
 		
 		
-	//TODO GENERATE MAIN --only first operation... change the template
-		OperationInt firstOp =operations.get(0);
+		
+	//TODO GENERATE MAIN 
+		
 		
 			 VelocityEngine velocityEngine = new VelocityEngine();
 
@@ -107,16 +87,16 @@ public class ConsumerGenMain {
 			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 			   velocityEngine.init();
 			try {
-			   Template t=velocityEngine.getTemplate("templates/consumerMain.vm");
-			   VelocityContext context = new VelocityContext();
-			   context.put("packagename",system+"_Consumer");
-			   context.put("sysName", system);
-			   context.put("serviceName", service);
-			   context.put("serviceDefinition", MD.getID());
-			   context.put("method", firstOp.getMethod());
-			   context.put("address", "http://192.168.1.36:8088"+firstOp.getPathResource());
-			   context.put("encoding", firstOp.getMediatype_request());
-			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Consumer\\src\\main\\java\\eu\\arrowhead\\"+system+"_Consumer\\ConsumerMain.java"));
+				 serviceInterfaces=removeRepetitions( serviceInterfaces);
+					
+				   Template t=velocityEngine.getTemplate("templates/consumerMain.vm");
+				   VelocityContext context = new VelocityContext();
+				   context.put("packagename",system+"_Consumer");
+				   context.put("sysName", system);
+				   context.put("interfaces", serviceInterfaces);
+				   context.put("address", "http://127.0.0.1:8888");
+			 
+			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Consumer\\src\\main\\java\\eu\\arrowhead\\"+system+"_Consumer\\"+system+"ConsumerMain.java"));
 			   t.merge(context,writer);
 			   writer.flush();
 			   writer.close();
@@ -125,7 +105,52 @@ public class ConsumerGenMain {
 	     	   e.printStackTrace();}
 			
 		}
+	//GENERATION PAYLOAD JAVA OBJECTS
+	public void objectClassGen(String Directory, String name, String system, OperationInt op) {
+
+		if(op.isRequest()){
+			ClassGenSimple Request=new ClassGenSimple();
+
+     for(int k=0; k<op.elements_request.size();k++)
+     	{
+    	 ArrayList<String[]> elements_request=op.elements_request.get(k).getElements();
+    	 classesRequest.add(Request.classGen(elements_request,op.getOpName()+"RequestDTO",Directory, name, system+"_Consumer"));
+     	}
+    //for(int h=0;h<classesRequest.size();h++)
+        //System.out.println("..........."+classesRequest.get(h));
+
+		}
+
+
+		if(op.isResponse()){
+			ClassGenSimple Response=new ClassGenSimple();
+
+				for(int j=0; j<op.elements_response.size();j++)
+				{
+					ArrayList<String[]> elements_response=op.elements_response.get(j).getElements();
+					classesResponse=Response.classGen(elements_response,op.getOpName()+"ResponseDTO",Directory, name, system+"_Consumer");
+				}
+   
+		}
+	}
+
+	//TODO: Look if this is correct or the problem  is the service name convention.
+	public ArrayList<InterfaceMetadata> removeRepetitions(ArrayList<InterfaceMetadata> serviceInterfaces) {
+			for(int i=0; i<serviceInterfaces.size();i++) {
+				InterfaceMetadata inter = serviceInterfaces.get(i);
+				for (int j=i+1; j<serviceInterfaces.size();j++) {
+					InterfaceMetadata interNext = serviceInterfaces.get(j);
+					if(inter.getID().equals(interNext.getID())) {
+						serviceInterfaces.remove(j);
 		
+					}
+	
+				}
+
+			}
+
+			return serviceInterfaces;
+		}	
 	}
 	
 	

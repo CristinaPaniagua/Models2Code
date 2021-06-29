@@ -70,7 +70,7 @@ public void generateProviderMain(String Directory, String name, String system, A
 		             for(int k=0; k<op.elements_request.size();k++)
 		             {
 		                ArrayList<String[]> elements_request=op.elements_request.get(k).getElements();
-		               classesRequest.add(Request.classGen(elements_request,op.getOpName()+"RequestDTO"+k,Directory, name, system+"_Provider"));
+		               classesRequest.add(Request.classGen(elements_request,op.getOpName()+"RequestDTO",Directory, name, system+"_Provider"));
 		             }
 		            //for(int h=0;h<classesRequest.size();h++)
 		                //System.out.println("..........."+classesRequest.get(h));
@@ -84,7 +84,7 @@ public void generateProviderMain(String Directory, String name, String system, A
 		                 for(int j=0; j<op.elements_response.size();j++)
 		                 {
 		                    ArrayList<String[]> elements_response=op.elements_response.get(j).getElements();
-		                    classesResponse=Response.classGen(elements_response,op.getOpName()+"ResponseDTO"+j,Directory, name, system+"_Provider");
+		                    classesResponse=Response.classGen(elements_response,op.getOpName()+"ResponseDTO",Directory, name, system+"_Provider");
 		                 }
 		           
 		        }
@@ -95,7 +95,7 @@ public void generateProviderMain(String Directory, String name, String system, A
 		}
 		
 		
-	//TODO GENERATE MAIN --only first operation... change the template
+	//TODO GENERATE MAIN 
 		OperationInt firstOp =operations.get(0);
 			 VelocityEngine velocityEngine = new VelocityEngine();
 
@@ -108,7 +108,7 @@ public void generateProviderMain(String Directory, String name, String system, A
 			   context.put("packagename",system+"_Provider");
 			   context.put("sysName", system);
 			 
-			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ProviderMain.java"));
+			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\"+system+"ProviderMain.java"));
 			   t.merge(context,writer);
 			   writer.flush();
 			   writer.close();
@@ -116,11 +116,125 @@ public void generateProviderMain(String Directory, String name, String system, A
 	        } catch (IOException e) {
 	     	   e.printStackTrace();}
 			
-	// GENERATION APPLICATION LISTENER  (only first operation)
+	// GENERATION APPLICATION LISTENER  
 			providerGenAppListener( serviceInterfaces, system,  Directory, name);
+	// GENERATION CONTROLLER
+			providerController( serviceInterfaces, system,  Directory, name);
+						
 			
 		}
 		
+//MAIN FOR PROVIDERS THAN INCLUDE CONSUMERS
+
+public void generateProvConsMain(String Directory, String name, String system, ArrayList<String []> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
+ 	
+	
+
+	ArrayList<InterfaceMetadata> serviceInterfacesProvider= new ArrayList<InterfaceMetadata>();
+	ArrayList<InterfaceMetadata> serviceInterfacesConsumer= new ArrayList<InterfaceMetadata>();
+	
+	
+	System.out.println("START GENERATION  PROVIDER-CONSUMER: **"+ system+"** "+systemServiceRegistry.size()+"--"+interfaces.size());
+	
+	for (int m=0; m<systemServiceRegistry.size(); m++) {
+		String[] systemService= systemServiceRegistry.get(m);
+		System.out.println("sys: "+systemService[0]);
+		System.out.println("serv: "+systemService[1]);
+		System.out.println("type: "+systemService[2]);
+	
+			if(systemService[0].equals(system)) {
+				System.out.println("MATCH:"+m);
+				String serv= systemService[1];
+				
+				//for each port-service
+				
+				if(systemService[2].equalsIgnoreCase("provider")) {
+					
+					for (int n=0; n<interfaces.size(); n++) {
+						if(interfaces.get(n).getID().equals(serv)) {
+							System.out.println("MATCH interface number:"+n);
+							serviceInterfacesProvider.add(interfaces.get(n));
+							}	
+					}	
+					
+				}else {
+					for (int n=0; n<interfaces.size(); n++) {
+						if(interfaces.get(n).getID().equals(serv)) {
+							System.out.println("MATCH interface number:"+n+interfaces.get(n).getID());
+							serviceInterfacesConsumer.add(interfaces.get(n));
+							}	
+					}	
+
+				}	
+				
+		
+	}
+	}
+	//For each service that provide the system: generation of payload classes and the controller
+			for (int l=0; l<serviceInterfacesProvider.size(); l++) {
+				 InterfaceMetadata MDP=serviceInterfacesProvider.get(l);
+					System.out.println(MDP.toString());
+					String service=MDP.getID();
+					
+						 ArrayList<OperationInt> operations = MDP.getOperations();
+						for(int i=0; i< operations.size(); i++) {
+							OperationInt op = operations.get(i);	
+							objectClassGen(Directory,  name,  system, op);
+						}
+				
+						// GENERATION CONTROLLER
+			providerController( serviceInterfacesProvider, system,  Directory, name);
+		
+			}
+
+			
+			
+			//For each service that consume the system: generation of payload classes and the main with the client-methods
+			for (int p=0; p<serviceInterfacesConsumer.size(); p++) {
+				 InterfaceMetadata MDC=serviceInterfacesConsumer.get(p);
+					System.out.println(MDC.toString());
+					String service=MDC.getID();
+					
+						 ArrayList<OperationInt> operations = MDC.getOperations();
+						for(int i=0; i< operations.size(); i++) {
+							OperationInt op = operations.get(i);	
+							objectClassGen(Directory,  name,  system, op);
+						}
+		
+			}
+		
+		
+	// MAIN 
+		
+			 VelocityEngine velocityEngine = new VelocityEngine();
+
+			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+			   velocityEngine.init();
+			try {
+				 serviceInterfacesConsumer=removeRepetitions( serviceInterfacesConsumer);
+				
+			   Template t=velocityEngine.getTemplate("templates/providerConsumerMain.vm");
+			   VelocityContext context = new VelocityContext();
+			   context.put("packagename",system+"_Provider");
+			   context.put("sysName", system);
+			   context.put("interfaces", serviceInterfacesConsumer);
+			   context.put("address", "http://127.0.0.1:8888");
+			 
+			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\"+system+"ProviderMain.java"));
+			   t.merge(context,writer);
+			   writer.flush();
+			   writer.close();
+			      
+	        } catch (IOException e) {
+	     	   e.printStackTrace();}
+			
+	// GENERATION APPLICATION LISTENER  
+			providerGenAppListener( serviceInterfacesProvider, system,  Directory, name);
+	
+			
+		}
+
 
 //METHOD GENERATION APPLICATION LISTENER
 
@@ -129,8 +243,8 @@ public void generateProviderMain(String Directory, String name, String system, A
  			
  			InterfaceMetadata MD=serviceInterfaces.get(0);
  			 ArrayList<OperationInt> operations = MD.getOperations();
- 			OperationInt firstOp =operations.get(0);
  			
+ 		
  			 VelocityEngine velocityEngine = new VelocityEngine();
 
 			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -141,9 +255,9 @@ public void generateProviderMain(String Directory, String name, String system, A
 			   VelocityContext context = new VelocityContext();
 			   context.put("packagename",system+"_Provider");
 			   context.put("serviceName", MD.getID());
-			  // context.put("opName", firstOp.getOpName());
-			   context.put("opPath", firstOp.getPathResource());
-			   context.put("Method", firstOp.getMethod());
+			  
+			   context.put("operations", operations);
+			  
 			 
 			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ProviderApplicationInitListener.java"));
 			   t.merge(context,writer);
@@ -155,5 +269,88 @@ public void generateProviderMain(String Directory, String name, String system, A
 	 
  		}
 
+ 		
+ 		
+ 		//METHOD GENERATION CONTROLLER
+
+ 		public void providerController(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
+ 			
+ 			
+ 			InterfaceMetadata MD=serviceInterfaces.get(0);
+ 			 ArrayList<OperationInt> operations = MD.getOperations();
+ 			
+ 		
+ 			 VelocityEngine velocityEngine = new VelocityEngine();
+
+			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+			   velocityEngine.init();
+			try {
+			   Template t=velocityEngine.getTemplate("templates/providerController.vm");
+			   VelocityContext context = new VelocityContext();
+			   context.put("packagename",system+"_Provider");
+			   context.put("operations", operations);
+			  
+			 
+			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ServiceController.java"));
+			   t.merge(context,writer);
+			   writer.flush();
+			   writer.close();
+			      
+	        } catch (IOException e) {
+	     	   e.printStackTrace();}
+	 
+ 		}
+
+	
+
+
+ 		//GENERATION PAYLOAD JAVA OBJECTS
+ 		public void objectClassGen(String Directory, String name, String system, OperationInt op) {
+
+ 			if(op.isRequest()){
+ 				ClassGenSimple Request=new ClassGenSimple();
+       
+             for(int k=0; k<op.elements_request.size();k++)
+             	{
+            	 ArrayList<String[]> elements_request=op.elements_request.get(k).getElements();
+            	 classesRequest.add(Request.classGen(elements_request,op.getOpName()+"RequestDTO",Directory, name, system+"_Provider"));
+             	}
+            //for(int h=0;h<classesRequest.size();h++)
+                //System.out.println("..........."+classesRequest.get(h));
+  
+ 			}
+        
+       
+ 			if(op.isResponse()){
+ 				ClassGenSimple Response=new ClassGenSimple();
+      
+ 					for(int j=0; j<op.elements_response.size();j++)
+ 					{
+ 						ArrayList<String[]> elements_response=op.elements_response.get(j).getElements();
+ 						classesResponse=Response.classGen(elements_response,op.getOpName()+"ResponseDTO",Directory, name, system+"_Provider");
+ 					}
+           
+        }
+}
+
+ 		//TODO: Look if this is correct or the problem  is the service name convention.
+public ArrayList<InterfaceMetadata> removeRepetitions(ArrayList<InterfaceMetadata> serviceInterfaces) {
+	for(int i=0; i<serviceInterfaces.size();i++) {
+		InterfaceMetadata inter = serviceInterfaces.get(i);
+		for (int j=i+1; j<serviceInterfaces.size();j++) {
+			InterfaceMetadata interNext = serviceInterfaces.get(j);
+			if(inter.getID().equals(interNext.getID())) {
+				serviceInterfaces.remove(j);
+				
+			}
+			
+		}
+	
 	}
+
+	return serviceInterfaces;
+}
+
+}//END CLASS
 

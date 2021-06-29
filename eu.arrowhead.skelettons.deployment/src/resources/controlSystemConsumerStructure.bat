@@ -1,4 +1,4 @@
-%systemroot%\System32\xcopy  D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\consumer D:\SysMLPlugins\TestDirectory\test5_ApplicationSystems\controlSystem_Consumer /e
+%systemroot%\System32\xcopy  D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\consumer D:\SysMLPlugins\TestDirectory\test6_ApplicationSystems\controlSystem_Consumer /e
 D:
-cd D:\SysMLPlugins\TestDirectory\test5_ApplicationSystems\controlSystem_Consumer\src\main\java\eu\arrowhead
+cd D:\SysMLPlugins\TestDirectory\test6_ApplicationSystems\controlSystem_Consumer\src\main\java\eu\arrowhead
 mkdir controlSystem_Consumer

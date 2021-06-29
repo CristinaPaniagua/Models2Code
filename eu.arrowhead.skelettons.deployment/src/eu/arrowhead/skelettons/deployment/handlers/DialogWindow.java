@@ -1,5 +1,6 @@
 package eu.arrowhead.skelettons.deployment.handlers;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -30,7 +31,8 @@ import org.eclipse.swt.widgets.Combo;
 
 public class DialogWindow extends TitleAreaDialog{
 	private Text txtDirectory;
-	
+	private static Boolean badDirectory=false;
+	private static String disk="";
 	private String directory = "";
 	private static String name = "";
 	private static String language = "";
@@ -66,7 +68,7 @@ public class DialogWindow extends TitleAreaDialog{
 		Composite container = new Composite(area, SWT.NONE);
         GridData gd_container = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd_container.widthHint = 609;
-        gd_container.heightHint = 550;
+        gd_container.heightHint = 450;
         container.setLayoutData(gd_container);
         GridLayout layout = new GridLayout(2, false);
         container.setLayout(layout);
@@ -183,6 +185,7 @@ public class DialogWindow extends TitleAreaDialog{
         btnRadioButton_3.setText("Java");
         
         Button btnRadioButton_4 = new Button(grpLanguage, SWT.RADIO);
+        btnRadioButton_4.setEnabled(false);
         btnRadioButton_4.setText("C++");
         new Label(grpLanguage, SWT.NONE);
         
@@ -198,40 +201,70 @@ public class DialogWindow extends TitleAreaDialog{
 	      		 MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
 	      		messageBox.setMessage("Please enter directory"+ directory);
 	              messageBox.open();
-	      	}else {
-	      		/* WINDOW TO ASK ABOUT THE TYPE OF SYSTEM --NO NEEDED
-	      		selectedSysType=new int[selectedSys.length];
-	      		Object[] options = {"Provider",
-	                    "Consumer",
-	                    "Provider-Consumer"};
-	      		for(int i=0; i<selectedSys.length;i++) {
-		
-				String sysname=selectedSys[i];
-  				int selectedOption=-1;
-  				while(selectedOption==-1) {
-  				selectedOption= JOptionPane.showOptionDialog(null,
-      				"Select the type of application system:",
-      				sysname,
-      				JOptionPane.YES_NO_CANCEL_OPTION,
-      				JOptionPane.QUESTION_MESSAGE,
-      				null,
-      				options,
-      				options[2]);
-  			selectedSysType[i]=selectedOption;
-      		System.out.println("selected value= "+selectedOption);
-      		
-  			}
-	      		
-	}
-	      		
-	*/      		
+	       }else {
+	      		if(isValidDirectory(directory)) {
+	      			MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WORKING);
+		              messageBox.setText("Info");
+		              messageBox.setMessage(directory);
+		              messageBox.open();
+		              badDirectory=false;
+	      		}else {
+	      			 MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
+	 	      		messageBox.setMessage("Directory no correct:"+directory);
+	 	              messageBox.open();
+	 	              badDirectory=true;
+	 	       
+	 	              
 	      		}
+	      		
+	      	}  		
+	      		
 	   
 	    	
 	
 	        super.okPressed();
 	    }
 	 
+	 
+	 
+	 
+	 
+	 //AUXILIAR
+	 
+	 public boolean isValidDirectory(String directory) {
+		 File file = new File(directory);
+		 if (!file.isDirectory()) {
+			 return false;
+	 }else {
+		 if (file.exists()){
+			
+				 String cannonicalPath = "";
+				 try {
+					 cannonicalPath=file.getCanonicalPath();
+					 System.out.println("PATH:"+cannonicalPath);
+				 }catch(Exception e) {
+					 System.out.println("ERROR: no path"); 
+				 }
+				 
+				
+				
+				
+				 if(cannonicalPath.matches("[\n\r\t\0\f\'?*<>|\"/:]*")) {
+					 return false;
+			
+				 }else {
+					 disk=cannonicalPath.substring(0, 2);
+					 System.out.println("DISK:"+disk);
+					 return true;
+				}
+				
+				
+		 }
+		 return false;
+		    
+	}
+	 
+	 } 
 	 
 	 //GETS
 		public String getDirectory() {
@@ -301,6 +334,14 @@ public class DialogWindow extends TitleAreaDialog{
 
 		public void setSelectedLCName(String selectedLCName) {
 			this.selectedLCName = selectedLCName;
+		}
+		public String getDisk() {
+			return disk;
+		}
+		
+
+		public Boolean getBadDirectory() {
+			return badDirectory; 
 		}
 
 }
