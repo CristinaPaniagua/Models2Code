@@ -19,13 +19,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.uml2.uml.resources;bundle-version="5.5.0",
  org.eclipse.uml2.uml.validation;bundle-version="5.5.0",
  org.eclipse.uml2.codegen.ecore;bundle-version="2.5.2",
- org.eclipse.papyrus.designer.languages.arrowhead.codegen.profile
+ org.eclipse.papyrus.arrowhead.profile;bundle-version="1.0.0"
 Automatic-Module-Name: eu.arrowhead.coreSystems.deployment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .,
  commons-lang3-3.1.jar,
  org.slf4j.jar,
- velocity-engine-core-2.3.jar
+ velocity-engine-core-2.3.jar,
+ swing2swt.jar
 Export-Package: org.apache.commons.lang3;uses:="org.apache.commons.lang3.builder,org.apache.commons.lang3.text.translate",
  org.apache.commons.lang3.builder;uses:="org.apache.commons.lang3.tuple",
  org.apache.commons.lang3.concurrent;uses:="org.apache.commons.lang3.builder,new org.apache.commons.lang3.concurrent",
@@ -123,3 +124,4 @@ Export-Package: org.apache.commons.lang3;uses:="org.apache.commons.lang3.builder
    org.apache.velocity.util,
    org.slf4j,
    org.apache.velocity.runtime.parser.node"
+Import-Package: org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile

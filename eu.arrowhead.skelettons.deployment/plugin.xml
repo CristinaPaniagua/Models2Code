@@ -10,7 +10,7 @@
       </category>
       <command
             categoryId="eu.arrowhead.skelettons.deployment.commands.category"
-            name="Deploy skelettons"
+            name="Deploy App. System skeletons"
             id="eu.arrowhead.skelettons.deployment.commands.skelettonsCommand">
       </command>
    </extension>
@@ -53,7 +53,7 @@
                   id="eu.arrowhead.skelettons.deployment.toolbars.skelettonsCommand"
                   commandId="eu.arrowhead.skelettons.deployment.commands.skelettonsCommand"
                   icon="icons/a.png"
-                  tooltip="Skelettons deployment">
+                  tooltip="Skeletons deployment">
             </command>
          </toolbar>
       </menuContribution>

@@ -1,9 +1,11 @@
 D:
 cd D:\SysMLPlugins\TestDirectory
-mkdir test_ApplicationSystems
-cd test_ApplicationSystems
-mkdir indoorTemp_Consumer
+mkdir DemoHA_ApplicationSystems
+cd DemoHA_ApplicationSystems
+mkdir indoorTemp_Provider
 mkdir outdoorTemp_Provider
-mkdir controlSystem_Consumer
+mkdir controlSystem_Provider
+mkdir boiler_Consumer
+mkdir iHM_Provider
 
-copy D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\.project D:\SysMLPlugins\TestDirectory\test_ApplicationSystems
+copy D:\SysMLPlugins\Code\eu.arrowhead.skelettons.deployment\src\resources\.project D:\SysMLPlugins\TestDirectory\DemoHA_ApplicationSystems

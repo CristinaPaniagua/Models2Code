@@ -10,9 +10,7 @@
 	<classpathentry kind="lib" path="org.slf4j.jar"/>
 	<classpathentry kind="lib" path="velocity-engine-core-2.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="D:/SysMLPlugins/Code/eu.arrowhead.coreSystems.deployment/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="D:/SysMLPlugins/Code/eu.arrowhead.coreSystems.deployment/org.slf4j.jar"/>
-	<classpathentry kind="lib" path="D:/SysMLPlugins/Code/eu.arrowhead.coreSystems.deployment/velocity-engine-core-2.3.jar"/>
 	<classpathentry kind="lib" path="D:/SysMLPlugins/org.slf4j.jar/org.eclipse.e4.core.di.annotations_1.6.400.v20190518-1217.jar"/>
+	<classpathentry kind="lib" path="swing2swt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

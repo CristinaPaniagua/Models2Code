@@ -6,25 +6,25 @@
          point="org.eclipse.ui.commands">
       <category
             id="eu.arrowhead.coreSystems.deployment.commands.category"
-            name="Sample Category">
+            name="Deployment Category">
       </category>
       <command
             categoryId="eu.arrowhead.coreSystems.deployment.commands.category"
-            name="Sample Command"
-            id="eu.arrowhead.coreSystems.deployment.commands.sampleCommand">
+            name="Deploy Core Systems"
+            id="eu.arrowhead.coreSystems.deployment.commands.coreCommand">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="eu.arrowhead.coresystems.deployment.handlers.Generation"
-            commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand">
+            commandId="eu.arrowhead.coreSystems.deployment.commands.coreCommand">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand"
+            commandId="eu.arrowhead.coreSystems.deployment.commands.coreCommand"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M1+6">
@@ -36,11 +36,11 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="eu.arrowhead.coreSystems.deployment.menus.sampleMenu"
-               label="Sample Menu"
+               label="Arrowhead"
                mnemonic="M">
             <command
-                  commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand"
-                  id="eu.arrowhead.coreSystems.deployment.menus.sampleCommand"
+                  commandId="eu.arrowhead.coreSystems.deployment.commands.coreCommand"
+                  id="eu.arrowhead.coreSystems.deployment.menus.coreCommand"
                   mnemonic="S">
             </command>
          </menu>
@@ -50,10 +50,10 @@
          <toolbar
                id="eu.arrowhead.coreSystems.deployment.toolbars.sampleToolbar">
             <command
-                  id="eu.arrowhead.coreSystems.deployment.toolbars.sampleCommand"
-                  commandId="eu.arrowhead.coreSystems.deployment.commands.sampleCommand"
+                  id="eu.arrowhead.coreSystems.deployment.toolbars.coreCommand"
+                  commandId="eu.arrowhead.coreSystems.deployment.commands.coreCommand"
                   icon="icons/sample.png"
-                  tooltip="Say hello world">
+                  tooltip="Deployment of AH core systems">
             </command>
          </toolbar>
       </menuContribution>
