@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -50,6 +51,7 @@ public String getFileURI(String path) throws Exception {
 * @return model:Object
 */
 public Object loadModel(String uri){
+	System.out.println("URI:"+uri);
 	ResourceSet set = new ResourceSetImpl();
 	set.getPackageRegistry().put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE);
 	set.getResourceFactoryRegistry().getExtensionToFactoryMap()
@@ -60,6 +62,7 @@ public Object loadModel(String uri){
 	
    Resource resource = null;
    try {   
+	   System.out.println(uri.toString());
        resource= set.getResource(URI.createFileURI(uri), true);
    }
    catch (Exception e) {
@@ -77,7 +80,6 @@ public Object loadModel(String uri){
    }
    return result;
    }   
-
 
 
 

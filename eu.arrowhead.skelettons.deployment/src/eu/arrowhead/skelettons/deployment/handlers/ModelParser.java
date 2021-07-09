@@ -5,6 +5,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -50,12 +55,17 @@ public class ModelParser {
 	private boolean isConsumer = false;
 	private ArrayList<InterfaceMetadata> interfaces= new ArrayList<InterfaceMetadata>();
 	private ArrayList<String []> systemServiceRegistry= new  ArrayList<String []>();
-	public  void modelReader() {
+	
+	
+	public  void modelReader(String modelLocation) {
 		
 		 ModelLoader umlModel= new ModelLoader();
-		  
+		 
+		 
+		 //modelLocation="D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml";
+		
 		        
-		        Object objModel = umlModel.loadModel("D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml");
+		        Object objModel = umlModel.loadModel(modelLocation);
 		        Model sourceModel;
 		        EList<PackageableElement> sourcePackagedElements = null;
 		        
@@ -329,6 +339,13 @@ public class ModelParser {
 			}
 		
 		}
+	
+	
+	
+	
+
+	
+	
 	
 	public  ArrayList<LocalCloudDTO> getLocalClouds() {
 		return localClouds;

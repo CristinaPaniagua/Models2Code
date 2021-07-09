@@ -78,7 +78,7 @@ public class ConsumerGenMain {
 		
 		
 		
-	//TODO GENERATE MAIN 
+	// GENERATE MAIN 
 		
 		
 			 VelocityEngine velocityEngine = new VelocityEngine();
@@ -88,8 +88,11 @@ public class ConsumerGenMain {
 			   velocityEngine.init();
 			try {
 				 serviceInterfaces=removeRepetitions( serviceInterfaces);
+			
+				 Template t=velocityEngine.getTemplate("templates/consumerMainHttpCoap.vm");
+				
 					
-				   Template t=velocityEngine.getTemplate("templates/consumerMain.vm");
+				   
 				   VelocityContext context = new VelocityContext();
 				   context.put("packagename",system+"_Consumer");
 				   context.put("sysName", system);

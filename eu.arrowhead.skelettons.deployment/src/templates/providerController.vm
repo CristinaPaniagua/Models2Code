@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/") 
-public class ServiceController {
+public class ServiceControllerHttp {
 	
 	//=================================================================================================
 	// members
@@ -22,11 +22,10 @@ public class ServiceController {
 	// methods
 
 	
-
 	
-	//-------------------------------------------------------------------------------------------------
-	
-#foreach( $operation in $operations )
+#foreach( $interface in $interfaces )
+	#set($operations=$interface.getOperations())
+	#foreach( $operation in $operations )  
 	
 	#if($operation.getMethod() == "GET")
 	#if($operation.isResponse()==true)
@@ -77,5 +76,6 @@ public class ServiceController {
 	}
 	#end
     #end    
-    #end    
+    #end   
+    #end 
 }

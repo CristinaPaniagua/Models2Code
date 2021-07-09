@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -45,6 +46,12 @@ public class DialogWindow extends TitleAreaDialog{
 	private String[] selectedSys= null;
 	private int[] selectedSysType= null;
 	private Text text;
+	private IProject[] projects=null;
+	private String selectedProject=null;
+	
+	
+	
+	
 	DialogWindow(Shell parentShell ) {
 		super(parentShell);
 		// TODO Auto-generated constructor stub
@@ -343,5 +350,17 @@ public class DialogWindow extends TitleAreaDialog{
 		public Boolean getBadDirectory() {
 			return badDirectory; 
 		}
+
+
+		public IProject[] getProjects() {
+			return projects;
+		}
+
+
+		public void setProjects(IProject[] projects) {
+			this.projects = projects;
+		}
+		
+		
 
 }

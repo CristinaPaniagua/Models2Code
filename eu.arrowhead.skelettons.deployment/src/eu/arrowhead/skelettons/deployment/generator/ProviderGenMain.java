@@ -56,9 +56,9 @@ public void generateProviderMain(String Directory, String name, String system, A
 	
 	
 	
- InterfaceMetadata MD=serviceInterfaces.get(0);
-	System.out.println(MD.toString());
-	String service=MD.getID();
+for(int h=0;h<serviceInterfaces.size();h++) {
+	InterfaceMetadata MD= serviceInterfaces.get(h);
+	
 	
 		 ArrayList<OperationInt> operations = MD.getOperations();
 		for(int i=0; i< operations.size(); i++) {
@@ -89,14 +89,17 @@ public void generateProviderMain(String Directory, String name, String system, A
 		           
 		        }
 		        
-			
-			
+
 			
 		}
+	
+	
+}
+	
 		
 		
 	//TODO GENERATE MAIN 
-		OperationInt firstOp =operations.get(0);
+		
 			 VelocityEngine velocityEngine = new VelocityEngine();
 
 			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -276,8 +279,18 @@ public void generateProvConsMain(String Directory, String name, String system, A
  		public void providerController(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
  			
  			
- 			InterfaceMetadata MD=serviceInterfaces.get(0);
- 			 ArrayList<OperationInt> operations = MD.getOperations();
+ 			ArrayList<InterfaceMetadata> serviceInterfacesCoap= new ArrayList<InterfaceMetadata>();
+ 			ArrayList<InterfaceMetadata> serviceInterfacesHttp= new ArrayList<InterfaceMetadata>();
+ 			for(int i=0;i<serviceInterfaces.size();i++) {
+ 				InterfaceMetadata interfaceM = serviceInterfaces.get(i);
+ 				if(interfaceM.getProtocol().equalsIgnoreCase("CoAP")) {
+ 					serviceInterfacesCoap.add(interfaceM);
+ 				}else {
+ 					serviceInterfacesHttp.add(interfaceM);
+ 				}
+ 			}
+ 			
+ 			
  			
  		
  			 VelocityEngine velocityEngine = new VelocityEngine();
@@ -286,17 +299,37 @@ public void generateProvConsMain(String Directory, String name, String system, A
 			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 			   velocityEngine.init();
 			try {
-			   Template t=velocityEngine.getTemplate("templates/providerController.vm");
-			   VelocityContext context = new VelocityContext();
-			   context.put("packagename",system+"_Provider");
-			   context.put("operations", operations);
-			  
-			 
-			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ServiceController.java"));
-			   t.merge(context,writer);
-			   writer.flush();
-			   writer.close();
+			//HTTP: 
+			if(serviceInterfacesHttp.size()>0) {
+				   Template th=velocityEngine.getTemplate("templates/providerController.vm");
+				   VelocityContext contexth = new VelocityContext();
+				   contexth.put("packagename",system+"_Provider");
+				   contexth.put("interfaces", serviceInterfacesHttp);
+				  
+				 
+				   Writer writerh = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ServiceControllerHttp.java"));
+				   th.merge(contexth,writerh);
+				   writerh.flush();
+				   writerh.close();
+			}
+			
+			//Coap: 
+			if(serviceInterfacesCoap.size()>0) {
+				   Template tc=velocityEngine.getTemplate("templates/providerControllerCoap.vm");
+				   VelocityContext contextc = new VelocityContext();
+				   contextc.put("packagename",system+"_Provider");
+				   contextc.put("interfaces", serviceInterfacesCoap);
+				  
+				 
+				   Writer writerc = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ServiceControllerCoap.java"));
+				   tc.merge(contextc,writerc);
+				   writerc.flush();
+				   writerc.close();
+			}
+			
 			      
+			   
+			   
 	        } catch (IOException e) {
 	     	   e.printStackTrace();}
 	 
