@@ -38,7 +38,7 @@ public class ServiceControllerCoap extends CoapResource {
  	
  System.out.println(exchange.advanced().getEndpoint().getUri().getPath());
  System.out.println(exchange.advanced().getEndpoint().getUri().toString());
- if(exchange.advanced().getEndpoint().getUri().getPath()=.equalsIgnoreCase("$operation.getPathResource()")){
+ if(exchange.advanced().getEndpoint().getUri().getPath().equalsIgnoreCase("$operation.getPathResource()")){
   $operation.getOpNameCapitalize()ResponseDTO $operation.getOpNameCapitalize()Response=new $operation.getOpNameCapitalize()ResponseDTO();
 	#if($operation.getMediatype_response()=="CBOR")
 				CBORFactory f = new CBORFactory();

@@ -83,12 +83,14 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 
 
 	//Register services into ServiceRegistry
-	#foreach( $operation in $operations )
-		final ServiceRegistryRequestDTO ${serviceName}_$operation.getOpName()_Request = createServiceRegistryRequest("${serviceName}","$operation.getPathResource()", HttpMethod.$operation.getMethod());		
-		arrowheadService.forceRegisterServiceToServiceRegistry(${serviceName}_$operation.getOpName()_Request);
+#foreach( $interface in $interfaces )
+	#set($operations=$interface.getOperations())
+	#foreach( $operation in $operations )  
+		final ServiceRegistryRequestDTO ${interface.getID()}_$operation.getOpName()_Request = createServiceRegistryRequest(" ${interface.getID()}","$operation.getPathResource()", HttpMethod.$operation.getMethod());		
+		arrowheadService.forceRegisterServiceToServiceRegistry( ${interface.getID()}_$operation.getOpName()_Request);
 
 	#end
-
+	#end
 
 
 	}

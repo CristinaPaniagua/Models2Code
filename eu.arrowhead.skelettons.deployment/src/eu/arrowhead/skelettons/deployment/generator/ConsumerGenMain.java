@@ -80,6 +80,11 @@ public class ConsumerGenMain {
 		
 	// GENERATE MAIN 
 		
+		boolean httpFlag=false;
+		boolean coapFlag=false;
+		
+		httpFlag=checkHttpProtocol(serviceInterfaces);
+		coapFlag=checkCoapProtocol(serviceInterfaces);
 		
 			 VelocityEngine velocityEngine = new VelocityEngine();
 
@@ -98,6 +103,8 @@ public class ConsumerGenMain {
 				   context.put("sysName", system);
 				   context.put("interfaces", serviceInterfaces);
 				   context.put("address", "http://127.0.0.1:8888");
+				   context.put("httpFlag", httpFlag);
+				   context.put("coapFlag", coapFlag);
 			 
 			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Consumer\\src\\main\\java\\eu\\arrowhead\\"+system+"_Consumer\\"+system+"ConsumerMain.java"));
 			   t.merge(context,writer);
@@ -154,9 +161,37 @@ public class ConsumerGenMain {
 
 			return serviceInterfaces;
 		}	
-	}
+
 	
 	
 	 
 	
 
+
+public boolean checkCoapProtocol(ArrayList<InterfaceMetadata> serviceInterfaces) {
+	boolean coap=false;
+	for(int i=0; i<serviceInterfaces.size();i++) {
+		InterfaceMetadata inter = serviceInterfaces.get(i);
+		if(inter.getProtocol().equalsIgnoreCase("CoAP")) {
+			coap=true;
+		}
+			
+		}
+	return coap;
+	}
+
+
+
+public boolean checkHttpProtocol(ArrayList<InterfaceMetadata> serviceInterfaces) {
+	boolean http=false;
+	for(int i=0; i<serviceInterfaces.size();i++) {
+		InterfaceMetadata inter = serviceInterfaces.get(i);
+		if(inter.getProtocol().startsWith("HTTP")) {
+		http=true;
+		}
+			
+		}
+	return http;
+	}
+
+}

@@ -16,5 +16,16 @@ public class  ${sysName}ProviderMain {
 	//-------------------------------------------------------------------------------------------------
 	public static void main(final String[] args) {
 		SpringApplication.run(${sysName}ProviderMain.class, args);
+		
+		#if($coap==true)
+			try{
+                    ServerApplication coapServer= new ServerApplication();
+					coapServer.start();
+                  }
+                     catch (Exception e) {
+                     e.printStackTrace();
+                    }
+		
+		#end
 	}	
 }

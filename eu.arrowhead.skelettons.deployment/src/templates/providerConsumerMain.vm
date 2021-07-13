@@ -29,14 +29,28 @@ import eu.arrowhead.common.dto.shared.ServiceInterfaceResponseDTO;
 import eu.arrowhead.common.dto.shared.ServiceQueryFormDTO;
 import eu.arrowhead.common.exception.InvalidParameterException;
 import java.io.IOException;
+
+
+#if($httpFlag==true)
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+#end
+#if($coapFlag==true)
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.network.config.NetworkConfig;
+import org.eclipse.californium.core.network.config.NetworkConfigDefaultHandler;
+import org.eclipse.californium.elements.exception.ConnectorException;
+#end
 
 @SpringBootApplication
 @ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead"})
@@ -70,6 +84,19 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
     	$interface.getID()_$operation.getOpName()_Consumption();
     #end
     #end
+    
+    
+    		#if($coap==true)
+			try{
+                    ServerApplication coapServer= new ServerApplication();
+					coapServer.start();
+                  }
+                     catch (Exception e) {
+                     e.printStackTrace();
+                    }
+		
+		#end
+    
 	}
 	
 		

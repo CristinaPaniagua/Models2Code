@@ -98,8 +98,13 @@ for(int h=0;h<serviceInterfaces.size();h++) {
 	
 		
 		
-	//TODO GENERATE MAIN 
+	// GENERATE MAIN 
 		
+			boolean coap=false;
+			
+			coap=checkCoapProtocol(serviceInterfaces);
+				
+
 			 VelocityEngine velocityEngine = new VelocityEngine();
 
 			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -110,11 +115,25 @@ for(int h=0;h<serviceInterfaces.size();h++) {
 			   VelocityContext context = new VelocityContext();
 			   context.put("packagename",system+"_Provider");
 			   context.put("sysName", system);
+			   context.put("coap", coap);
 			 
 			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\"+system+"ProviderMain.java"));
 			   t.merge(context,writer);
 			   writer.flush();
 			   writer.close();
+			   
+			   if(coap) {
+				   Template tc=velocityEngine.getTemplate("templates/coapServer.vm");
+				   VelocityContext contextc = new VelocityContext();
+				   contextc.put("packagename",system+"_Provider");
+				   
+				   Writer writerc = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ServerApplication.java"));
+				   tc.merge(contextc,writerc);
+				   writerc.flush();
+				   writerc.close();
+			   }
+			   
+			   
 			      
 	        } catch (IOException e) {
 	     	   e.printStackTrace();}
@@ -209,6 +228,16 @@ public void generateProvConsMain(String Directory, String name, String system, A
 		
 	// MAIN 
 		
+			boolean coap=false;
+			
+			coap=checkCoapProtocol(serviceInterfacesProvider);
+			
+			boolean httpFlag=false;
+			boolean coapFlag=false;
+			
+			httpFlag=checkHttpProtocol(serviceInterfacesConsumer);
+			coapFlag=checkCoapProtocol(serviceInterfacesConsumer);
+			
 			 VelocityEngine velocityEngine = new VelocityEngine();
 
 			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -223,11 +252,29 @@ public void generateProvConsMain(String Directory, String name, String system, A
 			   context.put("sysName", system);
 			   context.put("interfaces", serviceInterfacesConsumer);
 			   context.put("address", "http://127.0.0.1:8888");
-			 
+			   context.put("httpFlag", httpFlag);
+			   context.put("coapFlag", coapFlag);
+		 
 			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\"+system+"ProviderMain.java"));
 			   t.merge(context,writer);
 			   writer.flush();
 			   writer.close();
+			   
+			   
+			   if(coap) {
+				   Template tc=velocityEngine.getTemplate("templates/coapServer.vm");
+				   VelocityContext contextc = new VelocityContext();
+				   contextc.put("packagename",system+"_Provider");
+				   
+				   Writer writerc = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ServerApplication.java"));
+				   tc.merge(contextc,writerc);
+				   writerc.flush();
+				   writerc.close();
+			   }
+			   
+			   
+			   
+			   
 			      
 	        } catch (IOException e) {
 	     	   e.printStackTrace();}
@@ -244,11 +291,7 @@ public void generateProvConsMain(String Directory, String name, String system, A
  		public void providerGenAppListener(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
  			
  			
- 			InterfaceMetadata MD=serviceInterfaces.get(0);
- 			 ArrayList<OperationInt> operations = MD.getOperations();
- 			
- 		
- 			 VelocityEngine velocityEngine = new VelocityEngine();
+ 				VelocityEngine velocityEngine = new VelocityEngine();
 
 			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -257,9 +300,7 @@ public void generateProvConsMain(String Directory, String name, String system, A
 			   Template t=velocityEngine.getTemplate("templates/providerAppListener.vm");
 			   VelocityContext context = new VelocityContext();
 			   context.put("packagename",system+"_Provider");
-			   context.put("serviceName", MD.getID());
-			  
-			   context.put("operations", operations);
+			   context.put("interfaces", serviceInterfaces);
 			  
 			 
 			   Writer writer = new FileWriter (new File(Directory+"\\"+name+"_ApplicationSystems\\"+system+"_Provider\\src\\main\\java\\eu\\arrowhead\\"+system+"_Provider\\ProviderApplicationInitListener.java"));
@@ -381,9 +422,38 @@ public ArrayList<InterfaceMetadata> removeRepetitions(ArrayList<InterfaceMetadat
 		}
 	
 	}
-
+	
 	return serviceInterfaces;
 }
+
+
+
+	public boolean checkCoapProtocol(ArrayList<InterfaceMetadata> serviceInterfaces) {
+		boolean coap=false;
+		for(int i=0; i<serviceInterfaces.size();i++) {
+			InterfaceMetadata inter = serviceInterfaces.get(i);
+			if(inter.getProtocol().equalsIgnoreCase("CoAP")) {
+				coap=true;
+			}
+				
+			}
+		return coap;
+		}
+	
+
+
+	public boolean checkHttpProtocol(ArrayList<InterfaceMetadata> serviceInterfaces) {
+		boolean http=false;
+		for(int i=0; i<serviceInterfaces.size();i++) {
+			InterfaceMetadata inter = serviceInterfaces.get(i);
+			if(inter.getProtocol().startsWith("HTTP")) {
+			http=true;
+			}
+				
+			}
+		return http;
+		}
+	
 
 }//END CLASS
 
