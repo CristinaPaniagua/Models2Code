@@ -17,11 +17,17 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
-import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.IDD;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription;
+//import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.IDD;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.impl.InterfaceDesignDescriptionImpl;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
+import org.eclipse.uml2.uml.ConnectableElement;
+import org.eclipse.uml2.uml.Connector;
+import org.eclipse.uml2.uml.ConnectorEnd;
+import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.NamedElement;
 import org.eclipse.uml2.uml.Operation;
@@ -104,6 +110,8 @@ public class ModelParser {
 	
 	public void getDetails(PackageableElement element) {
 		 LocalCloudDTO localcloud=new LocalCloudDTO();
+		 ArrayList<String[]> connectorsSystems= new ArrayList<String []>();
+		 connectorsSystems=getConnections(element);
 		 ArrayList<String[]> sysList = new ArrayList<String[]>();
 		 sysList.clear();
 		if (element instanceof Classifier) {
@@ -130,7 +138,7 @@ public class ModelParser {
 						if (depSys != null) {
 							
 							
-							String id = depSys.getIdentifier();
+							//String id = depSys.getIdentifier();
 							String name = system_part.getName();
 							String[] sysdetails= new String[2];
 							sysdetails [0]=name;
@@ -199,6 +207,7 @@ public class ModelParser {
 					
 				
 					localcloud.setSystems(sysList);
+					localcloud.setConnections(connectorsSystems);
 					localClouds.add(localcloud);
 					
 					System.out.println( "number of local clouds:"+	localClouds.size());
@@ -218,7 +227,7 @@ public class ModelParser {
 
 			if (classifier instanceof Class) {
 
-				IDD idd = UMLUtil.getStereotypeApplication(classifier, IDD.class);
+				InterfaceDesignDescription idd = UMLUtil.getStereotypeApplication(classifier, InterfaceDesignDescription.class);
 				
 				if (idd != null) {
 					
@@ -344,7 +353,47 @@ public class ModelParser {
 	
 	
 
+	public ArrayList<String[]> getConnections(PackageableElement element) {
 	
+		 ArrayList<String[]> connectorsSystems= new ArrayList<String []>();
+		 ArrayList<String[]> sysList = new ArrayList<String[]>();
+		 String[] connector;
+		 sysList.clear();
+		if (element instanceof Classifier) {
+			Classifier classifier = (Classifier) element;
+
+			if (classifier instanceof Class) {
+
+			Class LoCl= (Class) classifier;
+				
+				if (LoCl != null) {
+					System.out.println("local cloud "+ LoCl.getName());
+					EList<Connector> connectorsList = LoCl.getOwnedConnectors();
+					for(int j=0;j<connectorsList.size();j++) {
+						Connector c =connectorsList.get(j);
+						EList<ConnectorEnd> connectorsEndList =c.getEnds();
+						connector = new String[4];
+						connector[0]=c.getName();
+						for(int k=0;k<connectorsEndList.size();k++) {
+							ConnectorEnd ce=connectorsEndList.get(k);
+							ConnectableElement role = ce.getRole();
+							System.out.println("---------CONNECTOR: "+c.getName());
+							System.out.println(role.getType().getName());
+							connector[1]=role.getType().getName();
+							Element SysElement = role.getOwner();
+							Class SysClass = (Class) SysElement;
+							System.out.println(k+ SysClass.getName());
+							connector[k+2]=SysClass.getName();
+							
+						}
+						connectorsSystems.add(connector);
+						
+					}
+				}
+				}
+			}
+		return connectorsSystems;
+	}
 	
 	
 	public  ArrayList<LocalCloudDTO> getLocalClouds() {

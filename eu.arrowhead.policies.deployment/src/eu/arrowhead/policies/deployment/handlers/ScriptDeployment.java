@@ -1,4 +1,4 @@
-package eu.arrowhead.policies.deployment.handlers;
+ package eu.arrowhead.policies.deployment.handlers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,11 +31,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.arrowhead.policies.deployment.dto.InterfaceMetadata;
 import eu.arrowhead.policies.deployment.dto.LocalCloudDTO;
-//import eu.arrowhead.skelettons.deployment.generator.AppPropertiesGen;
-//import eu.arrowhead.skelettons.deployment.generator.ConsumerGenAppList;
-//import eu.arrowhead.skelettons.deployment.generator.ConsumerGenMain;
-//import eu.arrowhead.skelettons.deployment.generator.InterfaceMetadata;
-//import eu.arrowhead.skelettons.deployment.generator.ProviderGenMain;
+
 
 public class ScriptDeployment {
 
@@ -43,12 +39,7 @@ public class ScriptDeployment {
 	private Text Directory;
 	private String directory = "";
 	private String policyType = "";
-	private String language = "";
-	private Boolean mandatorySys = false;
-	private Boolean supportSys = false;
 	private String disk = "";
-	private String[] selectedSys= null;
-	private int[] selectedSysType= null;
 	private int selectedLC;
 
 	 @Execute
@@ -86,15 +77,67 @@ public class ScriptDeployment {
             directory=dialog.getDirectory();
             policyType=dialog.getPolicyType();
             System.out.println("POLICY TYPE: "+ policyType);
-            selectedSys=dialog.getSelectedSys();
-            selectedSysType= new int[selectedSys.length];
             selectedLC=dialog.getSelectedLC();
             disk=dialog.getDisk();
             final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 
 			if(!(directory == null || directory.isEmpty())) {
-			   
+				System.out.println(localClouds.size());
+				for(int i=0; i<localClouds.size();i++) {
+					if(i==selectedLC) {
+						String LCname=localClouds.get(i).getLcName();
+						 newFolder(directory, LCname+"_Policies");
+						ArrayList<String []> connectionsLC=localClouds.get(i).getConnections();
+						System.out.println(selectedLC);
+						for(int j=0; j<connectionsLC.size();j++) {
+							System.out.println("connector: "+connectionsLC.get(j)[0]);
+							System.out.println("service: "+connectionsLC.get(j)[1]);
+							System.out.println("sys1: "+connectionsLC.get(j)[2]);
+							System.out.println("sys2: "+connectionsLC.get(j)[3]);
+						
+						}
+						
+						 VelocityEngine velocityEngine = new VelocityEngine();
+
+						   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+						   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+						   velocityEngine.init();
+						   Template t =velocityEngine.getTemplate("templates/orchPolicy.vm");
+						 
+						   //ORDER THE ARRAY SO 2 item is always provider. 
+						for(int k=0; k<connectionsLC.size();k++) {
+						   for(int m=0; m<systemServiceRegistry.size();m++) {
+							   String [] SSR= systemServiceRegistry.get(m);
+							   if(connectionsLC.get(k)[2].equals(SSR[0])&& connectionsLC.get(k)[1].equals(SSR[1])) {
+								   if(SSR[3].equalsIgnoreCase("consumer")) {
+									   String consumer=connectionsLC.get(k)[2];
+									   connectionsLC.get(k)[2]=connectionsLC.get(k)[3];
+									   connectionsLC.get(k)[3]=consumer;
+								   }
+							   }
+						   }
+							
+							}
+						       VelocityContext context = new VelocityContext();
+						       context.put( "connectionsLCs",  connectionsLC);
+						      // context.put("serviceName", connectionsLC.get(0)[1]);
+						       
+						       //context.put("providerName", connectionsLC.get(0)[2]); 
+						      // context.put("consumerName", connectionsLC.get(0)[3]);
+						      
+						       try{
+						    	   Writer writer = new FileWriter (directory+"\\"+LCname+"_Policies\\"+ LCname+"_OrchStorePolicy.sql");
+						    	   t.merge(context, writer);
+						           writer.flush();
+						           writer.close();
+						       } catch (IOException e) {
+					        	   e.printStackTrace();
+						         } 
+					}
+				}
+				//GENERATION OF THE DATABASE SCRIPT
+				
 			            
 			}else dialog.open();
 			
@@ -173,7 +216,18 @@ public class ScriptDeployment {
 	
 
 
-
+ public void newFolder(String Directory, String FolderName) {
+     String path = Directory+"\\"+ FolderName;  
+     //Instantiate the File class   
+     File f1 = new File(path);  
+     //Creating a folder using mkdir() method  
+     boolean bool = f1.mkdir();  
+     if(bool){  
+        System.out.println("Folder is created successfully");  
+     }else{  
+        System.out.println("Error Found!");  
+     }  
+ }
 	
 
 	}

@@ -17,8 +17,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
-import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.IDD;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription;
+//import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.IDD;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.impl.InterfaceDesignDescriptionImpl;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
@@ -130,7 +132,7 @@ public class ModelParser {
 						if (depSys != null) {
 							
 							
-							String id = depSys.getIdentifier();
+							//String id = depSys.getIdentifier();
 							String name = system_part.getName();
 							String[] sysdetails= new String[2];
 							sysdetails [0]=name;
@@ -217,8 +219,7 @@ public class ModelParser {
 			Classifier classifier = (Classifier) element;
 
 			if (classifier instanceof Class) {
-
-				IDD idd = UMLUtil.getStereotypeApplication(classifier, IDD.class);
+				InterfaceDesignDescription idd = UMLUtil.getStereotypeApplication(classifier, InterfaceDesignDescription.class);
 				
 				if (idd != null) {
 					

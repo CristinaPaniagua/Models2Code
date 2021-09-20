@@ -18,6 +18,16 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.118.100",
  org.eclipse.uml2.uml.validation;bundle-version="5.5.0",
  org.eclipse.uml2.codegen.ecore;bundle-version="2.5.2",
  org.eclipse.papyrus.arrowhead.profile;bundle-version="1.0.0"
-Import-Package: org.apache.velocity.app,
+Import-Package: org.apache.velocity,
+ org.apache.velocity.app,
  org.apache.velocity.runtime.resource.loader,
  org.eclipse.e4.core.di.annotations
+Bundle-ClassPath: velocity-engine-core-2.3.jar,
+ .,
+ commons-lang3-3.1.jar
+Export-Package: org.apache.commons.lang3,
+ org.apache.velocity,
+ org.apache.velocity.app,
+ org.apache.velocity.runtime,
+ org.apache.velocity.runtime.resource,
+ org.apache.velocity.runtime.resource.loader

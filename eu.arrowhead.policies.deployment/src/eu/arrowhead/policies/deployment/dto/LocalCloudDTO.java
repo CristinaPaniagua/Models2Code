@@ -7,11 +7,13 @@ public class LocalCloudDTO {
 
 	private String lcName=" ";
 	private ArrayList<String[]> systems = new ArrayList<String[]>();
+	private ArrayList<String[]> connections = new ArrayList<String[]>();
 
-	public LocalCloudDTO(String lcName, ArrayList<String[]> systems) {
+	public LocalCloudDTO(String lcName, ArrayList<String[]> systems,ArrayList<String[]> connections) {
 		super();
 		this.lcName = lcName;
 		this.systems = systems;
+		this.connections = connections;
 	}
 
 	public LocalCloudDTO() {
@@ -33,6 +35,14 @@ public class LocalCloudDTO {
 
 	public void setSystems(ArrayList<String[]> systems) {
 		this.systems = systems;
+	}
+
+	public ArrayList<String[]> getConnections() {
+		return connections;
+	}
+
+	public void setConnections(ArrayList<String[]> connections) {
+		this.connections = connections;
 	}
 
 
