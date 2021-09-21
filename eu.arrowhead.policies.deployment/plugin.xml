@@ -6,11 +6,11 @@
          point="org.eclipse.ui.commands">
       <category
             id="eu.arrowhead.policies.deployment.commands.category"
-            name="policies Category">
+            name="Rules Category">
       </category>
       <command
             categoryId="eu.arrowhead.policies.deployment.commands.category"
-            name="Deploy Policies"
+            name="Deploy Rules"
             id="eu.arrowhead.policies.deployment.commands.policiesCommand">
       </command>
    </extension>
@@ -53,7 +53,7 @@
                   id="eu.arrowhead.policies.deployment.toolbars.policiesCommand"
                   commandId="eu.arrowhead.policies.deployment.commands.policiesCommand"
                   icon="icons/a.png"
-                  tooltip="Policies deployment">
+                  tooltip="Rules deployment">
             </command>
          </toolbar>
       </menuContribution>

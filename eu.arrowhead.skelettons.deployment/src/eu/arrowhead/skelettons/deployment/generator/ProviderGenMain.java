@@ -289,7 +289,7 @@ public void generateProvConsMain(String Directory, String name, String system, A
 //METHOD GENERATION APPLICATION LISTENER
 
  		public void providerGenAppListener(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
- 			
+ 			serviceInterfaces=removeRepetitions(serviceInterfaces);
  			
  				VelocityEngine velocityEngine = new VelocityEngine();
 
@@ -319,7 +319,7 @@ public void generateProvConsMain(String Directory, String name, String system, A
 
  		public void providerController(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
  			
- 			
+ 			serviceInterfaces=removeRepetitions(serviceInterfaces);
  			ArrayList<InterfaceMetadata> serviceInterfacesCoap= new ArrayList<InterfaceMetadata>();
  			ArrayList<InterfaceMetadata> serviceInterfacesHttp= new ArrayList<InterfaceMetadata>();
  			for(int i=0;i<serviceInterfaces.size();i++) {
