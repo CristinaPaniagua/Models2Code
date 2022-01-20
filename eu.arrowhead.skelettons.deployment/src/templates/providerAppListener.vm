@@ -20,10 +20,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 
-import eu.arrowhead.client.library.ArrowheadService;
-import eu.arrowhead.client.library.config.ApplicationInitListener;
-import eu.arrowhead.client.library.util.ClientCommonConstants;
-import eu.arrowhead.security.ProviderSecurityConfig;
+import ai.aitia.arrowhead.application.library.ArrowheadService;
+import ai.aitia.arrowhead.application.library.config.ApplicationInitListener;
+import ai.aitia.arrowhead.application.library.util.ApplicationCommonConstants;
+import eu.arrowhead.application.skeleton.provider.security.ProviderSecurityConfig;
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.core.CoreSystem;
@@ -44,19 +44,19 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 	@Autowired
 	private ProviderSecurityConfig providerSecurityConfig;
 	
-	@Value(ClientCommonConstants.$TOKEN_SECURITY_FILTER_ENABLED_WD)
+	@Value(ApplicationCommonConstants.$TOKEN_SECURITY_FILTER_ENABLED_WD)
 	private boolean tokenSecurityFilterEnabled;
 	
 	@Value(CommonConstants.$SERVER_SSL_ENABLED_WD)
 	private boolean sslEnabled;
 	
-	@Value(ClientCommonConstants.$CLIENT_SYSTEM_NAME)
+	@Value(ApplicationCommonConstants.$APPLICATION_SYSTEM_NAME)
 	private String mySystemName;
 	
-	@Value(ClientCommonConstants.$CLIENT_SERVER_ADDRESS_WD)
+	@Value(ApplicationCommonConstants.$APPLICATION_SERVER_ADDRESS_WD)
 	private String mySystemAddress;
 	
-	@Value(ClientCommonConstants.$CLIENT_SERVER_PORT_WD)
+	@Value(ApplicationCommonConstants.$APPLICATION_SERVER_PORT_WD)
 	private int mySystemPort;
 	
 	private final Logger logger = LogManager.getLogger(ProviderApplicationInitListener.class);
@@ -69,8 +69,8 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 	protected void customInit(final ContextRefreshedEvent event) {
 
 		//Checking the availability of necessary core systems
-		checkCoreSystemReachability(CoreSystem.SERVICE_REGISTRY);
-		if (sslEnabled && tokenSecurityFilterEnabled) {
+		checkCoreSystemReachability(CoreSystem.SERVICEREGISTRY);
+	if (sslEnabled && tokenSecurityFilterEnabled) {
 			checkCoreSystemReachability(CoreSystem.AUTHORIZATION);			
 
 			//Initialize Arrowhead Context
@@ -80,7 +80,6 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		} else {
 			logger.info("TokenSecurityFilter in not active");
 		}		
-
 
 	//Register services into ServiceRegistry
 #foreach( $interface in $interfaces )
@@ -138,14 +137,14 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 
 		if (tokenSecurityFilterEnabled) {
 			systemRequest.setAuthenticationInfo(Base64.getEncoder().encodeToString(arrowheadService.getMyPublicKey().getEncoded()));
-			serviceRegistryRequest.setSecure(ServiceSecurityType.TOKEN);
+			serviceRegistryRequest.setSecure(ServiceSecurityType.TOKEN.name());
 			serviceRegistryRequest.setInterfaces(List.of("HTTPS-SECURE-JSON"));
 		} else if (sslEnabled) {
 			systemRequest.setAuthenticationInfo(Base64.getEncoder().encodeToString(arrowheadService.getMyPublicKey().getEncoded()));
-			serviceRegistryRequest.setSecure(ServiceSecurityType.CERTIFICATE);
+			serviceRegistryRequest.setSecure(ServiceSecurityType.CERTIFICATE.name());
 			serviceRegistryRequest.setInterfaces(List.of("HTTPS-SECURE-JSON"));
 		} else {
-			serviceRegistryRequest.setSecure(ServiceSecurityType.NOT_SECURE);
+			serviceRegistryRequest.setSecure(ServiceSecurityType.NOT_SECURE.name());
 			serviceRegistryRequest.setInterfaces(List.of("HTTP-INSECURE-JSON"));
 		}
 		serviceRegistryRequest.setProviderSystem(systemRequest);

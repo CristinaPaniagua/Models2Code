@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 
-import eu.arrowhead.client.library.ArrowheadService;
+import ai.aitia.arrowhead.application.library.ArrowheadService;
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.SSLProperties;
 import eu.arrowhead.common.Utilities;
@@ -55,7 +55,7 @@ import org.eclipse.californium.elements.exception.ConnectorException;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead"})
+@ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead", "ai.aitia"})
 public class ${sysName}ConsumerMain implements ApplicationRunner {
     
     //=================================================================================================

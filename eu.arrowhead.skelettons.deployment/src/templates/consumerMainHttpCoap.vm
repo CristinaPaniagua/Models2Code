@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import eu.arrowhead.client.library.ArrowheadService;
+import ai.aitia.arrowhead.application.library.ArrowheadService;
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.SSLProperties;
 import eu.arrowhead.common.Utilities;
@@ -52,7 +52,7 @@ import org.eclipse.californium.core.network.config.NetworkConfigDefaultHandler;
 import org.eclipse.californium.elements.exception.ConnectorException;
 #end
 @SpringBootApplication
-@ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead"})
+@ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead", "ai.aitia"})
 public class ${sysName}ConsumerMain implements ApplicationRunner {
     
     //=================================================================================================
