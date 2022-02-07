@@ -48,7 +48,7 @@ public class DialogWindow extends TitleAreaDialog{
 	private IProject[] projects=null;
 	private String selectedProject=null;
 	private String policyType="";
-	
+	private String workDirectory="";
 	
 	
 	DialogWindow(Shell parentShell ) {
@@ -86,7 +86,7 @@ public class DialogWindow extends TitleAreaDialog{
         
         txtDirectory = new Text(container, SWT.BORDER);
         txtDirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        txtDirectory.setText(directory);
+        txtDirectory.setText(workDirectory);
         txtDirectory.addModifyListener(e -> {
             Text textWidget = (Text) e.getSource();
             String descriptionText = textWidget.getText();
@@ -233,10 +233,21 @@ public class DialogWindow extends TitleAreaDialog{
 	 } 
 	 
 	 //GETS
+	 
 		public String getDirectory() {
 			return directory; 
 		}
 		
+		public String getWorkDirectory() {
+			return workDirectory;
+		}
+
+
+		public void setWorkDirectory(String workDirectory) {
+			this.workDirectory = workDirectory;
+		}
+
+
 		public String getName() {
 			return name; 
 		}

@@ -43,6 +43,7 @@ public class ScriptDeployment {
 	private String policyType = "";
 	private String disk = "";
 	private int selectedLC;
+	private String workSpace="";
 
 	 @Execute
 	    public void execute(Shell shell) {
@@ -79,7 +80,9 @@ public class ScriptDeployment {
 			 ArrayList<LocalCloudDTO> localClouds= MP.getLocalClouds();	 
 			 
 			
-		 DialogWindow dialog= new DialogWindow(shell);	
+		 DialogWindow dialog= new DialogWindow(shell);
+		 workSpace=projectLocation.toString();
+		 dialog.setWorkDirectory(workSpace);
 		 dialog.setLocalClouds(localClouds);
 		 
          if (dialog.open() == Window.OK) {
@@ -145,7 +148,7 @@ public class ScriptDeployment {
 						      // context.put("consumerName", connectionsLC.get(0)[3]);
 						      
 						       try{
-						    	   Writer writer = new FileWriter (directory+"\\"+LCname+"_Rules\\"+ LCname+"_OrchStoreRules.sql");
+						    	   Writer writer = new FileWriter (directory+"/"+LCname+"_Rules/"+ LCname+"_OrchStoreRules.sql");
 						    	   t.merge(context, writer);
 						           writer.flush();
 						           writer.close();
@@ -175,7 +178,7 @@ public class ScriptDeployment {
 							       context.put( "connectionsLCs",  connectionsLC);
 							
 							       try{
-							    	   Writer writer = new FileWriter (directory+"\\"+LCname+"_Rules\\"+ LCname+"_SecurityRules.sql");
+							    	   Writer writer = new FileWriter (directory+"/"+LCname+"_Rules/"+ LCname+"_SecurityRules.sql");
 							    	   t.merge(context, writer);
 							           writer.flush();
 							           writer.close();
@@ -270,7 +273,7 @@ public class ScriptDeployment {
 
 
  public void newFolder(String Directory, String FolderName) {
-     String path = Directory+"\\"+ FolderName;  
+     String path = Directory+"/"+ FolderName;  
      //Instantiate the File class   
      File f1 = new File(path);  
      //Creating a folder using mkdir() method  
