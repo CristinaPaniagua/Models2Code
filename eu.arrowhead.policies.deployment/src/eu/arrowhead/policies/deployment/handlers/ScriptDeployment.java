@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -58,8 +60,20 @@ public class ScriptDeployment {
 			 	 
 			IProject selectedProject=projWin.getSelectedProject() ;
 			IPath projectLocation=selectedProject.getLocation();
+			Shell mshell = null;
+			ModelSelectWindow modelWin= new ModelSelectWindow(mshell);
+			modelWin.setPathModel(projectLocation.toString());
+			
+			
+		if(modelWin.open()==Window.OK) {
+			
+			String selectedPathModel= modelWin.getSelectedPath();
+			
+			
+			
 			 ModelParser MP= new ModelParser();
-			 MP.modelReader(projectLocation.toString()+"/"+selectedProject.getName()+".uml");
+			 System.out.println("MODEL FILE SELETEC: "+ projectLocation.toString()+"/"+selectedPathModel);
+			 MP.modelReader(projectLocation.toString()+"/"+selectedPathModel);
 			 ArrayList<String []> systemServiceRegistry= MP.getSystemServiceRegistry();
 			 ArrayList<InterfaceMetadata> interfaces= MP.getInterfaces();
 			 ArrayList<LocalCloudDTO> localClouds= MP.getLocalClouds();	 
@@ -87,7 +101,7 @@ public class ScriptDeployment {
 				for(int i=0; i<localClouds.size();i++) {
 					if(i==selectedLC) {
 						String LCname=localClouds.get(i).getLcName();
-						 newFolder(directory, LCname+"_Policies");
+						 newFolder(directory, LCname+"_Rules");
 						ArrayList<String []> connectionsLC=localClouds.get(i).getConnections();
 						System.out.println(selectedLC);
 						for(int j=0; j<connectionsLC.size();j++) {
@@ -103,6 +117,10 @@ public class ScriptDeployment {
 						   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 						   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 						   velocityEngine.init();
+						   
+						   if(policyType.equalsIgnoreCase("orchestration")) {
+							   
+						  
 						   Template t =velocityEngine.getTemplate("templates/orchPolicy.vm");
 						 
 						   //ORDER THE ARRAY SO 2 item is always provider. 
@@ -127,13 +145,44 @@ public class ScriptDeployment {
 						      // context.put("consumerName", connectionsLC.get(0)[3]);
 						      
 						       try{
-						    	   Writer writer = new FileWriter (directory+"\\"+LCname+"_Policies\\"+ LCname+"_OrchStorePolicy.sql");
+						    	   Writer writer = new FileWriter (directory+"\\"+LCname+"_Rules\\"+ LCname+"_OrchStoreRules.sql");
 						    	   t.merge(context, writer);
 						           writer.flush();
 						           writer.close();
 						       } catch (IOException e) {
 					        	   e.printStackTrace();
-						         } 
+						         }
+						       
+						   }else {
+								  
+							   Template t =velocityEngine.getTemplate("templates/securityPolicy.vm");
+							 
+							   //ORDER THE ARRAY SO 2 item is always provider. 
+							for(int k=0; k<connectionsLC.size();k++) {
+							   for(int m=0; m<systemServiceRegistry.size();m++) {
+								   String [] SSR= systemServiceRegistry.get(m);
+								   if(connectionsLC.get(k)[2].equals(SSR[0])&& connectionsLC.get(k)[1].equals(SSR[1])) {
+									   if(SSR[3].equalsIgnoreCase("consumer")) {
+										   String consumer=connectionsLC.get(k)[2];
+										   connectionsLC.get(k)[2]=connectionsLC.get(k)[3];
+										   connectionsLC.get(k)[3]=consumer;
+									   }
+								   }
+							   }
+								
+								}
+							       VelocityContext context = new VelocityContext();
+							       context.put( "connectionsLCs",  connectionsLC);
+							
+							       try{
+							    	   Writer writer = new FileWriter (directory+"\\"+LCname+"_Rules\\"+ LCname+"_SecurityRules.sql");
+							    	   t.merge(context, writer);
+							           writer.flush();
+							           writer.close();
+							       } catch (IOException e) {
+						        	   e.printStackTrace();
+							         }
+						   }
 					}
 				}
 				//GENERATION OF THE DATABASE SCRIPT
@@ -147,7 +196,8 @@ public class ScriptDeployment {
 	         Thread.currentThread().setContextClassLoader(oldContextClassLoader);
 			
             }else System.out.println("Directory no correct");
-         }
+         }//dialogwindow  OK
+		 }// modelwindow OK
 		 }
 	 }
 	 
@@ -199,7 +249,10 @@ public class ScriptDeployment {
 		public IProject[] readWorkspace()  {
 		    // Get the root of the workspace
 		    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		    System.out.println("WORKSPACE:");
 		    IWorkspaceRoot root = workspace.getRoot();
+		    System.out.println(workspace.toString());
+		    System.out.println(root.toString());
 		    // Get all projects in the workspace
 		    IProject[] projects = root.getProjects();
 		    // Loop over all projects
