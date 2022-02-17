@@ -1,7 +1,9 @@
 package eu.arrowhead.coresystems.deployment.handlers;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -15,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.List;
@@ -33,6 +36,7 @@ public class DialogWindow extends TitleAreaDialog{
 	private static Boolean supportSys = false;
 	private static Boolean skipTest = false;
 	private static Boolean badDirectory=false;
+	private static String workspace="";
 
 	
 	public  DialogWindow(Shell parentShell) {
@@ -68,9 +72,10 @@ public class DialogWindow extends TitleAreaDialog{
         lbldescription.setLayoutData(gd_lbldescription);
         lbldescription.setText("Directory:");
         
+       
         txtDirectory = new Text(container, SWT.BORDER);
         txtDirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        txtDirectory.setText(directory);
+        txtDirectory.setText(workspace);
         txtDirectory.addModifyListener(e -> {
             Text textWidget = (Text) e.getSource();
             String descriptionText = textWidget.getText();
@@ -125,6 +130,7 @@ public class DialogWindow extends TitleAreaDialog{
         gridLayout.numColumns = 3;
         device.setLayout(gridLayout);
         
+        
         Button btnRadioButton = new Button(device, SWT.RADIO);
         btnRadioButton.setText("Windows");
         
@@ -133,6 +139,37 @@ public class DialogWindow extends TitleAreaDialog{
         
         Button btnRadioButton_2 = new Button(device, SWT.RADIO);
         btnRadioButton_2.setText("Mac");
+        
+      
+        btnRadioButton.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(final SelectionEvent e){
+                super.widgetSelected(e);
+                if(btnRadioButton.getSelection()){
+                    os="windows";
+                    
+                }
+            }
+        });
+        btnRadioButton_1.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(final SelectionEvent e){
+                super.widgetSelected(e);
+                if(btnRadioButton_1.getSelection()){
+                    os="linux";
+                }
+            }
+        });
+        btnRadioButton_2.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(final SelectionEvent e){
+                super.widgetSelected(e);
+                if(btnRadioButton_2.getSelection()){
+                    os="mac";
+                }
+            }
+        });
+        
         //language
         Group grpLanguage = new Group(container, SWT.NULL);
         grpLanguage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 2));
@@ -278,6 +315,14 @@ public class DialogWindow extends TitleAreaDialog{
 
 		public Boolean getBadDirectory() {
 			return badDirectory; 
+		}
+
+		public  String getWorkspace() {
+			return workspace;
+		}
+
+		public void setWorkspace(String workspace) {
+			DialogWindow.workspace = workspace;
 		}
 	
 		

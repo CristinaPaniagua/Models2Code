@@ -1,0 +1,4 @@
+cd ${outputDirectory}
+mkdir ${name}_ApplicationSystems
+cd ${name}_ApplicationSystems
+${createFolders}

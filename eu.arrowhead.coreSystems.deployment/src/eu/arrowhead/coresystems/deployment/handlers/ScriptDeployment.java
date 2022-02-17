@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -18,23 +19,13 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+
+
+import org.eclipse.core.runtime.Path;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.widgets.Shell;
 
 public class ScriptDeployment {
 
@@ -47,12 +38,14 @@ public class ScriptDeployment {
 	private Boolean mandatorySys = false;
 	private Boolean supportSys = false;
 	private Boolean skipTest = false;
+	private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
 	
 	 
 	 @Execute
 	    public void execute(Shell shell) {
 	
 		 DialogWindow dialog= new DialogWindow(shell);
+		 dialog.setWorkspace(workspace);
          if (dialog.open() == Window.OK) {
         	 
         	if(!dialog.getBadDirectory()){
@@ -60,6 +53,7 @@ public class ScriptDeployment {
             
             directory=dialog.getDirectory();
             os=dialog.getOs();
+            System.out.println("OS: "+os);
             language=dialog.getLanguage();
             mandatorySys=dialog.getMandatorySys();
             supportSys=dialog.getSupportSys();
@@ -88,13 +82,14 @@ public class ScriptDeployment {
 				   }
 			  }else {
 				  if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
-					   t = velocityEngine.getTemplate("main/resources/templates/coreSysJavaLinux.vm");
+					   t = velocityEngine.getTemplate("main/resources/templates/AllSysJavaLinux.vm");
 				   }else {
 					   disk=dialog.getDisk();
 					   t = velocityEngine.getTemplate("main/resources/templates/allSysJavaWindows.vm");
 					   context.put("disk", disk);
 				   }
 			  }
+			   context.put("workSpace", workspace);
 			   
 			      if(skipTest) {
 			    	  context.put("skipTest","-DskipTests");
@@ -107,17 +102,23 @@ public class ScriptDeployment {
 			       try{
 			    	   Writer writer=null;
 			    	   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
-			    		   writer = new FileWriter (new File("D:\\SysMLPlugins\\ModelstoCode\\eu.arrowhead.coreSystems.deployment\\src\\resources\\corescript.sh"));
+			    		   context.put("fileEnd", "sh");
+						   
+						writer = new FileWriter (new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/corescript.sh"));
 					   }else {
-						   writer = new FileWriter (new File("D:\\SysMLPlugins\\ModelstoCode\\eu.arrowhead.coreSystems.deployment\\src\\resources\\corescript.bat"));
+						   context.put("fileEnd", "bat");
+						   writer = new FileWriter (new File(workspace+"\\eu.arrowhead.coreSystems.deployment\\src\\main\\resources\\scripts\\corescript.bat"));
 					   }   
 			       
 			           t.merge(context, writer);
 			           writer.flush();
 			           writer.close();
 			           
+			           if(os.equalsIgnoreCase("windows")) {
+			        	   executebat(workspace+"\\eu.arrowhead.coreSystems.deployment\\src\\main\\resources\\scripts\\init.bat"); 
+			           }else
+			        	   executesh();
 			           
-			           executebat();
 			           
 			           } catch (IOException e) {
 			        	   e.printStackTrace();
@@ -135,16 +136,17 @@ public class ScriptDeployment {
       
 	 }
 	 
-
+	 
+	 
 	   //EXECUTE BAT
 	   
-	   public static void executebat() throws InterruptedException, IOException {
+	   public static void executebat(String directory) throws InterruptedException, IOException {
 	        
 	       
 	       ExecutorService executor = Executors.newSingleThreadExecutor();
 	        ProcessBuilder processBuilder = new ProcessBuilder();
 	        System.out.println("Script generated");
-	        processBuilder.command("D:\\SysMLPlugins\\ModelstoCode\\eu.arrowhead.coreSystems.deployment\\init.bat");
+	        processBuilder.command(directory);
 	        
 	        try {
 
@@ -158,7 +160,7 @@ public class ScriptDeployment {
 	            executor.shutdown();
 	        }
 	    
-
+	      
 	   }
 	   
 	   
@@ -178,12 +180,36 @@ public class ScriptDeployment {
 	                    .collect(Collectors.toList());
 	        }
 	    }
-	
-	
+	 
 
+	   //EXECUTE SH
+	  
+	   public  void executesh() throws InterruptedException, IOException {
+	        
+	       
+	       ExecutorService executor = Executors.newSingleThreadExecutor();
+	        ProcessBuilder processBuilder = new ProcessBuilder();
+	        System.out.println("Script generated");
+	      
+			
+	        processBuilder.command("sh", "-c", "sh ./init.sh");
+		  
+	        processBuilder.directory(new File("/Users/cristina.paniagua/Desktop/EclipseWorkSpace/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/"));
+		 
+		  try {
 
+	            Process process = processBuilder.start();
+	            System.out.println("Script executed");
+	            executor.submit(new ProcessTask(process.getInputStream()));
+	           
 
-	
+	           
+	        } finally {
+	            executor.shutdown();
+	        }
 
+	   }
+	   
+	   
 	}
 

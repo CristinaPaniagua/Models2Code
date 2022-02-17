@@ -1,0 +1,6 @@
+${disk}
+cd ${outputDirectory}
+mkdir ${name}_ApplicationSystems
+cd ${name}_ApplicationSystems
+${createFolders}
+copy ${workSpace}/eu.arrowhead.skelettons.deployment/src/resources/.project ${outputDirectory}/${name}_ApplicationSystems

@@ -1,0 +1,311 @@
+package eu.arrowhead.${packagename};
+
+import java.util.List;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+
+
+import ai.aitia.arrowhead.application.library.ArrowheadService;
+import eu.arrowhead.common.CommonConstants;
+import eu.arrowhead.common.SSLProperties;
+import eu.arrowhead.common.Utilities;
+import eu.arrowhead.common.dto.shared.OrchestrationFlags.Flag;
+import eu.arrowhead.common.dto.shared.OrchestrationFormRequestDTO;
+import eu.arrowhead.common.dto.shared.OrchestrationFormRequestDTO.Builder;
+import eu.arrowhead.common.dto.shared.OrchestrationResponseDTO;
+import eu.arrowhead.common.dto.shared.OrchestrationResultDTO;
+import eu.arrowhead.common.dto.shared.ServiceInterfaceResponseDTO;
+import eu.arrowhead.common.dto.shared.ServiceQueryFormDTO;
+import eu.arrowhead.common.exception.InvalidParameterException;
+import java.io.IOException;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.Utils;
+import org.eclipse.californium.core.network.config.NetworkConfig;
+import org.eclipse.californium.core.network.config.NetworkConfigDefaultHandler;
+import org.eclipse.californium.elements.exception.ConnectorException;
+
+
+
+
+@SpringBootApplication
+@ComponentScan(basePackages = {CommonConstants.BASE_PACKAGE, "eu.arrowhead", "ai.aitia"})
+public class ${sysName}ConsumerMain implements ApplicationRunner {
+    
+    //=================================================================================================
+	// members
+	
+    @Autowired
+	private ArrowheadService arrowheadService;
+    
+    @Autowired
+	protected SSLProperties sslProperties;
+    
+    private final Logger logger = LogManager.getLogger(${sysName}ConsumerMain.class);
+    
+    //=================================================================================================
+	// methods
+
+	//------------------------------------------------------------------------------------------------
+    public static void main( final String[] args ) {
+    	SpringApplication.run(${sysName}ConsumerMain.class, args);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+   @Override
+	public void run(final ApplicationArguments args) throws Exception {
+	#foreach( $interface in $interfaces )
+	#set($operations=$interface.getOperations())
+	#foreach( $operation in $operations  )
+    	$interface.getID()_$operation.getOpName()_Consumption();
+    #end
+    #end
+	}
+	
+		#set($GET=0)
+		#set($POST=0)
+    
+	#foreach( $interface in $interfaces )
+	#set($operations=$interface.getOperations())
+	#foreach( $operation in $operations )
+    //-------------------------------------------------------------------------------------------------
+    public void $interface.getID()_$operation.getOpName()_Consumption() {
+    	logger.info("Orchestration request for " + "$interface.getID()" + " service:");
+    	final ServiceQueryFormDTO serviceQueryForm = new ServiceQueryFormDTO.Builder("$interface.getID()").interfaces(getInterface()).build();
+    	
+		final Builder orchestrationFormBuilder = arrowheadService.getOrchestrationFormBuilder();
+		final OrchestrationFormRequestDTO orchestrationFormRequest = orchestrationFormBuilder.requestedService(serviceQueryForm)
+																					   .flag(Flag.MATCHMAKING, false)
+																					   .flag(Flag.OVERRIDE_STORE, true)
+																					   .build();
+		
+		printOut(orchestrationFormRequest);		
+		
+		final OrchestrationResponseDTO orchestrationResponse = arrowheadService.proceedOrchestration(orchestrationFormRequest);
+		
+		logger.info("Orchestration response:");
+		printOut(orchestrationResponse);		
+		
+		if (orchestrationResponse == null) {
+			logger.info("No orchestration response received");
+		} else if (orchestrationResponse.getResponse().isEmpty()) {
+			logger.info("No provider found during the orchestration");
+		} else {
+			final OrchestrationResultDTO orchestrationResult = orchestrationResponse.getResponse().get(0);
+			validateOrchestrationResult(orchestrationResult, "$interface.getID()");
+			
+		 try{ 
+			
+			#if($operation.getMethod() == "GET")
+			String result= consumeService("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()");
+			#set($GET=$GET+1)
+			#elseif($operation.getMethod()== "POST")
+			#set($POST=$POST+1)
+			#if($operation.getMediatype_request()=="CBOR")
+				//PAYLOAD
+				 	CBORFactory f = new CBORFactory();
+            		ObjectMapper mapper = new ObjectMapper(f);
+            		$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+					byte[] payload=mapper.writeValueAsBytes(request);
+				// SERVICE CONSUMPTION	
+					byte[] result= consumeService("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+				#elseif($operation.getMediatype_request()=="JSON")
+				//PAYLOAD
+					JsonFactory jsonFactory_objMapper = new JsonFactory();
+        			ObjectMapper objMapper=new ObjectMapper(jsonFactory_objMapper);
+					$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+					String payload=objMapper.writeValueAsString(request);
+				// SERVICE CONSUMPTION	
+					String result= consumeService("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+				#elseif($operation.getMediatype_request()=="XML")
+				//PAYLOAD
+					ObjectMapper objMapper=new XmlMapper();
+					$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+					String payload=objMapper.writeValueAsString(request);
+				// SERVICE CONSUMPTION	
+					String result= consumeService("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+				#else 
+				//TODO PAYLOAD 
+				// SERVICE CONSUMPTION	
+					String result= consumeService("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);	
+				#end
+				
+			
+			
+			#else
+   				//TODO PUT and DELETE methods
+			#end
+			
+			 #if($operation.getMediatype_response()=="CBOR")
+				CBORFactory cborFactory = new CBORFactory();
+				ObjectMapper objMapperP=new ObjectMapper(cborFactory);
+			
+		#elseif($encoding=="XML")
+				ObjectMapper objMapperP=new XmlMapper();
+			
+		#elseif($encoding=="JSON")
+			
+				JsonFactory jsonFactory_objMapperP = new JsonFactory();
+				ObjectMapper objMapperP=new ObjectMapper(jsonFactory_objMapperP);
+			
+		#else 
+			
+		//TODO other encodings
+			
+		#end
+			
+   
+   
+    	$operation.getOpNameCapitalize()ResponseDTO responseObj=objMapperP.readValue(result,$operation.getOpNameCapitalize()ResponseDTO.class);
+			
+			
+			}catch (Exception e) {
+              e.printStackTrace();
+               }	
+			
+		}
+    }
+    
+    
+    //Consumption service
+    
+   #if($operation.getMethod()=="GET")
+   #if($operation.getMediatype_response()=="CBOR")
+    public static byte[] consumeService(String url) throws IOException {
+   #else
+    public static String consumeService(String url) throws IOException {
+   #end
+    
+
+#else
+
+	#if($operation.getMediatype_response()=="CBOR")
+	 public static byte[] consumeService(String url, String payload) throws IOException {
+	#else 
+	 public static String consumeService(String url, String payload) throws IOException {
+	#end
+
+
+#end    
+   
+     File CONFIG_FILE = new File("Californium.properties");
+        	 String CONFIG_HEADER = "Californium CoAP Properties file for Fileclient";
+        	 int DEFAULT_MAX_RESOURCE_SIZE = 2 * 1024 * 1024; // 2 MB
+        	 int DEFAULT_BLOCK_SIZE = 512;
+     NetworkConfigDefaultHandler DEFAULTS = new NetworkConfigDefaultHandler() {
+
+        		@Override
+        		public void applyDefaults(NetworkConfig config) {
+        			config.setInt(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, DEFAULT_MAX_RESOURCE_SIZE);
+        			config.setInt(NetworkConfig.Keys.MAX_MESSAGE_SIZE, DEFAULT_BLOCK_SIZE);
+        			config.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE, DEFAULT_BLOCK_SIZE);
+        		};};
+				
+    NetworkConfig config = NetworkConfig.createWithFile(CONFIG_FILE, CONFIG_HEADER, DEFAULTS);
+    NetworkConfig.setStandard(config);
+    URI uri=null;
+    
+	
+    try {
+      uri = new URI(url);
+    } catch(URISyntaxException e) {
+      System.err.println("Invalid URI: " + e.getMessage());
+      System.exit(-1);
+    }
+    CoapClient client= new CoapClient(uri);
+    CoapResponse response = null;
+
+     #if($operation.getMediatype_response()=="CBOR")
+      byte[] responseText= null; 
+      #else
+      String responseText= " ";
+      #end  
+
+    try {
+	#if($operation.getMethod()=="GET")
+        response = client.get();
+	#elseif($method=="POST")
+         response = client.post(payload,MediaTypeRegistry.APPLICATION_$encoding);
+         #else
+         //TODO put and delete
+	#end
+	
+    } catch(ConnectorException|IOException e) {
+      System.err.println("Got an error: " + e);
+    }
+    if(response!=null) {
+      #if($encoding=="CBOR")
+      responseText= response.getPayload();
+      #else
+      responseText= response.getResponseText();
+      #end  
+    } else {
+      System.out.println("No response received.");
+    }
+    client.shutdown();
+   
+  
+  
+    return responseText;
+  }
+  
+	#end 
+ 	#end 
+ 
+    
+    //=================================================================================================
+	// assistant methods
+    
+    //-------------------------------------------------------------------------------------------------
+    private String getInterface() {
+    	return sslProperties.isSslEnabled() ? "HTTPS-SECURE-JSON" : "HTTP-INSECURE-JSON";
+    }
+    //-------------------------------------------------------------------------------------------------
+    private void validateOrchestrationResult(final OrchestrationResultDTO orchestrationResult, final String serviceDefinitin) {
+    	if (!orchestrationResult.getService().getServiceDefinition().equalsIgnoreCase(serviceDefinitin)) {
+			throw new InvalidParameterException("Requested and orchestrated service definition do not match");
+		}
+    	
+    	boolean hasValidInterface = false;
+    	for (final ServiceInterfaceResponseDTO serviceInterface : orchestrationResult.getInterfaces()) {
+			if (serviceInterface.getInterfaceName().equalsIgnoreCase(getInterface())) {
+				hasValidInterface = true;
+				break;
+			}
+		}
+    	if (!hasValidInterface) {
+    		throw new InvalidParameterException("Requested and orchestrated interface do not match");
+		}
+    }
+    
+    //-------------------------------------------------------------------------------------------------
+    private void printOut(final Object object) {
+    	System.out.println(Utilities.toPrettyJson(Utilities.toJson(object)));
+    }
+}

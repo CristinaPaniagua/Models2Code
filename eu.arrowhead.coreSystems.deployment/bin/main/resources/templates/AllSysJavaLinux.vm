@@ -1,0 +1,27 @@
+cd ${outputDirectory}
+mkdir Arrowhead_mandatory_systems
+mkdir Executables_core_systems
+cd Arrowhead_mandatory_systems
+git clone https://github.com/eclipse-arrowhead/core-java-spring.git
+echo maven starting...
+cd core-java-spring
+mvn clean install ${skipTest}
+cp serviceregistry/target/arrowhead-serviceregistry-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp authorization/target/arrowhead-authorization-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp orchestrator/target/arrowhead-orchestrator-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp certificate-authority/target/arrowhead-certificate-authority-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp choreographer/target/arrowhead-choreographer-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp datamanager/target/arrowhead-datamanager-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp deviceregistry/target/arrowhead-deviceregistry-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp eventhandler/target/arrowhead-eventhandler-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp gatekeeper/target/arrowhead-gatekeeper-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp gateway/target/arrowhead-gateway-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp onboarding/target/arrowhead-onboarding-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp systemregistry/target/arrowhead-systemregistry-4.4.1.jar ${outputDirectory}/Executables_core_systems
+cp translator/target/arrowhead-translator-4.4.1.jar ${outputDirectory}/Executables_core_systems
+echo  moving files
+cd ${workSpace}/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/
+echo .....
+cp StartMandatoryCoreSystems.${fileEnd} ${outputDirectory}/Executables_core_systems
+sleep 60s
+rm corescript.sh

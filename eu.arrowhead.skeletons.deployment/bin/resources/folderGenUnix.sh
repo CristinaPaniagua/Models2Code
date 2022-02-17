@@ -1,0 +1,8 @@
+cd /Users/cristina.paniagua/Desktop/EclipseWorkSpace/Tests
+mkdir test1_ApplicationSystems
+cd test1_ApplicationSystems
+mkdir indoorTemp_Provider
+mkdir outdoorTemp_Provider
+mkdir controlSystem_Provider
+mkdir boiler_Consumer
+mkdir iHM_Provider

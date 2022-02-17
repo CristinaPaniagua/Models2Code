@@ -6,8 +6,8 @@ cd Arrowhead_mandatory_systems
 git clone https://github.com/CristinaPaniagua/MinimalLocalCloud.git
 cd MinimalLocalCloud
 mvn clean install ${skipTest}
-copy serviceregistry\target\arrowhead-serviceregistry-4.3.0.jar ${outputDirectory}\Executables_core_systems
-copy authorization\target\arrowhead-authorization-4.3.0.jar ${outputDirectory}\Executables_core_systems
-copy orchestrator\target\arrowhead-orchestrator-4.3.0.jar ${outputDirectory}\Executables_core_systems
-copy D:\SysMLPlugins\Scripts\CoreSystems\StartMandatoryCoreSystems.bat ${outputDirectory}\Executables_core_systems
+copy serviceregistry\target\arrowhead-serviceregistry-4.4.1.jar ${outputDirectory}\Executables_core_systems
+copy authorization\target\arrowhead-authorization-4.4.1.jar ${outputDirectory}\Executables_core_systems
+copy orchestrator\target\arrowhead-orchestrator-4.4.1.jar ${outputDirectory}\Executables_core_systems
+copy ${workSpace}/eu.arrowhead.coreSystems.deployment/scr/main/resources/scripts/StartCoreSystems.${fileEnd} ${outputDirectory}/Executables_core_systems
 PAUSE
