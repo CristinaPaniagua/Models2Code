@@ -22,7 +22,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-
+import eu.arrowhead.skeletons.deployment.common.CodgenUtil;
+import eu.arrowhead.skeletons.deployment.common.TypeSafeProperties;
 import eu.arrowhead.skeletons.deployment.dto.LocalCloudDTO;
 import eu.arrowhead.skeletons.deployment.generator.AppPropertiesGen;
 import eu.arrowhead.skeletons.deployment.generator.ConsumerGenAppList;
@@ -53,12 +54,14 @@ public class ScriptDeployment {
 	private int[] selectedSysType= null;
 	private int selectedLC;
 	private String os="mac";
-	private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
+	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private String workspace= configuration.getProperty("workspace");
+	//private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
 	
 	 @Execute
 	    public void execute(Shell shell) {
 	
-		 
+		 System.out.println("WORSPACE SELECTED: "+ workspace);
 		 IProject[] projects= readWorkspace();
 		 Shell pshell = null;
 		 ProjectSelecWindow projWin= new ProjectSelecWindow(pshell);
@@ -166,6 +169,7 @@ public class ScriptDeployment {
 			    		 
 			    		   Template t =velocityEngine.getTemplate("templates/folderGenUnix.vm");
 			    		   Writer writer = new FileWriter (workspace +"/eu.arrowhead.skeletons.deployment/src/resources/folderGenUnix.sh");
+			    		   context.put("workspace", workspace);
 			    		   t.merge(context, writer);
 				           writer.flush();
 				           writer.close();

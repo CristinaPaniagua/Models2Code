@@ -22,6 +22,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import eu.arrowhead.coresystems.deployment.common.*;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.e4.core.di.annotations.Execute;
@@ -38,7 +39,9 @@ public class ScriptDeployment {
 	private Boolean mandatorySys = false;
 	private Boolean supportSys = false;
 	private Boolean skipTest = false;
-	private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
+	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private String workspace= configuration.getProperty("workspace");
+	//private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
 	
 	 
 	 @Execute

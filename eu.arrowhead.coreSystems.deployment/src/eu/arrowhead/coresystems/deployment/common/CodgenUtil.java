@@ -7,15 +7,8 @@
  *  national funding authorities from involved countries.
  */
 
-package eu.arrowhead.skeletons.deployment.common;
+package eu.arrowhead.coresystems.deployment.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeVariableName;
-
-import eu.arrowhead.skeletons.deployment.generator.GenerationException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +26,7 @@ import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.Set;
 import javax.net.ssl.HostnameVerifier;
-import javax.ws.rs.core.UriBuilder;
+
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -59,46 +52,7 @@ public final class CodgenUtil {
 
  
 
-  public static String getUri(String address, int port, String serviceUri, boolean isSecure, boolean serverStart) {
-    if (address == null) {
-      throw new NullPointerException("Address can not be null (Utility:getUri throws NPE)");
-    }
-
-    UriBuilder ub = UriBuilder.fromPath("").host(address);
-    if (isSecure) {
-      ub.scheme("https");
-    } else {
-      ub.scheme("http");
-    }
-    if (port > 0) {
-      ub.port(port);
-    }
-    if (serviceUri != null) {
-      ub.path(serviceUri);
-    }
-
-    String url = ub.toString();
-    try {
-      new URI(url);
-    } catch (URISyntaxException e) {
-      if (serverStart) {
-        throw new ServiceConfigurationError(url + " is not a valid URL to start a HTTP server! Please fix the address field in the properties file.");
-      } else {
-    	  System.out.println(url + " is not a valid URL!");
-      }
-    }
-
-    return url;
-  }
-
-  public static String stripEndSlash(String uri) {
-    if (uri != null && uri.endsWith("/")) {
-      return uri.substring(0, uri.length() - 1);
-    }
-    return uri;
-  }
-
-
+ 
   
 
   public static String loadJsonFromFile(String pathName) {
@@ -178,18 +132,7 @@ public final class CodgenUtil {
          else t=Object.class;
          return t;
      }
-     
-    public static TypeName getTypeCom(String name, String type){
-         TypeName t;
-         String Name = name.substring(0, 1).toUpperCase() + name.substring(1, name.length()); 
-         
-         if (type.equalsIgnoreCase("List"))   t = ParameterizedTypeName.get(ClassName.get(List.class),TypeVariableName.get(name) );
-         else if (type.equalsIgnoreCase("single"))  t =TypeVariableName.get(Name); 
-         else  t =TypeVariableName.get(Name);
-         
-         //TODO: ADD MORE COMPLEX TYPES
-             return t;
-             }
+ 
     
     
    public static void readList (ArrayList<String[]> elements){
