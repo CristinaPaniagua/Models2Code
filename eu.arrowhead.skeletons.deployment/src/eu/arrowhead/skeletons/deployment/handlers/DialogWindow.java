@@ -49,7 +49,7 @@ public class DialogWindow extends TitleAreaDialog{
 	private IProject[] projects=null;
 	private String selectedProject=null;
 	private String workDirectory="";
-	
+	private static String os = "";
 	
 	
 	DialogWindow(Shell parentShell ) {
@@ -195,8 +195,56 @@ public class DialogWindow extends TitleAreaDialog{
         btnRadioButton_4.setEnabled(false);
         btnRadioButton_4.setText("C++");
         new Label(grpLanguage, SWT.NONE);
+        new Label(container, SWT.NONE);
+        
+       
+        
+        Group device = new Group(container, SWT.NONE);
+        //device.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
+        device.setText("Operating System");
+        GridLayout gridLayout2 = new GridLayout();
+        gridLayout2.numColumns = 3;
+        device.setLayout(gridLayout2);
         
         
+        Button btnRadioButton = new Button(device, SWT.RADIO);
+        btnRadioButton.setText("Windows");
+        
+        Button btnRadioButton_1 = new Button(device, SWT.RADIO);
+        btnRadioButton_1.setText("Linux");
+        
+        Button btnRadioButton_2 = new Button(device, SWT.RADIO);
+        btnRadioButton_2.setText("Mac");
+        
+      
+        btnRadioButton.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(final SelectionEvent e){
+                super.widgetSelected(e);
+                if(btnRadioButton.getSelection()){
+                    os="windows";
+                    
+                }
+            }
+        });
+        btnRadioButton_1.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(final SelectionEvent e){
+                super.widgetSelected(e);
+                if(btnRadioButton_1.getSelection()){
+                    os="linux";
+                }
+            }
+        });
+        btnRadioButton_2.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(final SelectionEvent e){
+                super.widgetSelected(e);
+                if(btnRadioButton_2.getSelection()){
+                    os="mac";
+                }
+            }
+        });
   
         return container;
     }
@@ -274,6 +322,10 @@ public class DialogWindow extends TitleAreaDialog{
 	 } 
 	 
 	 //GETS
+		public String getOs() {
+			return os; 
+		}
+		
 		public String getDirectory() {
 			return directory; 
 		}

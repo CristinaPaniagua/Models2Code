@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -34,7 +35,7 @@ public class ModelSelectWindow extends TitleAreaDialog{
 	private String selectedModel =null; 
 	private String selectedPath =null; 
 	private String pathModel=null;
-	
+	private Boolean extensionFlag=false;
 	
 
 
@@ -46,8 +47,8 @@ public class ModelSelectWindow extends TitleAreaDialog{
 	
 	public void create() {
 		super.create();
-        setTitle("Select working project");
-        setMessage("Select the project.", IMessageProvider.INFORMATION);
+		setTitle("Model Selection");
+        setMessage("Select the UML model. Only .uml extension supported.", IMessageProvider.INFORMATION);
         
         
     }
@@ -60,7 +61,7 @@ public class ModelSelectWindow extends TitleAreaDialog{
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
         GridData gd_container = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gd_container.widthHint = 325;
+        gd_container.widthHint = 330;
         gd_container.heightHint = 200;
         container.setLayoutData(gd_container);
         GridLayout layout = new GridLayout(2, false);
@@ -189,11 +190,35 @@ public class ModelSelectWindow extends TitleAreaDialog{
     protected void okPressed() {
 	
       		
-   System.out.println("Model path:" +pathModel);
+   System.out.println("Selected path:" +selectedPath);
   
-
-        super.okPressed();
+   
+   Shell shell= new Shell();
+   if(selectedPath.endsWith(".uml")) {
+	  extensionFlag=true;
+   }else {
+  		
+  			 MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
+	      		messageBox.setMessage("File not correct. Only .uml supported ");
+	              messageBox.open();
+	             extensionFlag=false;
+	       
+	              
+  		}
+   
+   super.okPressed();
+        
     }
+	
+
+	public Boolean getExtensionFlag() {
+		return extensionFlag;
+	}
+
+
+	public void setExtensionFlag(Boolean extensionFlag) {
+		this.extensionFlag = extensionFlag;
+	}
 
 	
 	public String getSelectedModel() {

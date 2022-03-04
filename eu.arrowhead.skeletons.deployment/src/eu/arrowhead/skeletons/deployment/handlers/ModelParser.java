@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription;
-//import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.IDD;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.HttpOperation;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.impl.InterfaceDesignDescriptionImpl;
 import org.eclipse.uml2.uml.Class;
@@ -255,14 +255,8 @@ public class ModelParser {
 					op.setOpName(operation.getName());
 					op.setPathResource("/"+operation.getName());
 					
-					//TODO READ FROM operationKind
-					if(op.getOpName().startsWith("get")||op.getOpName().startsWith("open")||op.getOpName().startsWith("close")) {
-						op.setMethod("GET");
-					}else if(op.getOpName().startsWith("set")||op.getOpName().startsWith("post")) {
-						op.setMethod("POST");
-					}else {
-						op.setMethod("POST");
-					}
+				
+					op.setMethod(UMLUtil.getStereotypeApplication(operation,HttpOperation.class).getKind().toString());
 					
 					
 					 

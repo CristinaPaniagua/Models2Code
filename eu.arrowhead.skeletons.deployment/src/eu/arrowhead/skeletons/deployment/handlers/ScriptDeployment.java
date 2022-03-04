@@ -53,7 +53,7 @@ public class ScriptDeployment {
 	private String[] selectedSys= null;
 	private int[] selectedSysType= null;
 	private int selectedLC;
-	private String os="mac";
+	private String os="";
 	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
 	private String workspace= configuration.getProperty("workspace");
 	//private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
@@ -81,9 +81,11 @@ public class ScriptDeployment {
 				
 			if(modelWin.open()==Window.OK) {
 				
-				String selectedPathModel= modelWin.getSelectedPath();
-				
-				
+			
+				if(modelWin.getExtensionFlag()) {
+					
+					String selectedPathModel= modelWin.getSelectedPath();
+					
 				
 				 ModelParser MP= new ModelParser();
 				 System.out.println("MODEL FILE SELETEC: "+ projectLocation.toString()+"/"+selectedPathModel);
@@ -109,6 +111,7 @@ public class ScriptDeployment {
             selectedSysType= new int[selectedSys.length];
             selectedLC=dialog.getSelectedLC();
             disk=dialog.getDisk();
+            os=dialog.getOs();
             final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 
@@ -369,6 +372,8 @@ public class ScriptDeployment {
 			
            }else System.out.println("Directory no correct");
         }//dialogwindow  OK
+				} else System.out.println("File extension no correct");
+					
 		 }// modelwindow OK
 		 }
 	 }

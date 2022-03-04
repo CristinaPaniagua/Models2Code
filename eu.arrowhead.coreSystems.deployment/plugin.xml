@@ -52,7 +52,7 @@
             <command
                   id="eu.arrowhead.coreSystems.deployment.toolbars.coreCommand"
                   commandId="eu.arrowhead.coreSystems.deployment.commands.coreCommand"
-                  icon="icons/sample.png"
+                  icon="icons/Core_icon.png"
                   tooltip="Deployment of AH core systems">
             </command>
          </toolbar>

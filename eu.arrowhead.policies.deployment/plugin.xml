@@ -52,7 +52,7 @@
             <command
                   id="eu.arrowhead.policies.deployment.toolbars.policiesCommand"
                   commandId="eu.arrowhead.policies.deployment.commands.policiesCommand"
-                  icon="icons/a.png"
+                  icon="icons/Rules_icon.png"
                   tooltip="Rules deployment">
             </command>
          </toolbar>

@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.arrowhead.policies.deployment.dto.InterfaceMetadata;
 import eu.arrowhead.policies.deployment.dto.LocalCloudDTO;
+import eu.arrowhead.policies.deployment.common.*;
+
 
 
 public class ScriptDeployment {
@@ -43,7 +45,9 @@ public class ScriptDeployment {
 	private String policyType = "";
 	private String disk = "";
 	private int selectedLC;
-	private String workSpace="";
+	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private String workspace= configuration.getProperty("workspace");
+	//private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
 
 	 @Execute
 	    public void execute(Shell shell) {
@@ -68,9 +72,10 @@ public class ScriptDeployment {
 			
 		if(modelWin.open()==Window.OK) {
 			
-			String selectedPathModel= modelWin.getSelectedPath();
 			
-			
+			if(modelWin.getExtensionFlag()) {
+				String selectedPathModel= modelWin.getSelectedPath();
+		
 			
 			 ModelParser MP= new ModelParser();
 			 System.out.println("MODEL FILE SELETEC: "+ projectLocation.toString()+"/"+selectedPathModel);
@@ -81,8 +86,8 @@ public class ScriptDeployment {
 			 
 			
 		 DialogWindow dialog= new DialogWindow(shell);
-		 workSpace=projectLocation.toString();
-		 dialog.setWorkDirectory(workSpace);
+		 
+		 dialog.setWorkDirectory(workspace);
 		 dialog.setLocalClouds(localClouds);
 		 
          if (dialog.open() == Window.OK) {
@@ -200,6 +205,7 @@ public class ScriptDeployment {
 			
             }else System.out.println("Directory no correct");
          }//dialogwindow  OK
+			} else System.out.println("File extension no correct");
 		 }// modelwindow OK
 		 }
 	 }

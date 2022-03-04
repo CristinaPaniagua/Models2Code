@@ -52,7 +52,7 @@
             <command
                   id="eu.arrowhead.skeletons.deployment.toolbars.skeletonsCommand"
                   commandId="eu.arrowhead.skeletons.deployment.commands.skeletonsCommand"
-                  icon="icons/a.png"
+                  icon="icons/Skel_icon.png"
                   tooltip="Skeletons deployment">
             </command>
          </toolbar>
