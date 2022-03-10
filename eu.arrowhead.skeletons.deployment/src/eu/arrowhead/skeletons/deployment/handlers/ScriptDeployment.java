@@ -179,13 +179,13 @@ public class ScriptDeployment {
 				          			    		   
 			    		   executesh(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/","folderGenUnix.sh");
 			    	   }else {
-			    		   Writer writer = new FileWriter (workspace +"/eu.arrowhead.skeletons.deployment/src/resources/folderGenWin.bat"); 
+			    		   Writer writer = new FileWriter (workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\folderGenWin.bat"); 
 			    		   Template t =velocityEngine.getTemplate("templates/folderGenWin.vm");
 			    		   t.merge(context, writer);
 				           writer.flush();
 				           writer.close();
 				           
-				           executebat(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/folderGenWin.bat");
+				           executebat(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\folderGenWin.bat");
 			    	   }
 			    	
 			    	   
@@ -218,7 +218,8 @@ public class ScriptDeployment {
 				    		   VelocityContext contextFoldPro = new VelocityContext();
 				    		   contextFoldPro.put("outputDirectory", directory);
 				    		   contextFoldPro.put("name", name);
-				    		   contextFoldPro.put("workspace", workspace);
+				    		   contextFoldPro.put("disk", disk);
+				    		   contextFoldPro.put("workSpace", workspace);
 				    		   contextFoldPro.put("sysName",selectedSys[j]);
 				    		
 				    		   
@@ -235,12 +236,12 @@ public class ScriptDeployment {
 					    	   
 				    		   }else {
 				    			   contextFoldPro.put("disk",disk);
-				    			   Writer writerFoldPro = new FileWriter (new File(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/"+selectedSys[j]+"ProviderStructure.bat"));
+				    			   Writer writerFoldPro = new FileWriter (new File(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat"));
 				    			   Template tFoldPro=velocityEngine.getTemplate("templates/providerStructureWin.vm");
 				    			   tFoldPro.merge(contextFoldPro,writerFoldPro);
 				    			   writerFoldPro.flush();
 				    			   writerFoldPro.close();
-				    			   executebat(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/"+selectedSys[j]+"ProviderStructure.bat");
+				    			   executebat(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat");
 					    	   }
 				    		   
 				    		   
@@ -268,7 +269,8 @@ public class ScriptDeployment {
 				    		   VelocityContext contextFoldPro = new VelocityContext();
 				    		   contextFoldPro.put("outputDirectory", directory);
 				    		   contextFoldPro.put("name", name);
-				    		   contextFoldPro.put("workspace", workspace);
+				    		   contextFoldPro.put("disk", disk);
+				    		   contextFoldPro.put("workSpace", workspace);
 				    		   contextFoldPro.put("sysName",selectedSys[j]);
 				    		  
 				    		   System.out.println("provider 2");
@@ -283,12 +285,12 @@ public class ScriptDeployment {
 					    	   
 				    		   }else {
 				    			   contextFoldPro.put("disk",disk);
-				    			   Writer writerFoldPro = new FileWriter (new File(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/"+selectedSys[j]+"ProviderStructure.bat"));
+				    			   Writer writerFoldPro = new FileWriter (new File(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat"));
 				    			   Template tFoldPro=velocityEngine.getTemplate("templates/providerStructureWin.vm");
 				    			   tFoldPro.merge(contextFoldPro,writerFoldPro);
 				    			   writerFoldPro.flush();
 				    			   writerFoldPro.close();
-				    			   executebat(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/"+selectedSys[j]+"ProviderStructure.bat");
+				    			   executebat(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat");
 					    	   }
 				    		   
 				    		   while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider/src/main/java/eu/arrowhead/"+selectedSys[j]+"_Provider").exists()) {}
@@ -315,7 +317,8 @@ public class ScriptDeployment {
 				    		   VelocityContext contextFoldCon = new VelocityContext();
 				    		   contextFoldCon.put("outputDirectory", directory);
 				    		   contextFoldCon.put("name", name);
-				    		   contextFoldCon.put("workspace", workspace);
+				    		   contextFoldCon.put("disk", disk);
+				    		   contextFoldCon.put("workSpace", workspace);
 				    		   contextFoldCon.put("sysName",selectedSys[j]);
 				    		   
 				    		   System.out.println("consumer 1");
@@ -329,12 +332,12 @@ public class ScriptDeployment {
 					    	   
 				    		   }else {
 				    			   Template tFoldCon=velocityEngine.getTemplate("templates/consumerStructureWin.vm");
-				    			   Writer writerFoldCon = new FileWriter (new File(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/"+selectedSys[j]+"ConsumerStructure.bat"));
+				    			   Writer writerFoldCon = new FileWriter (new File(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ConsumerStructure.bat"));
 				    			   contextFoldCon.put("disk",disk);
 					    		   tFoldCon.merge(contextFoldCon,writerFoldCon);
 					    		   writerFoldCon.flush();
 					    		   writerFoldCon.close();
-					    		   executebat(workspace +"/eu.arrowhead.skeletons.deployment/src/resources/"+selectedSys[j]+"ConsumerStructure.bat");
+					    		   executebat(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ConsumerStructure.bat");
 					    	   } 
 				    		   
 				    		   

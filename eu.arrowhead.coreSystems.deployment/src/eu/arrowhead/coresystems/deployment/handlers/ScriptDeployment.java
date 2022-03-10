@@ -109,6 +109,16 @@ public class ScriptDeployment {
 						   
 						writer = new FileWriter (new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/corescript.sh"));
 					   }else {
+						   //GENEREATION OF INIT.BAT
+						   Template tInit=velocityEngine.getTemplate("main/resources/templates/initWin.vm");
+						   VelocityContext contextInit = new VelocityContext();
+						   contextInit.put("workSpace", workspace);
+						   Writer wInit=new FileWriter (new File(workspace+"\\eu.arrowhead.coreSystems.deployment\\src\\main\\resources\\scripts\\init.bat"));
+						   tInit.merge(context, wInit);
+						   wInit.flush();
+						   wInit.close();
+						  
+						   //GENERATION OF CORESCRIPT
 						   context.put("fileEnd", "bat");
 						   writer = new FileWriter (new File(workspace+"\\eu.arrowhead.coreSystems.deployment\\src\\main\\resources\\scripts\\corescript.bat"));
 					   }   
@@ -197,7 +207,7 @@ public class ScriptDeployment {
 			
 	        processBuilder.command("sh", "-c", "sh ./init.sh");
 		  
-	        processBuilder.directory(new File("/Users/cristina.paniagua/Desktop/EclipseWorkSpace/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/"));
+	        processBuilder.directory(new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/"));
 		 
 		  try {
 

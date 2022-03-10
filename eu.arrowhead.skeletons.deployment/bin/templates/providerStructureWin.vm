@@ -1,4 +1,4 @@
-%systemroot%\System32\xcopy  ${workspace}\eu.arrowhead.skeletons.deployment\src\resources\provider ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Provider /e
+%systemroot%\System32\xcopy  ${workSpace}\eu.arrowhead.skeletons.deployment\src\resources\provider ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Provider /e
 ${disk}
 cd ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Provider\src\main\java\eu\arrowhead
 mkdir ${sysName}_Provider
