@@ -181,6 +181,8 @@ public class ScriptDeployment {
 			    	   }else {
 			    		   Writer writer = new FileWriter (workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\folderGenWin.bat"); 
 			    		   Template t =velocityEngine.getTemplate("templates/folderGenWin.vm");
+			    		   context.put("workspace", workspace);
+			    		   context.put("disk", disk);
 			    		   t.merge(context, writer);
 				           writer.flush();
 				           writer.close();
@@ -190,8 +192,8 @@ public class ScriptDeployment {
 			    	
 			    	   
 			           
-			         
-			           while(!new File(directory+"/"+name+"_ApplicationSystems").exists()) {}
+			    	   System.out.println(directory+File.separator+name+"_ApplicationSystems");
+			           while(!new File(directory+File.separator+name+"_ApplicationSystems").exists()) {}
 			           
 			    	   Writer writerpom = new FileWriter (new File(directory+"/"+name+"_ApplicationSystems"+"/pom.xml"));
 					  
@@ -204,7 +206,7 @@ public class ScriptDeployment {
 				    	   if(selectedSysType[j]==0) {
 				    		   //pom
 				    		   Template tpomPro=velocityEngine.getTemplate("templates/pomProvider.vm");
-				    		   while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider").exists()) {}
+				    		   while(!new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider").exists()) {}
 				    		   VelocityContext contextpomPro = new VelocityContext();
 				    		   contextpomPro.put("name", name);
 				    		   contextpomPro.put("sysName",selectedSys[j]);
@@ -219,7 +221,7 @@ public class ScriptDeployment {
 				    		   contextFoldPro.put("outputDirectory", directory);
 				    		   contextFoldPro.put("name", name);
 				    		   contextFoldPro.put("disk", disk);
-				    		   contextFoldPro.put("workSpace", workspace);
+				    		   contextFoldPro.put("workspace", workspace);
 				    		   contextFoldPro.put("sysName",selectedSys[j]);
 				    		
 				    		   
@@ -245,7 +247,7 @@ public class ScriptDeployment {
 					    	   }
 				    		   
 				    		   
-				    		  while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider/src/main/java/eu/arrowhead/"+selectedSys[j]+"_Provider").exists()) {}
+				    		  while(!new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+"eu"+File.separator+"arrowhead"+File.separator+selectedSys[j]+"_Provider").exists()) {}
 				    		   //gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ProviderGenMain genMainP =new ProviderGenMain();
 				               genMainP.generateProviderMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
@@ -255,7 +257,7 @@ public class ScriptDeployment {
 				    	   }else if(selectedSysType[j]==2) {
 				    		 //pom
 				    		   Template tpomPro=velocityEngine.getTemplate("templates/pomProvider.vm");
-				    		   while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider").exists()) {}
+				    		   while(!new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider").exists()) {}
 				    		   VelocityContext contextpomPro = new VelocityContext();
 				    		   contextpomPro.put("name", name);
 				    		   contextpomPro.put("sysName",selectedSys[j]);
@@ -270,7 +272,7 @@ public class ScriptDeployment {
 				    		   contextFoldPro.put("outputDirectory", directory);
 				    		   contextFoldPro.put("name", name);
 				    		   contextFoldPro.put("disk", disk);
-				    		   contextFoldPro.put("workSpace", workspace);
+				    		   contextFoldPro.put("workspace", workspace);
 				    		   contextFoldPro.put("sysName",selectedSys[j]);
 				    		  
 				    		   System.out.println("provider 2");
@@ -293,7 +295,7 @@ public class ScriptDeployment {
 				    			   executebat(workspace +"\\eu.arrowhead.skeletons.deployment\\src\\resources\\"+selectedSys[j]+"ProviderStructure.bat");
 					    	   }
 				    		   
-				    		   while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider/src/main/java/eu/arrowhead/"+selectedSys[j]+"_Provider").exists()) {}
+				    		   while(!new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+"eu"+File.separator+"arrowhead"+File.separator+selectedSys[j]+"_Provider").exists()) {}
 				    		   //gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ProviderGenMain genMainP =new ProviderGenMain();
 				               genMainP.generateProvConsMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
@@ -303,7 +305,7 @@ public class ScriptDeployment {
 				    	   } else {
 				    		   //pom
 				    		   Template tpomcon=velocityEngine.getTemplate("templates/pomConsumer.vm");
-				    		   while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Consumer").exists()) {}
+				    		   while(!new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Consumer").exists()) {}
 				    		   VelocityContext contextpomCons = new VelocityContext();
 				    		   contextpomCons.put("name", name);
 				    		   contextpomCons.put("sysName",selectedSys[j]);
@@ -318,7 +320,7 @@ public class ScriptDeployment {
 				    		   contextFoldCon.put("outputDirectory", directory);
 				    		   contextFoldCon.put("name", name);
 				    		   contextFoldCon.put("disk", disk);
-				    		   contextFoldCon.put("workSpace", workspace);
+				    		   contextFoldCon.put("workspace", workspace);
 				    		   contextFoldCon.put("sysName",selectedSys[j]);
 				    		   
 				    		   System.out.println("consumer 1");
@@ -343,7 +345,7 @@ public class ScriptDeployment {
 				    		   
 				    		  
 				    		   System.out.println(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Consumer/src/main/java/eu/arrowhead/"+selectedSys[j]+"_Consumer");		
-				    		   while(!new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Consumer/src/main/java/eu/arrowhead/"+selectedSys[j]+"_Consumer").exists()) {}
+				    		   while(!new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Consumer"+File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+"eu"+File.separator+"arrowhead"+File.separator+selectedSys[j]+"_Consumer").exists()) {}
 				    		   gen.GenerateAppList(directory, name,selectedSys[j]+"_Consumer");
 				    		   ConsumerGenMain genMainC =new ConsumerGenMain();
 				               genMainC.generateConsumerMain(directory,name,selectedSys[j], systemServiceRegistry, interfaces);
