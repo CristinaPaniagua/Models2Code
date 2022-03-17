@@ -195,7 +195,7 @@ public class ScriptDeployment {
 			    	   System.out.println(directory+File.separator+name+"_ApplicationSystems");
 			           while(!new File(directory+File.separator+name+"_ApplicationSystems").exists()) {}
 			           
-			    	   Writer writerpom = new FileWriter (new File(directory+"/"+name+"_ApplicationSystems"+"/pom.xml"));
+			    	   Writer writerpom = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+"pom.xml"));
 					  
 			           tpom.merge(contextpom, writerpom);
 			           writerpom.flush();
@@ -210,7 +210,7 @@ public class ScriptDeployment {
 				    		   VelocityContext contextpomPro = new VelocityContext();
 				    		   contextpomPro.put("name", name);
 				    		   contextpomPro.put("sysName",selectedSys[j]);
-				    		   Writer  writerpomPro = new FileWriter (new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider/pom.xml"));
+				    		   Writer  writerpomPro = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"pom.xml"));
 				    		   tpomPro.merge(contextpomPro,writerpomPro);
 				    		   writerpomPro.flush();
 				    		   writerpomPro.close();
@@ -261,7 +261,7 @@ public class ScriptDeployment {
 				    		   VelocityContext contextpomPro = new VelocityContext();
 				    		   contextpomPro.put("name", name);
 				    		   contextpomPro.put("sysName",selectedSys[j]);
-				    		   Writer  writerpomPro = new FileWriter (new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Provider/pom.xml"));
+				    		   Writer  writerpomPro = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"pom.xml"));
 				    		   tpomPro.merge(contextpomPro,writerpomPro);
 				    		   writerpomPro.flush();
 				    		   writerpomPro.close();
@@ -309,7 +309,7 @@ public class ScriptDeployment {
 				    		   VelocityContext contextpomCons = new VelocityContext();
 				    		   contextpomCons.put("name", name);
 				    		   contextpomCons.put("sysName",selectedSys[j]);
-				    		   Writer writerpomCons = new FileWriter (new File(directory+"/"+name+"_ApplicationSystems/"+selectedSys[j]+"_Consumer/pom.xml"));
+				    		   Writer writerpomCons = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Consumer"+File.separator+"pom.xml"));
 				    		   tpomcon.merge(contextpomCons,writerpomCons);
 				    		   writerpomCons.flush();
 				    		   writerpomCons.close();
