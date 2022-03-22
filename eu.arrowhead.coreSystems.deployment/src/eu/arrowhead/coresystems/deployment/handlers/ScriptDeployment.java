@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.arrowhead.coresystems.deployment.common.*;
 
+import org.eclipse.core.internal.resources.OS;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.window.Window;
@@ -204,8 +205,10 @@ public class ScriptDeployment {
 	        ProcessBuilder processBuilder = new ProcessBuilder();
 	        System.out.println("Script generated");
 	      
-			
-	        processBuilder.command("sh", "-c", "sh ./init.sh");
+	        if(os.equalsIgnoreCase("linux")){
+	        	processBuilder.command("sh", "-c", "sh ./initLinux.sh");
+	        }else
+	        	processBuilder.command("sh", "-c", "sh ./initMac.sh");
 		  
 	        processBuilder.directory(new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/"));
 		 
