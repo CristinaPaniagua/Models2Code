@@ -87,6 +87,7 @@ public class DialogWindow extends TitleAreaDialog{
         txtDirectory = new Text(container, SWT.BORDER);
         txtDirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         txtDirectory.setText(workDirectory);
+        directory=workDirectory;
         txtDirectory.addModifyListener(e -> {
             Text textWidget = (Text) e.getSource();
             String descriptionText = textWidget.getText();

@@ -76,10 +76,12 @@ public class DialogWindow extends TitleAreaDialog{
         txtDirectory = new Text(container, SWT.BORDER);
         txtDirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         txtDirectory.setText(workspace);
+        directory=workspace;
         txtDirectory.addModifyListener(e -> {
             Text textWidget = (Text) e.getSource();
             String descriptionText = textWidget.getText();
             directory = descriptionText;
+           
         });
         new Label(container, SWT.NONE);
         
@@ -222,7 +224,9 @@ public class DialogWindow extends TitleAreaDialog{
 	 @Override
 	    protected void okPressed() {
 		 Shell shell= new Shell();
+		 System.out.println("directory: "+directory);
 	       if(directory == null || directory.isEmpty()) {
+	    	   
 	      		 MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
 	      		messageBox.setMessage("Please enter directory"+ directory);
 	              messageBox.open();
@@ -254,6 +258,7 @@ public class DialogWindow extends TitleAreaDialog{
 		 if (!file.isDirectory()) {
 			 return false;
 	 }else {
+		
 		 if (file.exists()){
 			
 				 String cannonicalPath = "";

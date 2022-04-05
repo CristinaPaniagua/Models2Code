@@ -1,4 +1,4 @@
-%systemroot%\System32\xcopy  ${workspace}\eu.arrowhead.skelettons.deployment\src\resources\consumer ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer /e
+%systemroot%\System32\xcopy  ${workspace}\eu.arrowhead.skeletons.deployment\src\resources\consumer ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer /e
 ${disk}
 cd ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer\src\main\java\eu\arrowhead
 mkdir ${sysName}_Consumer

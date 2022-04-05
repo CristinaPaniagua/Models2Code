@@ -61,8 +61,8 @@ public class ModelSelectWindow extends TitleAreaDialog{
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
         GridData gd_container = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gd_container.widthHint = 330;
-        gd_container.heightHint = 200;
+        gd_container.widthHint = 400;
+        gd_container.heightHint = 350;
         container.setLayoutData(gd_container);
         GridLayout layout = new GridLayout(2, false);
         container.setLayout(layout);
