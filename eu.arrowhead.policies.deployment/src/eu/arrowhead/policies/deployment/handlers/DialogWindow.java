@@ -41,7 +41,7 @@ public class DialogWindow extends TitleAreaDialog{
 	private static Boolean supportSys = false;
 	private GridData gridData_1;
 	private  ArrayList<LocalCloudDTO> localClouds= new ArrayList<LocalCloudDTO>();
-	private int selectedLC;
+	private int selectedLC=0;
 	private String selectedLCName="";
 	private String[] selectedSys= null;
 	private int[] selectedSysType= null;

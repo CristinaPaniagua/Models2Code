@@ -254,6 +254,27 @@ public class ScriptDeployment {
 				               AppPropertiesGen genpro = new AppPropertiesGen();
 				               genpro.GenerateAppProperties(directory,name,selectedSys[j]+"_Provider","provider"); 
 				               
+				               // security
+				               VelocityContext contextSecurity= new VelocityContext();
+				               Writer writerSecurity1 = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+"eu"+File.separator+"arrowhead"+File.separator+"security"+File.separator+"ProviderTokenSecurityFilter.java"));
+			    			   Template tsec1=velocityEngine.getTemplate("templates/ProviderTokenSecurityFilter.vm");
+			    			   tsec1.merge(contextSecurity,writerSecurity1);
+			    			   writerSecurity1.flush();
+			    			   writerSecurity1.close();
+			    			   
+			    			   Writer writerSecurity2 = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+"eu"+File.separator+"arrowhead"+File.separator+"security"+File.separator+"ProviderSecurityConfig.java"));
+			    			   Template tsec2=velocityEngine.getTemplate("templates/ProviderSecurityConfig.vm");
+			    			   tsec2.merge(contextSecurity,writerSecurity2);
+			    			   writerSecurity2.flush();
+			    			   writerSecurity2.close();
+			    			   
+			    			   Writer writerSecurity3 = new FileWriter (new File(directory+File.separator+name+"_ApplicationSystems"+File.separator+selectedSys[j]+"_Provider"+File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+"eu"+File.separator+"arrowhead"+File.separator+"security"+File.separator+"ProviderAccessControlFilter.java"));
+			    			   Template tsec3=velocityEngine.getTemplate("templates/ProviderAccessControlFilter.vm");
+			    			   tsec3.merge(contextSecurity,writerSecurity3);
+			    			   writerSecurity3.flush();
+			    			   writerSecurity3.close();
+				               
+				               
 				    	   }else if(selectedSysType[j]==2) {
 				    		 //pom
 				    		   Template tpomPro=velocityEngine.getTemplate("templates/pomProvider.vm");
