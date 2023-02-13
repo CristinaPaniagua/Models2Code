@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Label;
 
-public class ProjectSelecWindow extends TitleAreaDialog{
+public class ProjectSelectWindow extends TitleAreaDialog{
 
 		private IProject[] projects=null;
 		private IProject selectedProject=null;
@@ -29,7 +29,7 @@ public class ProjectSelecWindow extends TitleAreaDialog{
 		
 		
 		
-		public ProjectSelecWindow(Shell parentShell) {
+		public ProjectSelectWindow(Shell parentShell) {
 			super(parentShell);
 			// TODO Auto-generated constructor stub
 		}

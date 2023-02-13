@@ -56,7 +56,7 @@ public class ScriptDeployment {
 	private String os="";
 	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
 	private String workspace= configuration.getProperty("workspace");
-	//private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
+
 	
 	 @Execute
 	    public void execute(Shell shell) {

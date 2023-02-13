@@ -2,3 +2,4 @@
 ${disk}
 cd ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer\src\main\java\eu\arrowhead
 mkdir ${sysName}_Consumer
+del "${workspace}\eu.arrowhead.skeletons.deployment\src\resources\${sysName}ConsumerStructure.bat"

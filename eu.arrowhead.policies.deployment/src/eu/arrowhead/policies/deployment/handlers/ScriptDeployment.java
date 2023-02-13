@@ -55,7 +55,7 @@ public class ScriptDeployment {
 		 
 		 IProject[] projects= readWorkspace();
 		 Shell pshell = null;
-		 ProjectSelecWindow projWin= new ProjectSelecWindow(pshell);
+		 ProjectSelectWindow projWin= new ProjectSelectWindow(pshell);
 		 projWin.setProjects(projects);
 		 
 		
