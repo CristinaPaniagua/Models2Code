@@ -25,3 +25,4 @@ echo .....
 cp StartMandatoryCoreSystems.${fileEnd} ${outputDirectory}/Executables_core_systems
 sleep 60s
 rm corescript.sh
+rm init.sh

@@ -42,7 +42,6 @@ public class ScriptDeployment {
 	private Boolean skipTest = false;
 	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
 	private String workspace= configuration.getProperty("workspace");
-	//private String workspace="/Users/cristina.paniagua/Desktop/EclipseWorkSpace";
 	
 	 
 	 @Execute
@@ -54,6 +53,8 @@ public class ScriptDeployment {
         	 
         	if(!dialog.getBadDirectory()){
             System.out.println("OK");
+            
+            
             
             directory=dialog.getDirectory();
             os=dialog.getOs();
@@ -106,16 +107,33 @@ public class ScriptDeployment {
 			       try{
 			    	   Writer writer=null;
 			    	   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+			    		   
+			    		  String terminal;
+			    		  if (os.equalsIgnoreCase("linux")) {
+			    			  terminal="gnome-terminal";
+			    		  }else 
+			    			  terminal="open -a terminal";		    		  
+			    		   
+			    		   
+			    		   //GENEREATION OF INIT.sh
+						   Template tInit=velocityEngine.getTemplate("main/resources/templates/initUnix.vm");
+						   VelocityContext contextInit = new VelocityContext();
+						   contextInit.put("terminal", terminal);
+						   Writer wInit=new FileWriter (new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/init.sh"));
+						   tInit.merge(contextInit, wInit);
+						   wInit.flush();
+						   wInit.close();
+						  
+						   //GENERATION OF CORESCRIPT
 			    		   context.put("fileEnd", "sh");
-						   
-						writer = new FileWriter (new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/corescript.sh"));
+			    		   writer = new FileWriter (new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/corescript.sh"));
 					   }else {
 						   //GENEREATION OF INIT.BAT
 						   Template tInit=velocityEngine.getTemplate("main/resources/templates/initWin.vm");
 						   VelocityContext contextInit = new VelocityContext();
 						   contextInit.put("workSpace", workspace);
 						   Writer wInit=new FileWriter (new File(workspace+"\\eu.arrowhead.coreSystems.deployment\\src\\main\\resources\\scripts\\init.bat"));
-						   tInit.merge(context, wInit);
+						   tInit.merge(contextInit, wInit);
 						   wInit.flush();
 						   wInit.close();
 						  
@@ -205,12 +223,9 @@ public class ScriptDeployment {
 	        ProcessBuilder processBuilder = new ProcessBuilder();
 	        System.out.println("Script generated");
 	      
-	        if(os.equalsIgnoreCase("linux")){
-	        	processBuilder.command("sh", "-c", "sh ./initLinux.sh");
-	        }else
-	        	processBuilder.command("sh", "-c", "sh ./initMac.sh");
-		  
-	        processBuilder.directory(new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/"));
+	       processBuilder.command("sh", "-c", "sh ./init.sh");
+	      
+	       processBuilder.directory(new File(workspace+"/eu.arrowhead.coreSystems.deployment/src/main/resources/scripts/"));
 		 
 		  try {
 

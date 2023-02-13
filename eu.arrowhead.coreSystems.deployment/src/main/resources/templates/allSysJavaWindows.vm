@@ -20,4 +20,6 @@ copy onboarding\target\arrowhead-onboarding-4.4.1.jar ${outputDirectory}\Executa
 copy systemregistry\target\arrowhead-systemregistry-4.4.1.jar ${outputDirectory}\Executables_core_systems
 copy translator\target\arrowhead-translator-4.4.1.jar ${outputDirectory}\Executables_core_systems
 copy ${workSpace}\eu.arrowhead.coreSystems.deployment\scr\main\resources\scripts\StartMandatoryCoreSystems.${fileEnd} ${outputDirectory}\Executables_core_systems
+del "corescript.bat"
+del	"init.bat"
 PAUSE

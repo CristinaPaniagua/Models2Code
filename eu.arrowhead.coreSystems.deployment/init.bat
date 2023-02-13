@@ -1,1 +1,0 @@
-START D:\SysMLPlugins\ModelstoCode\eu.arrowhead.coreSystems.deployment\src\resources\corescript.bat
