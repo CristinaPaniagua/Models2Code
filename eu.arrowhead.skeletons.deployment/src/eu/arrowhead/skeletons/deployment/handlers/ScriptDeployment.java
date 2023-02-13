@@ -90,7 +90,7 @@ public class ScriptDeployment {
 				 ModelParser MP= new ModelParser();
 				 System.out.println("MODEL FILE SELETEC: "+ projectLocation.toString()+"/"+selectedPathModel);
 				 MP.modelReader(projectLocation.toString()+"/"+selectedPathModel);
-			 ArrayList<String []> systemServiceRegistry= MP.getSystemServiceRegistry();
+			 
 			 ArrayList<InterfaceMetadata> interfaces= MP.getInterfaces();
 			 ArrayList<LocalCloudDTO> localClouds= MP.getLocalClouds();	 
 			 
@@ -112,6 +112,11 @@ public class ScriptDeployment {
             selectedLC=dialog.getSelectedLC();
             disk=dialog.getDisk();
             os=dialog.getOs();
+            
+            LocalCloudDTO LC= localClouds.get(selectedLC);
+            ArrayList<String []> systemServiceRegistry= LC.getSystemServiceRegistry();
+            
+            
             final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 

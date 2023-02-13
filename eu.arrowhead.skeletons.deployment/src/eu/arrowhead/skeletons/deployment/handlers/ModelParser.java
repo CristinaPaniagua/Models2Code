@@ -56,7 +56,7 @@ public class ModelParser {
 	private boolean isProvider = false;
 	private boolean isConsumer = false;
 	private ArrayList<InterfaceMetadata> interfaces= new ArrayList<InterfaceMetadata>();
-	private ArrayList<String []> systemServiceRegistry= new  ArrayList<String []>();
+	
 	
 	
 	public  void modelReader(String modelLocation) {
@@ -64,7 +64,7 @@ public class ModelParser {
 		 ModelLoader umlModel= new ModelLoader();
 		 
 		 
-		 //modelLocation="D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml";
+		
 		
 		        
 		        Object objModel = umlModel.loadModel(modelLocation);
@@ -76,7 +76,7 @@ public class ModelParser {
 		            sourcePackagedElements = sourceModel.getPackagedElements();
 		        } else if (objModel instanceof Package) {
 		            Package sourcePackage = (Package) objModel;
-		           // sourcePackagedElements = sourcePackage.getPackagedElements();
+		           
 		        }
 		         
 		        for (PackageableElement element : sourcePackagedElements){
@@ -107,6 +107,9 @@ public class ModelParser {
 	public void getDetails(PackageableElement element) {
 		 LocalCloudDTO localcloud=new LocalCloudDTO();
 		 ArrayList<String[]> sysList = new ArrayList<String[]>();
+		 ArrayList<String []> systemServiceRegistry= new  ArrayList<String []>();
+		 
+		 
 		 sysList.clear();
 		if (element instanceof Classifier) {
 			Classifier classifier = (Classifier) element;
@@ -201,6 +204,7 @@ public class ModelParser {
 					
 				
 					localcloud.setSystems(sysList);
+					localcloud.setSystemServiceRegistry(systemServiceRegistry);
 					localClouds.add(localcloud);
 					
 					System.out.println( "number of local clouds:"+	localClouds.size());
@@ -356,11 +360,5 @@ public class ModelParser {
 		this.interfaces = interfaces;
 	}
 
-	public ArrayList<String[]> getSystemServiceRegistry() {
-		return systemServiceRegistry;
-	}
-
-	public void setSystemServiceRegistry(ArrayList<String[]> systemServiceRegistry) {
-		this.systemServiceRegistry = systemServiceRegistry;
-	}
+	
 }
