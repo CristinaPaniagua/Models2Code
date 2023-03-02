@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javapoet-1.10.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javax.ws.rs-api-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.e4.core.di.annotations_1.6.400.v20190518-1217.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.papyrus.arrowhead.profile-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.papyrus.arrowhead.profile-1.0.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.uml2.uml-5.0.1.v20140910-1354.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.slf4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/swing2swt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/velocity-engine-core-2.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-16"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

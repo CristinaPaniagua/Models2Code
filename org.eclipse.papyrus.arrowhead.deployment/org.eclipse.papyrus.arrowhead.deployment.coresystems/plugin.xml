@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="org.eclipse.papyrus.arrowhead.deployment.commands.category"
+            name="Deployment Category">
+      </category>
+      <command
+            categoryId="org.eclipse.papyrus.arrowhead.deployment.commands.category"
+            name="Deploy Core Systems"
+            id="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="handlers.Generation"
+            commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="org.eclipse.papyrus.arrowhead.deployment.menus.sampleMenu"
+               label="Arrowhead"
+               mnemonic="M">
+            <command
+                  commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand"
+                  id="org.eclipse.papyrus.arrowhead.deployment.coresystems.menus.coreCommand"
+                  mnemonic="S">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="org.eclipse.papyrus.arrowhead.deployment.toolbars.sampleToolbar">
+            <command
+                  id="org.eclipse.papyrus.arrowhead.deployment.coresystems.toolbars.coreCommand"
+                  commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand"
+                  icon="icons/Core_icon.png"
+                  tooltip="Deployment of AH core systems">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+</plugin>

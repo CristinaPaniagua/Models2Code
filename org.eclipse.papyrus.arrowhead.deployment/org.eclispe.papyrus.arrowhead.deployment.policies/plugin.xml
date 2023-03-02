@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="org.eclipse.papyrus.arrowhead.deployment.commands.category"
+            name="Rules Category">
+      </category>
+      <command
+            categoryId="org.eclipse.papyrus.arrowhead.deployment.commands.category"
+            name="Deploy Rules"
+            id="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="handlers.Generation"
+            commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+8">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="org.eclipse.papyrus.arrowhead.deployment.menus.sampleMenu"
+               label="Arrowhead"
+               mnemonic="M">
+            <command
+                  commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand"
+                  id="org.eclipse.papyrus.arrowhead.deployment.policies.menus.policiesCommand"
+                  mnemonic="B">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="org.eclipse.papyrus.arrowhead.deployment.toolbars.sampleToolbar">
+            <command
+                  id="org.eclipse.papyrus.arrowhead.deployment.policies.toolbars.policiesCommand"
+                  commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand"
+                  icon="icons/Rules_icon.png"
+                  tooltip="Rules deployment">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+</plugin>
