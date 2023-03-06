@@ -4,7 +4,7 @@ mkdir arrowhead-core-systems
 cd arrowhead-core-systems
 git clone https://github.com/CristinaPaniagua/MinimalLocalCloud.git
 cd MinimalLocalCloud
-mvn clean install ${skipTest}
+CALL mvn clean install ${skipTest}
 copy serviceregistry\target\arrowhead-serviceregistry-4.4.1.jar ..
 copy authorization\target\arrowhead-authorization-4.4.1.jar ..
 copy orchestrator\target\arrowhead-orchestrator-4.4.1.jar ..
