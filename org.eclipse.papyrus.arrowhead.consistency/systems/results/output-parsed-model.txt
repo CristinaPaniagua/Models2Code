@@ -1,0 +1,270 @@
+HomeAutomationSystem2
+
+	controlSystem
+		Description: control system used to control the window opening and closing taking into account tempreture and the actual window status.
+
+		SystemDesignDescription: ControlSystem2
+			Role: Consumer
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+				WindowOpeningService
+					Role: Consumer
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getWindowStatus
+							 Method: GET
+				WindowMotorService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						openWindow
+							 Method: GET
+						closeWindow
+							 Method: GET
+	windowOpening
+		Description: Hall sensor used to detect window opening.
+
+		SystemDesignDescription: WindowOpening-servo
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				WindowOpeningService
+					Role: Consumer
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getWindowStatus
+							 Method: GET
+				WindowOpeningService
+					Role: Consumer
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getWindowStatus
+							 Method: GET
+	windowMotor
+		Description: Windows opening and closing motors.
+
+		SystemDesignDescription: WindowMotor
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				WindowMotorService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						openWindow
+							 Method: GET
+						closeWindow
+							 Method: GET
+				WindowMotorService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						openWindow
+							 Method: GET
+						closeWindow
+							 Method: GET
+	indoorTemp
+		Description: ST shield : humidity, temperature, magnetometer, accelerometer, gyroscope
+
+		SystemDesignDescription: IndoorTemp-X-NUCLEO-IKS01A3
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+
+HomeAutomationSystem
+
+	indoorTemp
+		Description: This component provides indoor temperature.
+New Comment
+
+		SystemDesignDescription: IndoorTemp-X-NUCLEO-IKS01A3
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+	outdoorTemp
+		Description: This component provides outdoor temperature. 
+
+		SystemDesignDescription: OutdoorTemp-X-NUCLEO-IKS01A3
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+	controlSystem
+		Description: This is the control system.
+
+		SystemDesignDescription: ControlSystem
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+				TempService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						getTemp
+							 Method: GET
+							 Request Type: GetTempRequestDTO
+							 Response Type: String
+							 Request Payload: 
+								sensorId - Integer
+							 Response Payload: 
+								temp - Integer
+				SystemConfigService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						setSystemMode
+							 Method: POST
+							 Request Type: SetSystemModeRequestDTO
+							 Request Payload: 
+								systemMode - Integer
+				TempRegulationService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						activate
+							 Method: POST
+							 Request Type: ActivateRequestDTO
+							 Request Payload: 
+								desiredTemp - Integer
+	boiler
+		Description: This is the boiler.
+
+		SystemDesignDescription: Boiler
+			Role: Consumer
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				TempRegulationService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						activate
+							 Method: POST
+							 Request Type: ActivateRequestDTO
+							 Request Payload: 
+								desiredTemp - Integer
+	iHM
+		Description: This component provides a human-machine interface.
+
+		SystemDesignDescription: IHM
+			Role: Provider
+			Server Address: 
+			serverPort: 
+			InterfaceDesignDescriptions:
+				SystemConfigService
+					Role: Provider
+					Protocol: HTTP_1_1
+					Encoding: JSON
+					Operations:
+						setSystemMode
+							 Method: POST
+							 Request Type: SetSystemModeRequestDTO
+							 Request Payload: 
+								systemMode - Integer
