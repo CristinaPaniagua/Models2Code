@@ -1,0 +1,5 @@
+%systemroot%\System32\xcopy  C:\Users\usuario\Documents\ltu\2022-support-software-engineer\sysml-plugin-development\workspace\\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\consumer C:\Users\usuario\Documents\ltu\2022-support-software-engineer\sysml-plugin-development\workspace\\HomeAutomationSystem_ApplicationSystems\boiler_Consumer /e
+C:
+cd C:\Users\usuario\Documents\ltu\2022-support-software-engineer\sysml-plugin-development\workspace\\HomeAutomationSystem_ApplicationSystems\boiler_Consumer\src\main\java\eu\arrowhead
+mkdir boiler_Consumer
+del "C:\Users\usuario\Documents\ltu\2022-support-software-engineer\sysml-plugin-development\workspace\\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources${sysName}ConsumerStructure.bat"

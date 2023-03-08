@@ -1,0 +1,247 @@
+package handlers;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.List;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.jface.window.Window;
+import org.eclipse.papyrus.arrowhead.common.deployment.CodgenUtil;
+import org.eclipse.papyrus.arrowhead.common.deployment.TypeSafeProperties;
+
+public class ScriptDeployment {
+
+	protected static Shell shell;
+	private Text Directory;
+	private String directory = "";
+	private String os = "";
+	private String disk = "";
+	private String language = "";
+	private Boolean mandatorySys = false;
+	private Boolean supportSys = false;
+	private Boolean skipTest = false;
+	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private String workspace= configuration.getProperty("workspace");
+	
+	private String arrowheadPath = "\\arrowhead-papyrus-plugin";
+	private String deploymentPath = "\\org.eclipse.papyrus.arrowhead.deployment";
+	private String coresystemsPath = "\\coresystems";
+	 
+	 @Execute
+	    public void execute(Shell shell) {
+	
+		 DialogWindow dialog= new DialogWindow(shell);
+		 dialog.setWorkspace(workspace);
+         if (dialog.open() == Window.OK) {
+        	 
+        	if(!dialog.getBadDirectory()){
+            System.out.println("OK");
+            
+            
+            
+            directory=dialog.getDirectory();
+            os=dialog.getOs();
+            System.out.println("OS: "+os);
+            language=dialog.getLanguage();
+            mandatorySys=dialog.getMandatorySys();
+            supportSys=dialog.getSupportSys();
+            disk=dialog.getDisk();
+            skipTest=dialog.getSkipTest();
+            
+            final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
+ 
+			if(!(directory == null || directory.isEmpty())) {
+			   VelocityEngine velocityEngine = new VelocityEngine();
+
+			   velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+			   velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+			   velocityEngine.init();
+			   Template t=null;
+			   VelocityContext context = new VelocityContext();
+			   context.put("outputDirectory", directory);
+			  if(mandatorySys) {
+				  if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+					   t = velocityEngine.getTemplate("/templates/coreSysJavaLinux.vm");
+				   }else {
+					   disk=dialog.getDisk();
+					   t = velocityEngine.getTemplate("/templates/coreSysJavaWindows.vm");
+					   context.put("disk", disk);
+				   }
+			  }else {
+				  if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+					   t = velocityEngine.getTemplate("/templates/AllSysJavaLinux.vm");
+				   }else {
+					   disk=dialog.getDisk();
+					   t = velocityEngine.getTemplate("/templates/allSysJavaWindows.vm");
+					   context.put("disk", disk);
+				   }
+			  }
+			   context.put("workSpace", workspace);
+			   
+			      if(skipTest) {
+			    	  context.put("skipTest","-DskipTests");
+			    	  
+			      }else {
+			    	  context.put("skipTest","  ");
+			      }
+			       
+			      
+			       try{
+			    	   Writer writer=null;
+			    	   if(os.equalsIgnoreCase("linux")||os.equalsIgnoreCase("mac") ) {
+			    		   
+			    		  String terminal;
+			    		  if (os.equalsIgnoreCase("linux")) {
+			    			  terminal="gnome-terminal";
+			    		  }else 
+			    			  terminal="open -a terminal";		    		  
+			    		   
+			    		   
+			    		   //GENEREATION OF INIT.sh
+						   Template tInit=velocityEngine.getTemplate("/templates/initUnix.vm");
+						   VelocityContext contextInit = new VelocityContext();
+						   contextInit.put("terminal", terminal);
+						   Writer wInit=new FileWriter (new File(workspace+arrowheadPath+deploymentPath+coresystemsPath+"\\src\\scripts\\init.sh"));
+						   tInit.merge(contextInit, wInit);
+						   wInit.flush();
+						   wInit.close();
+						  
+						   //GENERATION OF CORESCRIPT
+			    		   context.put("fileEnd", "sh");
+			    		   writer = new FileWriter (new File(workspace+arrowheadPath+deploymentPath+coresystemsPath+"\\src\\scripts\\corescript.sh"));
+					   }else {
+						   //GENEREATION OF INIT.BAT
+						   Template tInit=velocityEngine.getTemplate("/templates/initWin.vm");
+						   VelocityContext contextInit = new VelocityContext();
+						   contextInit.put("workSpace", workspace);
+						   Writer wInit=new FileWriter (new File(workspace+arrowheadPath+deploymentPath+coresystemsPath+"\\src\\scripts\\init.bat"));
+						   tInit.merge(contextInit, wInit);
+						   wInit.flush();
+						   wInit.close();
+						  
+						   //GENERATION OF CORESCRIPT
+						   context.put("fileEnd", "bat");
+						   writer = new FileWriter (new File(workspace+arrowheadPath+deploymentPath+coresystemsPath+"\\src\\scripts\\corescript.bat"));
+					   }   
+			       
+			           t.merge(context, writer);
+			           writer.flush();
+			           writer.close();
+			           
+			           if(os.equalsIgnoreCase("windows")) {
+			        	   executebat(workspace+arrowheadPath+deploymentPath+coresystemsPath+"\\src\\scripts\\init.bat"); 
+			           }else
+			        	   executesh();
+			           
+			           
+			           } catch (IOException e) {
+			        	   e.printStackTrace();
+			           } catch (InterruptedException e) {
+			        	   e.printStackTrace();
+			           }
+			            
+			}else dialog.open();
+			
+			
+			// set back default class loader
+	         Thread.currentThread().setContextClassLoader(oldContextClassLoader);
+            }
+	 }
+      
+	 }
+	 
+	 
+	 
+	   //EXECUTE BAT
+	   
+	   public static void executebat(String directory) throws InterruptedException, IOException {
+	        
+	       
+	       ExecutorService executor = Executors.newSingleThreadExecutor();
+	        ProcessBuilder processBuilder = new ProcessBuilder();
+	        System.out.println("Script generated");
+	        processBuilder.command(directory);
+	        
+	        try {
+
+	            Process process = processBuilder.start();
+	            System.out.println("Script executed");
+	            executor.submit(new ProcessTask(process.getInputStream()));
+	           
+
+	           
+	        } finally {
+	            executor.shutdown();
+	        }
+	    
+	      
+	   }
+	   
+	   
+	   
+	   private static class ProcessTask implements Callable<List<String>> {
+
+	        private InputStream inputStream;
+
+	        public ProcessTask(InputStream inputStream) {
+	            this.inputStream = inputStream;
+	        }
+
+	        @Override
+	        public List<String> call() {
+	            return new BufferedReader(new InputStreamReader(inputStream))
+	                    .lines()
+	                    .collect(Collectors.toList());
+	        }
+	    }
+	 
+
+	   //EXECUTE SH
+	  
+	   public  void executesh() throws InterruptedException, IOException {
+	        
+	       
+	       ExecutorService executor = Executors.newSingleThreadExecutor();
+	        ProcessBuilder processBuilder = new ProcessBuilder();
+	        System.out.println("Script generated");
+	      
+	       processBuilder.command("sh", "-c", "sh ./init.sh");
+	      
+	       processBuilder.directory(new File(workspace+arrowheadPath+deploymentPath+coresystemsPath+"\\src\\scripts\\"));
+		 
+		  try {
+
+	            Process process = processBuilder.start();
+	            System.out.println("Script executed");
+	            executor.submit(new ProcessTask(process.getInputStream()));
+	           
+
+	           
+	        } finally {
+	            executor.shutdown();
+	        }
+
+	   }
+	   
+	   
+	}
+
