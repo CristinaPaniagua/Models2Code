@@ -38,4 +38,5 @@ Export-Package: com.squareup.javapoet,
  org.eclipse.e4.core.di.annotations,
  org.eclipse.papyrus.arrowhead.common.deployment,
  org.eclipse.papyrus.arrowhead.common.dto,
+ org.eclipse.uml2.uml.util,
  swing2swt.layout

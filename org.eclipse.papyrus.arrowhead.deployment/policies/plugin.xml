@@ -9,21 +9,21 @@
       </category>
       <command
             categoryId="org.eclipse.papyrus.arrowhead.deployment.commands.category"
-            name="Deploy Rules"
-            id="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand">
+            name="Deploy Database Rules"
+            id="org.eclipse.papyrus.arrowhead.deployment.policies.command">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="handlers.Generation"
-            commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand">
+            commandId="org.eclipse.papyrus.arrowhead.deployment.policies.command">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand"
+            commandId="org.eclipse.papyrus.arrowhead.deployment.policies.command"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M1+8">
@@ -34,23 +34,27 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               id="org.eclipse.papyrus.arrowhead.deployment.menus.sampleMenu"
+               id="org.eclipse.papyrus.arrowhead.menu"
                label="Arrowhead"
                mnemonic="M">
-            <command
-                  commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand"
-                  id="org.eclipse.papyrus.arrowhead.deployment.policies.menus.policiesCommand"
-                  mnemonic="B">
-            </command>
+            <menu
+                  id="org.eclipse.papyrus.arrowhead.deployment.menu"
+                  label="Deployment">
+               <command
+                     commandId="org.eclipse.papyrus.arrowhead.deployment.policies.command"
+                     id="org.eclipse.papyrus.arrowhead.deployment.policies.menu"
+                     mnemonic="B">
+               </command>
+            </menu>
          </menu>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="org.eclipse.papyrus.arrowhead.deployment.toolbars.sampleToolbar">
+               id="org.eclipse.papyrus.arrowhead.deployment.toolbar">
             <command
-                  id="org.eclipse.papyrus.arrowhead.deployment.policies.toolbars.policiesCommand"
-                  commandId="org.eclipse.papyrus.arrowhead.deployment.policies.commands.policiesCommand"
+                  id="org.eclipse.papyrus.arrowhead.deployment.policies.toolbar"
+                  commandId="org.eclipse.papyrus.arrowhead.deployment.policies.command"
                   icon="icons/Rules_icon.png"
                   tooltip="Rules deployment">
             </command>

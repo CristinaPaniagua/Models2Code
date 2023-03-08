@@ -37,6 +37,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.papyrus.arrowhead.common.deployment.CodgenUtil;
 import org.eclipse.papyrus.arrowhead.common.deployment.ModelParser;
 import org.eclipse.papyrus.arrowhead.common.deployment.ModelSelectWindow;
+import org.eclipse.papyrus.arrowhead.common.deployment.ProjectSelectWindow;
 import org.eclipse.papyrus.arrowhead.common.deployment.TypeSafeProperties;
 import org.eclipse.papyrus.arrowhead.common.dto.InterfaceMetadata;
 import org.eclipse.papyrus.arrowhead.common.dto.LocalCloudDTO;
@@ -69,7 +70,7 @@ public class ScriptDeployment {
 		 System.out.println("WORSPACE SELECTED: "+ workspace);
 		 IProject[] projects= readWorkspace();
 		 Shell pshell = null;
-		 ProjectSelecWindow projWin= new ProjectSelecWindow(pshell);
+		 ProjectSelectWindow projWin= new ProjectSelectWindow(pshell);
 		 projWin.setProjects(projects);
 		 
 		

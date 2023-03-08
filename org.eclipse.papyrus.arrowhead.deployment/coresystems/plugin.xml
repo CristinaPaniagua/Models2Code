@@ -11,20 +11,20 @@
       <command
             categoryId="org.eclipse.papyrus.arrowhead.deployment.commands.category"
             name="Deploy Core Systems"
-            id="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand">
+            id="org.eclipse.papyrus.arrowhead.deployment.coresystems.command">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="handlers.Generation"
-            commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand">
+            commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.command">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand"
+            commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.command"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M1+6">
@@ -35,23 +35,27 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               id="org.eclipse.papyrus.arrowhead.deployment.menus.sampleMenu"
+               id="org.eclipse.papyrus.arrowhead.menu"
                label="Arrowhead"
                mnemonic="M">
-            <command
-                  commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand"
-                  id="org.eclipse.papyrus.arrowhead.deployment.coresystems.menus.coreCommand"
-                  mnemonic="S">
-            </command>
+            <menu
+                  id="org.eclipse.papyrus.arrowhead.deployment.menu"
+                  label="Deployment">
+               <command
+                     commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.command"
+                     id="org.eclipse.papyrus.arrowhead.deployment.coresystems.menu"
+                     mnemonic="S">
+               </command>
+            </menu>
          </menu>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="org.eclipse.papyrus.arrowhead.deployment.toolbars.sampleToolbar">
+               id="org.eclipse.papyrus.arrowhead.deployment.toolbar">
             <command
-                  id="org.eclipse.papyrus.arrowhead.deployment.coresystems.toolbars.coreCommand"
-                  commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.commands.coreCommand"
+                  id="org.eclipse.papyrus.arrowhead.deployment.coresystems.toolbar"
+                  commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.command"
                   icon="icons/Core_icon.png"
                   tooltip="Deployment of AH core systems">
             </command>
