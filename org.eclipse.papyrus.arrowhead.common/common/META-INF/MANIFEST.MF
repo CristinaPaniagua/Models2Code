@@ -30,13 +30,13 @@ Bundle-ClassPath: lib/commons-lang3-3.1.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: com.squareup.javapoet,
+ deployment,
+ dto,
  org.apache.velocity,
  org.apache.velocity.app,
  org.apache.velocity.context,
  org.apache.velocity.runtime,
  org.apache.velocity.runtime.resource.loader,
  org.eclipse.e4.core.di.annotations,
- org.eclipse.papyrus.arrowhead.common.deployment,
- org.eclipse.papyrus.arrowhead.common.dto,
  org.eclipse.uml2.uml.util,
  swing2swt.layout

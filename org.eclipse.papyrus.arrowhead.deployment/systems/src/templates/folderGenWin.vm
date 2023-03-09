@@ -1,6 +1,0 @@
-${disk}
-cd ${outputDirectory}
-mkdir ${name}_ApplicationSystems
-cd ${name}_ApplicationSystems
-${createFolders}
-copy ${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\.project ${outputDirectory}\\${name}_ApplicationSystems

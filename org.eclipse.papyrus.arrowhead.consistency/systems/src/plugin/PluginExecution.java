@@ -19,9 +19,11 @@ import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.PackageableElement;
 import org.eclipse.uml2.uml.util.UMLUtil;
-import org.eclipse.papyrus.arrowhead.common.deployment.CodgenUtil;
-import org.eclipse.papyrus.arrowhead.common.deployment.ModelSelectWindow;
-import org.eclipse.papyrus.arrowhead.common.deployment.ProjectSelectWindow;
+
+import deployment.CodgenUtil;
+import deployment.ModelSelectWindow;
+import deployment.ProjectSelectWindow;
+
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.SysDD;
 
@@ -65,7 +67,7 @@ public class PluginExecution {
 	public static HashMap<String, PackageableElement> packageInterfaceDescriptionMap = new HashMap<String, PackageableElement>();
 	
 	// Configuration parameters of runtime-EclipseApplication
-	private static org.eclipse.papyrus.arrowhead.common.deployment.TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private static deployment.TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
 	private String workspace = configuration.getProperty("workspace");
 
 	

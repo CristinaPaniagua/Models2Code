@@ -56,7 +56,7 @@
             <command
                   id="org.eclipse.papyrus.arrowhead.deployment.coresystems.toolbar"
                   commandId="org.eclipse.papyrus.arrowhead.deployment.coresystems.command"
-                  icon="icons/Core_icon.png"
+                  icon="icon.png"
                   tooltip="Deployment of AH core systems">
             </command>
          </toolbar>
