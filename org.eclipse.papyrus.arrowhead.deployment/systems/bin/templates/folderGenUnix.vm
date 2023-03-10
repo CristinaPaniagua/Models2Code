@@ -1,0 +1,5 @@
+cd ${outputDirectory}
+mkdir ${name}_ApplicationSystems
+cd ${name}_ApplicationSystems
+${createFolders}
+rm ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/folderGenUnix.sh

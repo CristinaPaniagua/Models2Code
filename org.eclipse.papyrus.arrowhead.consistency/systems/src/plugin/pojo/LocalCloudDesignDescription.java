@@ -12,16 +12,26 @@ import java.util.Comparator;
  *
  */
 public class LocalCloudDesignDescription {
+	
+	//=================================================================================================
+	// attributes
+	
 	private String name = ""; // Name of the Local Cloud
 	private ArrayList<DeployedEntity> deployedEntities = new ArrayList<DeployedEntity>(); // List of deployed entities of the Local Cloud
 	
 	
+	//=================================================================================================
+	// auxiliary methods
+	
+	//-------------------------------------------------------------------------------------------------	
 	public String getName() { return name; }
 	public ArrayList<DeployedEntity> getDeployedEntities() { return deployedEntities; }
 	
+	//-------------------------------------------------------------------------------------------------
 	public void setName(String name) { this.name = name; }
 	public void setDeployedEntities(ArrayList<DeployedEntity> deployedEntities) { this.deployedEntities = deployedEntities; }
 	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String toString() {
 		String deployedEntitiesString = "";
@@ -31,6 +41,7 @@ public class LocalCloudDesignDescription {
 		return name + "\n" + deployedEntitiesString;
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean equals(Object o) {
 		if(!(o instanceof LocalCloudDesignDescription))
@@ -41,8 +52,17 @@ public class LocalCloudDesignDescription {
 		return lc.getName().equals(this.getName());
 	}
 	
+	
+	//=================================================================================================
+	// auxiliary classes
+	
+	//-------------------------------------------------------------------------------------------------	
 	public static class LocalCloudComparator implements Comparator<LocalCloudDesignDescription> {
 
+		//=================================================================================================
+		// methods
+		
+		//-------------------------------------------------------------------------------------------------			
 		@Override
 		public int compare(LocalCloudDesignDescription o1, LocalCloudDesignDescription o2) {
 			return o1.getName().compareTo(o2.getName());

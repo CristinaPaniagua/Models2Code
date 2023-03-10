@@ -1,0 +1,7 @@
+cp -a ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/provider/. ${outputDirectory}/${name}_ApplicationSystems/${sysName}_Provider
+cd ${outputDirectory}/${name}_ApplicationSystems/${sysName}_Provider/src/main/java/eu/arrowhead
+echo ...
+mkdir ${sysName}_Provider
+mkdir security
+sleep 60s
+rm ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/${sysName}ProviderStructure.sh

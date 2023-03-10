@@ -21,9 +21,17 @@ import plugin.pojo.InterfaceDesignDescription.ServiceDescription.Payload;
 * 
 */
 public class DefinitionParser {
+
+	//=================================================================================================
+	// attributes
 	
 	private static String systemPath = ""; // Path to the system's folder
 	
+	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Parses a system from the workspace folder that contains the files defining the 
 	 * SystemDesignDescription (SysDD).
@@ -78,6 +86,7 @@ public class DefinitionParser {
 		return systemDesignDescription;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Parses an interface from the workspace folder that contains the files defining the 
 	 * InterfaceDesignDescription (IDD) of a specific system.
@@ -109,6 +118,7 @@ public class DefinitionParser {
 		return interfaceDesignList;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * This class offers a set of utils for the parsing of the files describing the IDD operations and payload.
 	 * 
@@ -212,6 +222,7 @@ public class DefinitionParser {
 			return interfaceDesignList;
 		}
 
+		//-------------------------------------------------------------------------------------------------
 		/**
 		 * Parse the file containing the provider operations performed by the specific system
 		 * 
@@ -329,6 +340,7 @@ public class DefinitionParser {
 			return interfaceDesignList;
 		}
 
+		//-------------------------------------------------------------------------------------------------
 		/**
 		 * Parse the file containing the payload of a specific operation
 		 * 

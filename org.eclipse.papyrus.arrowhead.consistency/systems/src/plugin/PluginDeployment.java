@@ -14,8 +14,17 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class PluginDeployment extends AbstractHandler {
+	
+	//=================================================================================================
+	// attributes
+	
 	protected Shell shell;
 	
+	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 	

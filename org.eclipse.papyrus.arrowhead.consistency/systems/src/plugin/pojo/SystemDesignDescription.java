@@ -11,6 +11,10 @@ import java.util.ArrayList;
  *
  */
 public class SystemDesignDescription {
+	
+	//=================================================================================================
+	// attributes
+	
 	private String name; // Name of the System
 	private String role; // Role of the System (Consumer, Provider, Provider_Consumer)
 	
@@ -20,6 +24,10 @@ public class SystemDesignDescription {
 	private ArrayList<InterfaceDesignDescription> IDDs; // List of implementing interfaces
 	
 	
+	//=================================================================================================
+	// auxiliary methods
+	
+	//-------------------------------------------------------------------------------------------------	
 	public String getName() { return name; }
 	public String getRole() { return role; }
 	public String getServerAddress() { return serverAddress; }
@@ -32,6 +40,7 @@ public class SystemDesignDescription {
 	public void setServerPort(String serverPort) { this.serverPort = serverPort; }
 	public void setIDDs(ArrayList<InterfaceDesignDescription> iDDs) { IDDs = iDDs; }
 	
+	//-------------------------------------------------------------------------------------------------
 	public SystemDesignDescription() {
 		this.name = "";
 		this.role = "";
@@ -51,6 +60,7 @@ public class SystemDesignDescription {
 			this.IDDs.add(new InterfaceDesignDescription(idd));
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String toString() {
 		String interfaceDesignString = "";
@@ -60,6 +70,7 @@ public class SystemDesignDescription {
 		return name + "\n\t\t\tRole: " + role + "\n\t\t\tServer Address: " + serverAddress + "\n\t\t\tserverPort: " + serverPort + "\n\t\t\tInterfaceDesignDescriptions:" + interfaceDesignString; 
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean equals(Object o) {
 		if(!(o instanceof SystemDesignDescription))
@@ -70,6 +81,7 @@ public class SystemDesignDescription {
 		return system.getName().equals(this.getName());
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	public boolean checkConsistency(SystemDesignDescription other) {
 		return
 				this.getName() == other.getName() &&

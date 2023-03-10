@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.emf.common.util.EList;
@@ -21,7 +18,7 @@ import org.eclipse.uml2.uml.PackageableElement;
 import org.eclipse.uml2.uml.util.UMLUtil;
 
 import deployment.CodgenUtil;
-import deployment.ModelSelectWindow;
+import deployment.ExecutionUtils;
 import deployment.ProjectSelectWindow;
 
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
@@ -49,6 +46,9 @@ import plugin.pojo.SystemDesignDescription;
  */
 public class PluginExecution {
 	
+	//=================================================================================================
+	// attributes
+		
 	// Local Cloud objects parsed from the model and workspace
 	private ArrayList<LocalCloudDesignDescription> modelLocalCloudList = new ArrayList<LocalCloudDesignDescription>();
 	public static ArrayList<LocalCloudDesignDescription> workspaceLocalCloudList = new ArrayList<LocalCloudDesignDescription>();
@@ -71,6 +71,10 @@ public class PluginExecution {
 	private String workspace = configuration.getProperty("workspace");
 
 	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	@Execute
 	public void execute(Shell shell) throws Exception { 
 
@@ -78,7 +82,7 @@ public class PluginExecution {
 		//										Pre-processing Steps										//
 		// ************************************************************************************************ //
 
-		IProject[] projects= readWorkspacePlugin(); // Read projects from workspace
+		IProject[] projects= ExecutionUtils.readWorkspace(); // Read projects from workspace
 		Shell projectShell = null;
 		ProjectSelectWindow projectWindow = new ProjectSelectWindow(projectShell);
 		projectWindow.setProjects(projects);
@@ -354,21 +358,5 @@ public class PluginExecution {
 		// TODO If the user selected dynamic analysis generate a periodic task for code checking
 
 	}
-
-	/**
-	 * Obtain all the workspace projects from plugin path
-	 * 
-	 * @return A list of IProject objects
-	 */
-	private static IProject[] readWorkspacePlugin()  { // TODO Move
-		// Get the root of the workspace
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-
-		// Get all projects in the workspace
-		IProject[] projects = root.getProjects();
-
-		return projects;
-	} 
 
 }

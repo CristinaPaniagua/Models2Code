@@ -22,9 +22,17 @@ import plugin.pojo.SystemDesignDescription;
  */
 public class PhysicalModeller {
 	
+	//=================================================================================================
+	// attributes
+	
 	// UML stereotypes implemented by each class
 	public static EList<Stereotype> localCloudDescriptionStereotypeList = null;
 	
+	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Adds a local cloud to the model from the LocalCloudDesignDescription object that describes it
 	 * 
@@ -36,6 +44,7 @@ public class PhysicalModeller {
 		return null; // TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the values of a modelled LocalCloudDesignDescription 
 	 * 
@@ -47,6 +56,7 @@ public class PhysicalModeller {
 		return null; // TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the internal parameters of a modelled LocalCloudDesignDescription
 	 * 
@@ -57,6 +67,7 @@ public class PhysicalModeller {
 		// TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Adds a deployed entity to the model from the DeployedEntity object that describes it
 	 * 
@@ -68,6 +79,7 @@ public class PhysicalModeller {
 		return null; // TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the values of a modelled DeployedEntity
 	 * 
@@ -80,6 +92,7 @@ public class PhysicalModeller {
 		return null; // TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the internal parameters of a modelled DeployedEntity
 	 * 

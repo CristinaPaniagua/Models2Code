@@ -12,6 +12,10 @@ import java.util.Comparator;
  *
  */
 public class InterfaceDesignDescription {
+	
+	//=================================================================================================
+	// attributes
+	
 	private String name; // Interface Name
 	private String role; // Role of the system with the interface (Consumer or Provider)
 	
@@ -21,18 +25,24 @@ public class InterfaceDesignDescription {
 	private ArrayList<ServiceDescription> operations; // List of operations that the interface serves
 	
 	
+	//=================================================================================================
+	// auxiliary methods
+	
+	//-------------------------------------------------------------------------------------------------	
 	public String getName() { return name; }
 	public String getRole() { return role; }
 	public String getEncoding() { return encoding; }
 	public String getProtocol() { return protocol; }
 	public ArrayList<ServiceDescription> getOperations() { return operations; }
 
+	//-------------------------------------------------------------------------------------------------
 	public void setName(String name) { this.name = name; }
 	public void setRole(String role) { this.role = role; }
 	public void setEncoding(String encoding) { this.encoding = encoding; }
 	public void setProtocol(String protocol) { this.protocol = protocol; }
 	public void setOperations(ArrayList<ServiceDescription> operations) { this.operations = operations; }	
 	
+	//-------------------------------------------------------------------------------------------------
 	public InterfaceDesignDescription() {
 		this.name = "";
 		this.role = "";
@@ -52,6 +62,7 @@ public class InterfaceDesignDescription {
 			this.operations.add(new ServiceDescription(service));
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String toString() {
 		String operationsString = "";
@@ -61,6 +72,7 @@ public class InterfaceDesignDescription {
 		return "\n\t\t\t\t" + name + "\n\t\t\t\t\tRole: " + role + "\n\t\t\t\t\tProtocol: " + protocol + "\n\t\t\t\t\tEncoding: " + encoding + "\n\t\t\t\t\tOperations:" + operationsString;
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean equals(Object o) {
 		if(!(o instanceof InterfaceDesignDescription))
@@ -71,6 +83,7 @@ public class InterfaceDesignDescription {
 		return idd.getName().equals(this.getName()) && idd.getRole().equals(this.getRole());
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	public boolean checkConsistency(InterfaceDesignDescription other) {
 		return 
 				this.getName() == other.getName() &&
@@ -79,8 +92,17 @@ public class InterfaceDesignDescription {
 				this.getOperations().size() == other.getOperations().size();
 	}
 	
+	
+	//=================================================================================================
+	// auxiliary classes
+		
+	//-------------------------------------------------------------------------------------------------
 	public static class InterfaceComparator implements Comparator<InterfaceDesignDescription> {
 
+		//=================================================================================================
+		// methods
+		
+		//-------------------------------------------------------------------------------------------------
 		@Override
 		public int compare(InterfaceDesignDescription o1, InterfaceDesignDescription o2) {
 			return o1.getName().compareTo(o2.getName());
@@ -88,6 +110,7 @@ public class InterfaceDesignDescription {
 		
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * 
 	 * The ServiceDescription is a SysML stereotype that displays the type and payload of an operation.
@@ -96,6 +119,10 @@ public class InterfaceDesignDescription {
 	 *
 	 */
 	public class ServiceDescription {
+		
+		//=================================================================================================
+		// attributes
+		
 		private String name;  // Name of the operation
 		private String method; // Method of the operation
 		private String requestType;
@@ -103,6 +130,11 @@ public class InterfaceDesignDescription {
 		private String responseType;
 		private ArrayList<Payload> responsePayload; // Response payload of the operation
 		
+		
+		//=================================================================================================
+		// auxiliary methods
+		
+		//-------------------------------------------------------------------------------------------------
 		public String getName() { return name; }
 		public String getMethod() { return method; }
 		public String getRequestType() { return requestType; }
@@ -110,6 +142,7 @@ public class InterfaceDesignDescription {
 		public String getResponseType() { return responseType; }
 		public ArrayList<Payload> getResponsePayload() { return responsePayload; }
 		
+		//-------------------------------------------------------------------------------------------------
 		public void setName(String name) { this.name = name; }
 		public void setMethod(String method) { this.method = method; }
 		public void setRequestType(String requestType) { this.requestType = requestType; }
@@ -117,6 +150,7 @@ public class InterfaceDesignDescription {
 		public void setResponseType(String responseType) { this.responseType = responseType; }
 		public void setResponsePayload(ArrayList<Payload> responsePayload) { this.responsePayload = responsePayload; }
 		
+		//-------------------------------------------------------------------------------------------------
 		public ServiceDescription() {
 			this.name = "";
 			this.method = "";
@@ -141,6 +175,7 @@ public class InterfaceDesignDescription {
 				this.responsePayload.add(new Payload(payload));
 		}
 		
+		//-------------------------------------------------------------------------------------------------
 		@Override
 		public String toString() {
 			String type = "";
@@ -162,6 +197,7 @@ public class InterfaceDesignDescription {
 			return "\n\t\t\t\t\t\t" + name + "\n\t\t\t\t\t\t\t Method: " + method + type + payloadString + "\n";
 		}
 		
+		//-------------------------------------------------------------------------------------------------
 		@Override
 		public boolean equals(Object o) {
 			if(!(o instanceof ServiceDescription))
@@ -172,6 +208,7 @@ public class InterfaceDesignDescription {
 			return sd.getName().equals(this.getName());
 		}
 		
+		//-------------------------------------------------------------------------------------------------
 		public boolean checkConsistency(ServiceDescription other) {
 			return 
 					this.getName() == other.getName() &&
@@ -180,8 +217,17 @@ public class InterfaceDesignDescription {
 					this.getResponseType() == other.getResponseType();
 		}
 		
+		
+		//=================================================================================================
+		// auxiliary classes
+			
+		//-------------------------------------------------------------------------------------------------
 		public class OperationComparator implements Comparator<ServiceDescription> {
 
+			//=================================================================================================
+			// methods
+				
+			//-------------------------------------------------------------------------------------------------
 			@Override
 			public int compare(ServiceDescription o1, ServiceDescription o2) {
 				return o1.getName().compareTo(o2.getName());
@@ -189,6 +235,7 @@ public class InterfaceDesignDescription {
 			
 		}
 		
+		//-------------------------------------------------------------------------------------------------
 		/**
 		 * 
 		 * The payload of a certain ServiceDescription stereotype
@@ -197,16 +244,26 @@ public class InterfaceDesignDescription {
 		 *
 		 */
 		public class Payload {
+			
+			//=================================================================================================
+			// attributes
+			
 			private String name; // Name of the parameter
 			private String type; // Type of the parameter
 			
 			
+			//=================================================================================================
+			// auxiliary methods
+				
+			//-------------------------------------------------------------------------------------------------
 			public String getName() { return name; }
 			public String getType() { return type; }
 			
+			//-------------------------------------------------------------------------------------------------
 			public void setName(String name) { this.name = name; }
 			public void setType(String type) { this.type = type; }
 			
+			//-------------------------------------------------------------------------------------------------
 			public Payload() {
 				this.name = "";
 				this.type = "";
@@ -217,14 +274,23 @@ public class InterfaceDesignDescription {
 				this.type = other.type;
 			}
 			
+			//-------------------------------------------------------------------------------------------------
 			@Override
 			public String toString() {
 				return "\n\t\t\t\t\t\t\t\t" + name + " - " + type; 
 			}
 			
-			// TODO Use at some point
-			public class PayloadComparator implements Comparator<Payload> {
+			
+			//=================================================================================================
+			// auxiliary classes
+				
+			//-------------------------------------------------------------------------------------------------
+			public class PayloadComparator implements Comparator<Payload> { // TODO Use at some point
 
+				//=================================================================================================
+				// methods
+					
+				//-------------------------------------------------------------------------------------------------
 				@Override
 				public int compare(Payload o1, Payload o2) {
 					return o1.getName().compareTo(o2.getName());

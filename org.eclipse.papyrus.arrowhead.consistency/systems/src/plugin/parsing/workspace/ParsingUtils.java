@@ -19,6 +19,10 @@ import plugin.pojo.LocalCloudDesignDescription;
  */
 public class ParsingUtils {
 	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Reads the workspace defined by the path and returns the folders or files
 	 * in the given directory

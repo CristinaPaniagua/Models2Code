@@ -37,10 +37,18 @@ import plugin.pojo.InterfaceDesignDescription.ServiceDescription.Payload;
  */
 public class DefinitionModeller {
 
+	//=================================================================================================
+	// attributes
+	
 	// UML stereotypes implemented by each class
 	public static EList<Stereotype> systemDescriptionStereotypeList = null;
 	public static EList<Stereotype> interfaceDescriptionStereotypeList = null;
 
+	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Adds a system to the model from the SystemDesignDescription (SysDD) object that describes it
 	 * 
@@ -85,6 +93,7 @@ public class DefinitionModeller {
 		return newModelSystem;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the InterfaceDesignDescription list of a modelled SystemDesignDescription 
 	 * 
@@ -126,6 +135,7 @@ public class DefinitionModeller {
 		return oldSystem;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the internal parameters of a modelled SystemDesignDescription
 	 * 
@@ -137,6 +147,7 @@ public class DefinitionModeller {
 		// TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Adds an interface to the model from the InterfaceDesignDescription (IDD) object that describes it
 	 * 
@@ -203,6 +214,7 @@ public class DefinitionModeller {
 		return newModelInterface;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the ServiceDescription list of a modelled InterfaceDesignDescription 
 	 * 
@@ -215,6 +227,7 @@ public class DefinitionModeller {
 		// TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Updates the internal parameters of a modelled InterfaceDesignDescription
 	 * 
@@ -227,6 +240,7 @@ public class DefinitionModeller {
 		// TODO Complete
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Adds an new payload to the model from the Payload object that describes it
 	 * 

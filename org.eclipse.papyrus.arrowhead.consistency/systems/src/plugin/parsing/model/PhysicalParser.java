@@ -25,6 +25,10 @@ import plugin.pojo.SystemDesignDescription;
  */
 public class PhysicalParser {
 
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Parses a local cloud from a packageable element that potentially implements the 
 	 * LocalCloudDesignDescription stereotype.

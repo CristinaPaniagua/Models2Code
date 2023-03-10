@@ -19,9 +19,16 @@ import org.eclipse.uml2.uml.resource.UMLResource;
  */
 public class ParsingUtils {
 
+	//=================================================================================================
+	// attributes
+	
 	private static Resource resource = null;
 
+	
+	//=================================================================================================
+	// methods
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * A method that loads UML/Ecore model from input path.
 	 * 
@@ -55,7 +62,7 @@ public class ParsingUtils {
 		return loadedModel;
 	}
 
-
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * A method that saves UML/Ecore model from input object.
 	 * 

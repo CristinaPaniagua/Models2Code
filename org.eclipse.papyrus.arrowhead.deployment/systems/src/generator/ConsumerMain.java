@@ -1,0 +1,118 @@
+package generator;
+
+import java.util.ArrayList;
+
+import java.io.IOException;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+
+import dto.InterfaceMetadata;
+import dto.OperationInt;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+
+/**
+ * 
+ * Generation of the ConsumerMain.java file
+ * 
+ * @author cripan
+ *
+ */
+public class ConsumerMain {
+
+	// =================================================================================================
+	// attributes
+
+	private static InterfaceMetadata MD = null; // TODO Not Used
+	public static ArrayList<ArrayList<String>> classesRequest = new ArrayList<ArrayList<String>>();
+	public static ArrayList<String> classesResponse = new ArrayList<String>(); // TODO Not Used
+
+
+	// =================================================================================================
+	// methods
+
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Generation of the Consumer Main
+	 * 
+	 * @param Directory The path to the file
+	 * @param name The name of the local cloud
+	 * @param system The name of the system
+	 * @param systemServiceRegistry List of systems in the service registry
+	 * @param interfaces List of interfaces of the consumer
+	 */
+	public static void generateConsumerMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
+
+		ArrayList<InterfaceMetadata> serviceInterfaces = new ArrayList<InterfaceMetadata>();
+		System.out.println("START GENERATION CONSUMER: **" + system + "** " + systemServiceRegistry.size() + "--" + interfaces.size()); // TODO Remove Trace
+
+		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
+			String[] systemService = systemServiceRegistry.get(m);
+			System.out.println("sys: " + systemService[0]); // TODO Remove Trace
+			System.out.println("serv: " + systemService[1]); // TODO Remove Trace
+
+			// If the entry is for this system
+			if (systemService[2].equals("consumer") && systemService[0].equals(system)) {
+				System.out.println("MATCH:" + m); // TODO Remove Trace
+				// Find the matching service interface
+				for (int n = 0; n < interfaces.size(); n++)
+					if (interfaces.get(n).getID().equals(systemService[1])) {
+						System.out.println("MATCH interface number:" + n); // TODO Remove Trace
+						serviceInterfaces.add(interfaces.get(n));
+					}
+			}
+		}
+
+		for (int p = 0; p < serviceInterfaces.size(); p++) { // For each registered service interface
+			InterfaceMetadata MDC = serviceInterfaces.get(p);
+			System.out.println(MDC.toString()); // TODO Remove Trace
+			String service = MDC.getID(); // TODO Not Used
+
+			ArrayList<OperationInt> operations = MDC.getOperations();
+			// Generate response and request payload
+			for (int i = 0; i < operations.size(); i++) {
+				OperationInt op = operations.get(i);
+				GenerationUtils.objectClassGen(Directory, name, system, op, "consumer");
+			}
+		}
+
+		// Check protocol type
+		boolean httpFlag = GenerationUtils.checkHttpProtocol(serviceInterfaces);
+		boolean coapFlag = GenerationUtils.checkCoapProtocol(serviceInterfaces);
+
+		// Initialise Velocity Engine
+		VelocityEngine velocityEngine = new VelocityEngine();
+		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+		velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+		velocityEngine.init();
+
+		try {
+			serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
+
+			// Create and write Consumer Main class file
+			Template t = velocityEngine.getTemplate("templates/consumerMainHttpCoap.vm");
+			VelocityContext context = new VelocityContext();
+			context.put("packagename", system + "_Consumer");
+			context.put("sysName", system);
+			context.put("interfaces", serviceInterfaces);
+			context.put("address", "http://127.0.0.1:8888"); // TODO Update from service registry
+			context.put("httpFlag", httpFlag);
+			context.put("coapFlag", coapFlag);
+
+			Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Consumer/src/main/java/eu/arrowhead/" + system + "_Consumer/" + system + "ConsumerMain.java"));
+			t.merge(context, writer);
+			writer.flush();
+			writer.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+}

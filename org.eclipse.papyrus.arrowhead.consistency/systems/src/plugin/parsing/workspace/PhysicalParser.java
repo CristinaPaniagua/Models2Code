@@ -18,6 +18,10 @@ import plugin.pojo.LocalCloudDesignDescription;
  */
 public class PhysicalParser {
 	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------	
 	/**
 	 * Parses a local cloud from the workspace folder that contains the files defining the LocalCloudDesignDescription.
 	 * 
@@ -43,6 +47,7 @@ public class PhysicalParser {
 		return localCloud;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Parses a deployed entity from the workspace folder that contains the files defining the DeployedEntity
 	 * 

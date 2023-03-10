@@ -1,0 +1,5 @@
+%systemroot%\System32\xcopy  ${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\consumer ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer /e
+${disk}
+cd ${outputDirectory}\\${name}_ApplicationSystems\\${sysName}_Consumer\src\main\java\eu\arrowhead
+mkdir ${sysName}_Consumer
+del "${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\${sysName}ConsumerStructure.bat"

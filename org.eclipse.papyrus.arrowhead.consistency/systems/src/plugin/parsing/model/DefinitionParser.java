@@ -27,6 +27,10 @@ import plugin.pojo.InterfaceDesignDescription.ServiceDescription.Payload;
  */
 public class DefinitionParser {
 
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Parses a system from a packageable element that potentially implements the SystemDesignDescription
 	 * (SysDD) stereotype.
@@ -65,6 +69,7 @@ public class DefinitionParser {
 		return systemDescription;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	/**
 	 * Parses an interface from a packageable element that potentially implements the InterfaceDesignDescription
 	 * (IDD) stereotype.
