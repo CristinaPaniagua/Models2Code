@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 
+import com.google.common.base.CaseFormat;
+
 /**
  * 
  * Utils for the execution of scripts
@@ -127,6 +129,30 @@ public class ExecutionUtils {
 		}
 
 		return projects;
+	}
+	
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Transforms a string from UpperCamel to kebab-case
+	 * 
+	 * @param str The string to transforme
+	 * @return The transformed string
+	 */
+	public static String toKebabCase(String str) {
+		return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, str);
+	}
+	
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Transforms a string from kebab-case to snake_case
+	 * 
+	 * @param str The string to transforme
+	 * @return The transformed string
+	 */
+	public static String toSnakeCase(String str) {
+		return CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_UNDERSCORE, str);
 	}
 	
 	// =================================================================================================

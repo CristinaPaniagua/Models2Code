@@ -9,6 +9,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import deployment.ExecutionUtils;
 import dto.InterfaceMetadata;
 import dto.OperationInt;
 
@@ -98,14 +99,15 @@ public class ConsumerMain {
 			// Create and write Consumer Main class file
 			Template t = velocityEngine.getTemplate("templates/consumerMainHttpCoap.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", system + "_Consumer");
+			context.put("packagename", "consumer"); // _Consumer
 			context.put("sysName", system);
 			context.put("interfaces", serviceInterfaces);
 			context.put("address", "http://127.0.0.1:8888"); // TODO Update from service registry
 			context.put("httpFlag", httpFlag);
 			context.put("coapFlag", coapFlag);
 
-			Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Consumer/src/main/java/eu/arrowhead/" + system + "_Consumer/" + system + "ConsumerMain.java"));
+			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Consumer/src/main/java/eu/arrowhead/" + system + "_Consumer/" + system + "ConsumerMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-consumer/src/main/java/eu/arrowhead/consumer/" + system + "ConsumerMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

@@ -14,6 +14,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeVariableName;
 
+import java.io.Reader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

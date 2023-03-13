@@ -122,9 +122,11 @@ public class DialogWindow extends TitleAreaDialog {
 
 			}
 		});
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
+		
+		// For space purposes
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
 		// Selection of Policy Type
 		Group grpLanguage = new Group(container, SWT.NULL);

@@ -12,6 +12,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import deployment.ExecutionUtils;
 import dto.InterfaceMetadata;
 import dto.OperationInt;
 
@@ -91,11 +92,12 @@ public class ProviderMain {
 			// Create and write Provider Main class file
 			Template t = velocityEngine.getTemplate("templates/providerMain.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", system + "_Provider");
+			context.put("packagename", "provider"); // _Provider
 			context.put("sysName", system);
 			context.put("coap", coap);
 
-			Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
+			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -104,9 +106,10 @@ public class ProviderMain {
 				// Create and write Coap Server Application class file
 				Template tc = velocityEngine.getTemplate("templates/coapServer.vm");
 				VelocityContext contextc = new VelocityContext();
-				contextc.put("packagename", system + "_Provider");
-
-				Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
+				contextc.put("packagename", "provider"); // _Provider
+				
+				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -219,14 +222,15 @@ public class ProviderMain {
 			// Create and write Provider Main class file
 			Template t = velocityEngine.getTemplate("templates/providerConsumerMain.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", system + "_Provider");
+			context.put("packagename", "provider"); // _Provider
 			context.put("sysName", system);
 			context.put("interfaces", serviceInterfacesConsumer);
 			context.put("address", "http://127.0.0.1:8888"); // TODO Update from service registry
 			context.put("httpFlag", consumerHttp);
 			context.put("coapFlag", consumerCoap);
 
-			Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
+			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -235,9 +239,10 @@ public class ProviderMain {
 				// Create and write Coap Server Application class file
 				Template tc = velocityEngine.getTemplate("templates/coapServer.vm");
 				VelocityContext contextc = new VelocityContext();
-				contextc.put("packagename", system + "_Provider");
+				contextc.put("packagename", "provider"); // _Provider
 
-				Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
+				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -275,10 +280,11 @@ public class ProviderMain {
 			// Create and write the Application Listener
 			Template t = velocityEngine.getTemplate("templates/providerAppListener.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", system + "_Provider");
+			context.put("packagename", "provider");
 			context.put("interfaces", serviceInterfaces);
 
-			Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ProviderApplicationInitListener.java"));
+			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ProviderApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -324,10 +330,11 @@ public class ProviderMain {
 				// Create and write Service Controller file for HTTP
 				Template th = velocityEngine.getTemplate("templates/providerController.vm");
 				VelocityContext contexth = new VelocityContext();
-				contexth.put("packagename", system + "_Provider");
+				contexth.put("packagename", "provider");
 				contexth.put("interfaces", serviceInterfacesHttp);
 
-				Writer writerh = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerHttp.java"));
+				// Writer writerh = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerHttp.java"));
+				Writer writerh = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);
 				writerh.flush();
 				writerh.close();
@@ -337,10 +344,11 @@ public class ProviderMain {
 				// Create and write Service Controller file for CoAP
 				Template tc = velocityEngine.getTemplate("templates/providerControllerCoap.vm");
 				VelocityContext contextc = new VelocityContext();
-				contextc.put("packagename", system + "_Provider");
+				contextc.put("packagename", "provider");
 				contextc.put("interfaces", serviceInterfacesCoap);
 
-				Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerCoap.java"));
+				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerCoap.java"));
+				Writer writerc = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServiceControllerCoap.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();

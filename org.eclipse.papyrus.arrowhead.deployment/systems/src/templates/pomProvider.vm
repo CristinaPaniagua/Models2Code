@@ -3,7 +3,7 @@
 	
 	<parent>
     	<groupId>eu.arrowhead</groupId>
-    	<artifactId>${name}_ApplicationSystems</artifactId>
+    	<artifactId>${name}</artifactId>
     	<version>4.4.0.2</version>
   	</parent>
 	

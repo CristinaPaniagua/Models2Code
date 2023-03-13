@@ -110,8 +110,12 @@ public class ScriptDeployment {
 							if (!(directory == null || directory.isEmpty())) {
 								// Obtain information about selected local cloud
 								System.out.println(localClouds.size()); // TODO Remove Trace
-								String LCname = localClouds.get(selectedLC).getLcName();
-								ExecutionUtils.newFolder(directory, LCname + "_Rules");
+								// String LCname = localClouds.get(selectedLC).getLcName();
+								String LCname = ExecutionUtils.toKebabCase(localClouds.get(selectedLC).getLcName());
+								// ExecutionUtils.newFolder(directory, LCname + "_Rules");
+								ExecutionUtils.newFolder(directory, "arrowhead");
+								ExecutionUtils.newFolder(directory + "/arrowhead/", LCname);
+								ExecutionUtils.newFolder(directory + "/arrowhead/" + LCname + "/", "db-rules");
 								ArrayList<String[]> connectionsLC = localClouds.get(selectedLC).getConnections();
 								System.out.println(selectedLC); // TODO Remove Trace
 								for (int j = 0; j < connectionsLC.size(); j++) { // TODO Remove Trace
@@ -146,9 +150,10 @@ public class ScriptDeployment {
 									Template t = velocityEngine.getTemplate("templates/orchPolicy.vm");
 									VelocityContext context = new VelocityContext();
 									context.put("connectionsLCs", connectionsLC);
-
+											
 									try {
-										Writer writer = new FileWriter(directory + "/" + LCname + "_Rules/" + LCname + "_OrchStoreRules.sql");
+										// Writer writer = new FileWriter(directory + "/" + LCname + "-rules/" + LCname + "_OrchStoreRules.sql");
+										Writer writer = new FileWriter(directory + "/arrowhead/" + ExecutionUtils.toKebabCase(LCname) + "/db-rules/orchstore-rules.sql");
 										t.merge(context, writer);
 										writer.flush();
 										writer.close();
@@ -165,7 +170,8 @@ public class ScriptDeployment {
 									context.put("connectionsLCs", connectionsLC);
 
 									try {
-										Writer writer = new FileWriter(directory + "/" + LCname + "_Rules/" + LCname + "_SecurityRules.sql");
+										// Writer writer = new FileWriter(directory + "/" + LCname + "_Rules/" + LCname + "_SecurityRules.sql");
+										Writer writer = new FileWriter(directory + "/arrowhead/" + ExecutionUtils.toKebabCase(LCname) + "/db-rules/security-rules.sql");
 										t.merge(context, writer);
 										writer.flush();
 										writer.close();

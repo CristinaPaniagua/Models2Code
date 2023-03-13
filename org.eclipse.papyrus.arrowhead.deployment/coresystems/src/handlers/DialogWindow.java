@@ -83,7 +83,9 @@ public class DialogWindow extends TitleAreaDialog {
 			String descriptionText = textWidget.getText();
 			directory = descriptionText;
 		});
-//		new Label(container, SWT.NONE);
+		
+		// For space purposes
+		new Label(container, SWT.NONE);
 		
 		// Selection of Systems Dialog
 		Label lbltitle = new Label(container, SWT.NONE);
@@ -112,10 +114,12 @@ public class DialogWindow extends TitleAreaDialog {
 
 			}
 		});
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
+		
+		// For space purposes
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
 		// Selection of Operating System
 		Group device = new Group(container, SWT.NULL);
@@ -178,13 +182,15 @@ public class DialogWindow extends TitleAreaDialog {
 		btnRadioButton_4.setEnabled(false);
 		btnRadioButton_4.setText("C++");
 		new Label(grpLanguage, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
-//		new Label(container, SWT.NONE);
+		
+		// For space purposes
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
 		// Selection of Maven Skip Compilation Tests
 		Button btnCheckButton = new Button(container, SWT.CHECK);
@@ -204,7 +210,9 @@ public class DialogWindow extends TitleAreaDialog {
 			}
 		});
 		btnCheckButton.setText("Skip Compilation Tests");
-//		new Label(container, SWT.NONE);
+		
+		// For space purposes
+		new Label(container, SWT.NONE);
 
 		return container;
 	}

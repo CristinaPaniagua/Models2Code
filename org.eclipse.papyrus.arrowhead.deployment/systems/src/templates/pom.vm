@@ -9,10 +9,10 @@
 	</parent>
 	
 	<groupId>eu.arrowhead</groupId>	
-	<artifactId>${name}_ApplicationSystems</artifactId>
+	<artifactId>${name}</artifactId>
 	<version>4.4.0.2</version>
 	<packaging>pom</packaging>
-	<name>${name}_ApplicationSystems</name>
+	<name>${name}</name>
 	<description>Arrowhead Application Systems using Spring Boot</description>
 	
 	<url>https://github.com/arrowhead-f/client-java-spring</url>

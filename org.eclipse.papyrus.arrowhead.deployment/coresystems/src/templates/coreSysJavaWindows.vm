@@ -1,7 +1,9 @@
 ${disk}
 cd ${outputDirectory}
-mkdir arrowhead-core-systems
-cd arrowhead-core-systems
+mkdir arrowhead
+cd arrowhead
+mkdir core-systems
+cd core-systems
 git clone https://github.com/CristinaPaniagua/MinimalLocalCloud.git
 cd MinimalLocalCloud
 CALL mvn clean install ${skipTest}

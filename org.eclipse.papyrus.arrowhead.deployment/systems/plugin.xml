@@ -52,11 +52,12 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="org.eclipse.papyrus.arrowhead.deployment.toolbar">
+               id="org.eclipse.papyrus.arrowhead">
             <command
-                  id="org.eclipse.papyrus.arrowhead.deployment.systems.toolbar"
                   commandId="org.eclipse.papyrus.arrowhead.deployment.systems.command"
                   icon="icon.png"
+                  id="org.eclipse.papyrus.arrowhead.deployment.systems.toolbar"
+                  label="Deploy Systems"
                   tooltip="Systems deployment">
             </command>
          </toolbar>

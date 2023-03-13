@@ -11,6 +11,8 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import deployment.ExecutionUtils;
+
 /**
  * 
  * Generation of the ConsumerApplicationInitListener.java file
@@ -43,8 +45,9 @@ public class ConsumerAppList {
 			// Generate consumer application listener from template
 			Template t = velocityEngine.getTemplate("templates/consumerApplListener.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", SysName);
-			Writer writer = new FileWriter(new File(directory + "/" + name + "_ApplicationSystems/" + SysName + "/src/main/java/eu/arrowhead/" + SysName + "/ConsumerApplicationInitListener.java"));
+			context.put("packagename", "consumer");
+			// Writer writer = new FileWriter(new File(directory + "/" + name + "_ApplicationSystems/" + SysName + "/src/main/java/eu/arrowhead/" + SysName + "/ConsumerApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(directory + "/arrowhead/" + name + "/cloud-systems/" + SysName + "/src/main/java/eu/arrowhead/consumer/ConsumerApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

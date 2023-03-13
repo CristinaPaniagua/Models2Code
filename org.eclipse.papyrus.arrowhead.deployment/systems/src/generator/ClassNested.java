@@ -17,6 +17,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import deployment.CodgenUtil;
+import deployment.ExecutionUtils;
 
 /**
  *
@@ -180,11 +181,12 @@ public class ClassNested {
 
 		// Create and write the new class
 		TypeSpec classGen = BclassGen.build();
-		String packageName = "eu.arrowhead." + system;
+		String packageName = "eu.arrowhead." + system.split("-")[system.split("-").length - 1];
 		JavaFile javaFile = JavaFile.builder(packageName, classGen).addFileComment("Auto generated").build();
 		try {
-			System.out.println(Directory + "/" + foldername + "_ApplicationSystems/" + system + "/src/main/java/eu/arrowhead/" + system); // TODO Remove Trace
-			javaFile.writeTo(Paths.get(Directory + "/" + foldername + "_ApplicationSystems/" + system + "/src/main/java/"));
+			System.out.println(Directory + "/arrowhead/" + foldername + "/cloud-systems/" + system + "/src/main/java/eu/arrowhead/" + ExecutionUtils.toSnakeCase(system)); // TODO Remove Trace
+			// javaFile.writeTo(Paths.get(directory + "/" + foldername + "_ApplicationSystems/" + system + "/src/main/java/"));
+			javaFile.writeTo(Paths.get(Directory + "/arrowhead/" + foldername + "/cloud-systems/" + system + "/src/main/java/"));
 		} catch (IOException ex) {
 			System.err.print("Exception:" + ex.getMessage());
 		}
