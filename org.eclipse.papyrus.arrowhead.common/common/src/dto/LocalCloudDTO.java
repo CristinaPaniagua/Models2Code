@@ -8,12 +8,14 @@ public class LocalCloudDTO {
 	private String lcName=" ";
 	private ArrayList<String[]> systems = new ArrayList<String[]>();
 	private ArrayList<String[]> connections = new ArrayList<String[]>();
+	private ArrayList<String []> systemServiceRegistry = new  ArrayList<String []>();
 
-	public LocalCloudDTO(String lcName, ArrayList<String[]> systems,ArrayList<String[]> connections) {
+	public LocalCloudDTO(String lcName, ArrayList<String[]> systems, ArrayList<String[]> connections, ArrayList<String []> registry) {
 		super();
 		this.lcName = lcName;
 		this.systems = systems;
 		this.connections = connections;
+		this.systemServiceRegistry = registry;
 	}
 
 	public LocalCloudDTO() {
@@ -45,5 +47,12 @@ public class LocalCloudDTO {
 		this.connections = connections;
 	}
 
+	public ArrayList<String[]> getSystemServiceRegistry() {
+		return systemServiceRegistry;
+	}
+
+	public void setSystemServiceRegistry(ArrayList<String[]> systemServiceRegistry) {
+		this.systemServiceRegistry = systemServiceRegistry;
+	}
 	
 }

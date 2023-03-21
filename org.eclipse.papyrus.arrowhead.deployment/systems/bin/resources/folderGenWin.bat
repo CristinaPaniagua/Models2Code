@@ -7,8 +7,4 @@ cd home-automation-system
 mkdir cloud-systems
 cd cloud-systems
 mkdir indoor-temp-provider
-mkdir outdoor-temp-provider
-mkdir control-system-provider
-mkdir boiler-consumer
-mkdir i-h-m-provider
 

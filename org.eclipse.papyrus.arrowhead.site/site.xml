@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.papyrus.arrowhead.common.feature_1.0.0.202303081727.jar" id="org.eclipse.papyrus.arrowhead.common.feature" version="1.0.0.202303081727"/>
-   <feature url="features/org.eclipse.papyrus.arrowhead.consistency.feature_1.0.0.202303081727.jar" id="org.eclipse.papyrus.arrowhead.consistency.feature" version="1.0.0.202303081727"/>
-   <feature url="features/org.eclipse.papyrus.arrowhead.deployment.feature_1.0.0.202303081727.jar" id="org.eclipse.papyrus.arrowhead.deployment.feature" version="1.0.0.202303081727"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.consistency.feature_1.0.0.202303201302.jar" id="org.eclipse.papyrus.arrowhead.consistency.feature" version="1.0.0.202303201302"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.deployment.feature_1.0.0.202303201302.jar" id="org.eclipse.papyrus.arrowhead.deployment.feature" version="1.0.0.202303201302"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.common.feature_1.0.0.202303201302.jar" id="org.eclipse.papyrus.arrowhead.common.feature" version="1.0.0.202303201302"/>
 </site>

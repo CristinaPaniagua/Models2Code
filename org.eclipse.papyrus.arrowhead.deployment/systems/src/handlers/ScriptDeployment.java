@@ -119,8 +119,8 @@ public class ScriptDeployment {
 							os = dialog.getOs();
 							
 							// Obtain selected local cloud and the associated connections
-							LocalCloudDTO LC = localClouds.get(selectedLC);
-							ArrayList<String[]> systemServiceRegistry = LC.getConnections();
+							LocalCloudDTO LC= localClouds.get(selectedLC);
+				            ArrayList<String []> systemServiceRegistry= LC.getSystemServiceRegistry();
 
 							final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
 							Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
@@ -214,7 +214,7 @@ public class ScriptDeployment {
 									// Project file generation
 									Template tProject = velocityEngine.getTemplate("templates/cloudProject.vm");
 									VelocityContext projectContext = new VelocityContext();
-									context.put("name", dialog.getName());
+									projectContext.put("name", dialog.getName());
 									Writer writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\.project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
@@ -273,11 +273,11 @@ public class ScriptDeployment {
 											}
 
 											// While the provider directories haven't been created wait
-											while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\").exists()) {}
+											while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\").exists()) {}
 											
 											// Project file generation
 											tProject = velocityEngine.getTemplate("templates/systemProject.vm");
-											projectContext.put("name", selectedSys[j]);
+											projectContext.put("name", selectedSys[j] + "Provider");
 											writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\.project"));
 											tProject.merge(projectContext, writerProject);
 											writerProject.flush();
@@ -358,15 +358,20 @@ public class ScriptDeployment {
 											}
 
 											// While the provider/consumer directories haven't been created wait
-											while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\").exists()) {}
+											while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\").exists()) {}
 							
 											// Project file generation
 											tProject = velocityEngine.getTemplate("templates/systemProject.vm");
-											projectContext.put("name", selectedSys[j]);
+											projectContext.put("name", selectedSys[j] + "ProviderConsumer");
 											writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\.project"));
 											tProject.merge(projectContext, writerProject);
 											writerProject.flush();
 											writerProject.close();
+
+											// Generate Provider/Consumer Main
+											ProviderMain.generateProvConsMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
+											// Generate Application Properties
+											ApplicationProperties.GenerateAppProperties(directory, name, ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
 											
 											// Security files generation
 											VelocityContext contextSecurity = new VelocityContext();
@@ -387,12 +392,6 @@ public class ScriptDeployment {
 											tsec3.merge(contextSecurity, writerSecurity3);
 											writerSecurity3.flush();
 											writerSecurity3.close();
-											
-											// Generate Provider/Consumer Main
-											ProviderMain.generateProvConsMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
-											// Generate Application Properties
-											ApplicationProperties.GenerateAppProperties(directory, name, ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
-
 										} 
 										
 										// If the system is a consumer
@@ -447,7 +446,7 @@ public class ScriptDeployment {
 											
 											// Project file generation
 											tProject = velocityEngine.getTemplate("templates/systemProject.vm");
-											projectContext.put("name", selectedSys[j]);
+											projectContext.put("name", selectedSys[j] + "Consumer");
 											writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-consumer\\.project"));
 											tProject.merge(projectContext, writerProject);
 											writerProject.flush();

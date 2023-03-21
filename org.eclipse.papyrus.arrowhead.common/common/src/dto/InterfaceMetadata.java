@@ -73,6 +73,13 @@ public class InterfaceMetadata {
 				+ "]";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		boolean parentResult = super.equals(obj);
+		return parentResult ? ((InterfaceMetadata)obj).getID().equals(this.ID) : parentResult;
+	}
+
+	
 
 
 

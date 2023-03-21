@@ -243,9 +243,9 @@ public class ClassSimple {
 		JavaFile javaFile = JavaFile.builder(packageName, classGen).addFileComment("Auto generated").build();
 		
 		try {
-			System.out.println(directory + "/arrowhead/" + foldername + "/cloud-systems/" + system + "/src/main/java/eu/arrowhead/" + ExecutionUtils.toSnakeCase(system)); // TODO Remove Trace
+			System.out.println(directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "\\src\\main\\java\\"); // TODO Remove Trace
 			// javaFile.writeTo(Paths.get(directory + "/" + foldername + "_ApplicationSystems/" + system + "/src/main/java/"));
-			javaFile.writeTo(Paths.get(directory + "/arrowhead/" + foldername + "/cloud-systems/" + system + "/src/main/java/"));
+			javaFile.writeTo(Paths.get(directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "\\src\\main\\java\\"));
 		} catch (IOException ex) {
 			System.err.print("ERROR:" + ex.getMessage());
 		}

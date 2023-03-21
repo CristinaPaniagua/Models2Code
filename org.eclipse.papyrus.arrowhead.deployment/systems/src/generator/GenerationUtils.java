@@ -137,9 +137,9 @@ public class GenerationUtils {
 			for (int k = 0; k < op.getElements_request().size(); k++) { // Add request payload
 				ArrayList<String[]> elements_request = op.getElements_request().get(k).getElements();
 				if (systemType.equals("consumer"))
-					ConsumerMain.classesRequest.add(Request.classGen(elements_request, op.getOpName() + "RequestDTO", Directory, name, system + "_Consumer"));
-				else if (systemType.equals("provider"))
-					ProviderMain.classesRequest.add(Request.classGen(elements_request, op.getOpName() + "RequestDTO", Directory, name, system + "_Provider"));
+					ConsumerMain.classesRequest.add(Request.classGen(elements_request, op.getOpName() + "RequestDTO", Directory, name, system + "-consumer"));
+				else if (systemType.equals("provider") || systemType.equals("provider-consumer"))
+					ProviderMain.classesRequest.add(Request.classGen(elements_request, op.getOpName() + "RequestDTO", Directory, name, system + "-provider"));
 			}
 		}
 
@@ -149,9 +149,9 @@ public class GenerationUtils {
 			for (int j = 0; j < op.getElements_response().size(); j++) { // Add response payload
 				ArrayList<String[]> elements_response = op.getElements_response().get(j).getElements();
 				if (systemType.equals("consumer"))
-					ConsumerMain.classesResponse = Response.classGen(elements_response, op.getOpName() + "ResponseDTO", Directory, name, system + "_Consumer");
-				else if(systemType.equals("provider"))
-					ProviderMain.classesRequest.add(Response.classGen(elements_response, op.getOpName() + "RequestDTO", Directory, name, system + "_Provider"));
+					ConsumerMain.classesResponse = Response.classGen(elements_response, op.getOpName() + "ResponseDTO", Directory, name, system + "-consumer");
+				else if(systemType.equals("provider") || systemType.equals("provider-consumer"))
+					ProviderMain.classesResponse = Response.classGen(elements_response, op.getOpName() + "ResponseDTO", Directory, name, system + "-provider");
 			}
 
 		}
@@ -168,15 +168,15 @@ public class GenerationUtils {
 	public static ArrayList<InterfaceMetadata> removeRepetitions(ArrayList<InterfaceMetadata> serviceInterfaces) {
 		// TODO: Look if this is correct or the problem is the service name convention
 		
+		ArrayList<InterfaceMetadata> withoutRepetitions = new ArrayList<InterfaceMetadata>();
+		
 		for (int i = 0; i < serviceInterfaces.size(); i++) {
-			InterfaceMetadata inter = serviceInterfaces.get(i);
+			InterfaceMetadata element = serviceInterfaces.get(i);
 			
-			for (int j = i + 1; j < serviceInterfaces.size(); j++) {
-				InterfaceMetadata interNext = serviceInterfaces.get(j);
-				if (inter.getID().equals(interNext.getID()))
-					serviceInterfaces.remove(j);
-			}
+			if(!withoutRepetitions.contains(element))
+				withoutRepetitions.add(element);
 		}
-		return serviceInterfaces;
+		
+		return withoutRepetitions;
 	}
 }

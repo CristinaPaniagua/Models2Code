@@ -97,7 +97,7 @@ public class ProviderMain {
 			context.put("coap", coap);
 
 			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
-			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -109,7 +109,7 @@ public class ProviderMain {
 				contextc.put("packagename", "provider"); // _Provider
 				
 				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
-				Writer writerc = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java/eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -201,7 +201,7 @@ public class ProviderMain {
 			ArrayList<OperationInt> operations = MDC.getOperations();
 			for (int i = 0; i < operations.size(); i++) {
 				OperationInt op = operations.get(i);
-				GenerationUtils.objectClassGen(Directory, name, system, op, "consumer");
+				GenerationUtils.objectClassGen(Directory, name, system, op, "provider-consumer");
 			}
 		}
 
@@ -230,7 +230,7 @@ public class ProviderMain {
 			context.put("coapFlag", consumerCoap);
 
 			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
-			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -242,7 +242,7 @@ public class ProviderMain {
 				contextc.put("packagename", "provider"); // _Provider
 
 				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
-				Writer writerc = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -284,7 +284,7 @@ public class ProviderMain {
 			context.put("interfaces", serviceInterfaces);
 
 			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ProviderApplicationInitListener.java"));
-			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ProviderApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -313,9 +313,9 @@ public class ProviderMain {
 		// Assign interface with type of protocol
 		for (int i = 0; i < serviceInterfaces.size(); i++) {
 			InterfaceMetadata interfaceM = serviceInterfaces.get(i);
-			if (interfaceM.getProtocol().equalsIgnoreCase("CoAP"))
+			if (interfaceM.getProtocol().toLowerCase().contains("CoAP".toLowerCase()))
 				serviceInterfacesCoap.add(interfaceM);
-			if(interfaceM.getProtocol().equalsIgnoreCase("HTTP"))
+			if(interfaceM.getProtocol().toLowerCase().contains("HTTP".toLowerCase()))
 				serviceInterfacesHttp.add(interfaceM);
 		}
 
@@ -334,7 +334,7 @@ public class ProviderMain {
 				contexth.put("interfaces", serviceInterfacesHttp);
 
 				// Writer writerh = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerHttp.java"));
-				Writer writerh = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServiceControllerHttp.java"));
+				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);
 				writerh.flush();
 				writerh.close();
@@ -348,7 +348,7 @@ public class ProviderMain {
 				contextc.put("interfaces", serviceInterfacesCoap);
 
 				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerCoap.java"));
-				Writer writerc = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-provider/src/main/java/eu/arrowhead/provider/ServiceControllerCoap.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerCoap.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();

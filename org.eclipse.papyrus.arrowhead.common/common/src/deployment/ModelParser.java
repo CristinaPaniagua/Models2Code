@@ -8,15 +8,11 @@ import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription;
-//import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.IDD;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.HttpOperation;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
-import org.eclipse.uml2.uml.ConnectableElement;
-import org.eclipse.uml2.uml.Connector;
-import org.eclipse.uml2.uml.ConnectorEnd;
-import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.Operation;
 import org.eclipse.uml2.uml.PackageableElement;
@@ -27,32 +23,44 @@ import org.eclipse.uml2.uml.Type;
 import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.util.UMLUtil;
 
+import dto.LocalCloudDTO;
 import dto.ElementsPayload;
 import dto.InterfaceMetadata;
-import dto.LocalCloudDTO;
 import dto.OperationInt;
 
+/**
+ * 
+ * Parses the model from a .uml file
+ * 
+ * @author cripan
+ *
+ */
 public class ModelParser {
 
-	public ModelParser() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	// =================================================================================================
+	// attributes
 
+	// -------------------------------------------------------------------------------------------------
 	private ArrayList<LocalCloudDTO> localClouds = new ArrayList<LocalCloudDTO>();
 	private Set<Classifier> systems = new HashSet<>();
 	private boolean isProvider = false;
 	private boolean isConsumer = false;
 	private ArrayList<InterfaceMetadata> interfaces = new ArrayList<InterfaceMetadata>();
 	private ArrayList<String[]> systemServiceRegistry = new ArrayList<String[]>();
+	
+	// =================================================================================================
+	// methods
 
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Read model and parse information
+	 * 
+	 * @param modelLocation Path of the .uml file
+	 */
 	public void modelReader(String modelLocation) {
 
 		ModelLoader umlModel = new ModelLoader();
-
-		// modelLocation="D:\\SysMLPlugins\\Code\\Papyrus_new_profile\\SysML-AHT-master\\Example
-		// Models\\Studio4EducationAHTModel\\Studio4EducationAHTModel.uml";
-
 		Object objModel = umlModel.loadModel(modelLocation);
 		Model sourceModel;
 		EList<PackageableElement> sourcePackagedElements = null;
@@ -62,47 +70,40 @@ public class ModelParser {
 			sourcePackagedElements = sourceModel.getPackagedElements();
 		} else if (objModel instanceof Package) {
 			Package sourcePackage = (Package) objModel;
-			// sourcePackagedElements = sourcePackage.getPackagedElements();
 		}
 
-		for (PackageableElement element : sourcePackagedElements) {
-
-			// for nested package
-			if (element.eClass() == UMLPackage.Literals.PACKAGE) {
+		for (PackageableElement element : sourcePackagedElements)
+			if (element.eClass() == UMLPackage.Literals.PACKAGE) { // TODO Not Used
 				org.eclipse.uml2.uml.Package nestedPackage = (org.eclipse.uml2.uml.Package) element;
 				EList<PackageableElement> nestedPackagedElements = nestedPackage.getPackagedElements();
-
-				for (PackageableElement nestedElement : nestedPackagedElements) {
-					// printModelDetails(nestedElement);
-					System.out.println(element.getName());
-				}
-			} else {
-
-				System.out.println(element.getName());
-				getDetails(element);
+			} else { 
+				System.out.println(element.getName()); // TODO Remove Trace
+				getDetails(element); // Obtain details
 				getInterface(element);
-
 			}
-		}
-
 	}
 
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Obtain local cloud and system details from a packageable element
+	 * 
+	 * @param element The packageable element implementing the LocalCloudDesignDescription Stereotype Application
+	 */
 	public void getDetails(PackageableElement element) {
 		LocalCloudDTO localcloud = new LocalCloudDTO();
-		ArrayList<String[]> connectorsSystems = new ArrayList<String[]>();
-		connectorsSystems = getConnections(element);
 		ArrayList<String[]> sysList = new ArrayList<String[]>();
+
 		sysList.clear();
 		if (element instanceof Classifier) {
 			Classifier classifier = (Classifier) element;
 
 			if (classifier instanceof Class) {
 
-				LocalCLoudDesignDescription lc = UMLUtil.getStereotypeApplication(classifier,
-						LocalCLoudDesignDescription.class);
+				LocalCLoudDesignDescription lc = UMLUtil.getStereotypeApplication(classifier, LocalCLoudDesignDescription.class);
 
 				if (lc != null) {
-					System.out.println("local cloud " + lc.getBase_Class());
+					System.out.println("local cloud " + lc.getBase_Class()); // TODO Remove Trace
 
 					localcloud.setLcName(element.getName());
 
@@ -114,29 +115,23 @@ public class ModelParser {
 
 						DeployedEntity depSys = UMLUtil.getStereotypeApplication(system_part, DeployedEntity.class);
 						if (depSys != null) {
-
-							// String id = depSys.getIdentifier();
 							String name = system_part.getName();
 							String[] sysdetails = new String[2];
 							sysdetails[0] = name;
 
 							String description = "";
-							for (Iterator<Comment> iterator = system_part.getOwnedComments().iterator(); iterator
-									.hasNext();) {
-
+							for (Iterator<Comment> iterator = system_part.getOwnedComments().iterator(); iterator.hasNext();) {
 								Comment comment = iterator.next();
 								description += comment.getBody();
 							}
 
-							if (name != null && name.length() > 0) {
-
-								System.out.println("systemName: " + name);
-							}
+							if (name != null && name.length() > 0)
+								System.out.println("systemName: " + name); // TODO Remove Trace
 
 							Classifier system = (Classifier) system_part.getType();
 							EList<Property> atts = system.getAttributes();
 
-							for (Property att : atts) {
+							for (Property att : atts)
 								if (att instanceof Port) {
 									Type AttType = att.getType();
 									if (AttType != null && name != null) {
@@ -152,48 +147,50 @@ public class ModelParser {
 											registry[2] = "consumer";
 										}
 
-										if (isProvider && isConsumer) {
+										if (isProvider && isConsumer)
 											registry[2] = "provider";
-										}
-										System.out.println("System:" + registry[0] + "--Service: " + registry[1]
-												+ "--type: " + registry[2]);
-										systemServiceRegistry.add(registry);
 
+										System.out.println("System:" + registry[0] + "--Service: " + registry[1] + "--type: " + registry[2]); // TODO Remove Trace
+										systemServiceRegistry.add(registry);
 									}
 								}
 
-							}
-
-							System.out.println("P: " + isProvider + "--C: " + isConsumer);
-							if (isProvider && isConsumer) {
+							System.out.println("P: " + isProvider + "--C: " + isConsumer); // TODO Remove Trace
+							if (isProvider && isConsumer)
 								sysdetails[1] = "ProviderConsumer";
-							} else if (isProvider) {
+							else if (isProvider)
 								sysdetails[1] = "Provider";
-							} else {
+							else
 								sysdetails[1] = "Consumer";
-							}
 
 							sysList.add(sysdetails);
-							System.out.println(sysdetails[0] + "---" + sysdetails[1]);
+							System.out.println(sysdetails[0] + "---" + sysdetails[1]); // TODO Remove Trace
 						}
 
 					}
 
 					localcloud.setSystems(sysList);
-					localcloud.setConnections(connectorsSystems);
+					localcloud.setSystemServiceRegistry(systemServiceRegistry);
 					localClouds.add(localcloud);
 
-					System.out.println("number of local clouds:" + localClouds.size());
-					System.out.println("number of system-service register:" + systemServiceRegistry.size());
+					System.out.println("number of local clouds:" + localClouds.size()); // TODO Remove Trace
+					System.out.println("number of system-service register:" + systemServiceRegistry.size()); // TODO Remove Trace
 
 				} else
-					System.out.println("No local cloud");
+					System.out.println("No local cloud"); // TODO Remove Trace
 			} else
-				System.out.println("No class");
+				System.out.println("No class"); // TODO Remove Trace
 		} else
-			System.out.println("No classifier");
+			System.out.println("No classifier"); // TODO Remove Trace
 	}
 
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Obtain interface details from a packageable element
+	 * 
+	 * @param element The packageable element implementing the InterfaceDesignDescription Stereotype Application
+	 */
 	public void getInterface(PackageableElement element) {
 		InterfaceMetadata interfaceDescription = new InterfaceMetadata();
 		ArrayList<OperationInt> opList = new ArrayList<OperationInt>();
@@ -202,22 +199,20 @@ public class ModelParser {
 			Classifier classifier = (Classifier) element;
 
 			if (classifier instanceof Class) {
-
-				InterfaceDesignDescription idd = UMLUtil.getStereotypeApplication(classifier,
-						InterfaceDesignDescription.class);
+				InterfaceDesignDescription idd = UMLUtil.getStereotypeApplication(classifier, InterfaceDesignDescription.class);
 
 				if (idd != null) {
 
-					System.out.println("SERVICE NAME:" + element.getName());
+					System.out.println("SERVICE NAME:" + element.getName()); // TODO Remove Trace
 					interfaceDescription.setID(element.getName());
-					System.out.println("SERVICE PROTOCOL:" + idd.getProtocol());
+					
+					System.out.println("SERVICE PROTOCOL:" + idd.getProtocol()); // TODO Remove Trace
 					interfaceDescription.setProtocol(idd.getProtocol().toString());
 
 					EList<Operation> operations = classifier.getAllOperations();
+					System.out.println("number of operations:" + operations.size()); // TODO Remove Trace
 
-					System.out.println("number of operations:" + operations.size());
-
-					// PAYLOAD INFORMATION
+					// Obtain payload information
 					for (Operation operation : operations) {
 
 						ArrayList<ElementsPayload> elements_request = new ArrayList<ElementsPayload>();
@@ -230,23 +225,15 @@ public class ModelParser {
 						Boolean response = false;
 						OperationInt op = new OperationInt();
 
-						System.out.println("SERVICE ENCODING:" + idd.getEncoding());
+						System.out.println("SERVICE ENCODING:" + idd.getEncoding()); // TODO Remove Trace
 						op.setMediatype_request(idd.getEncoding().toString());
 						op.setMediatype_response(idd.getEncoding().toString());
 
-						System.out.println("Operation Name:" + operation.getName());
+						System.out.println("Operation Name:" + operation.getName()); // TODO Remove Trace
 						op.setOpName(operation.getName());
 						op.setPathResource("/" + operation.getName());
 
-						// TODO READ FROM operationKind
-						if (op.getOpName().startsWith("get") || op.getOpName().startsWith("open")
-								|| op.getOpName().startsWith("close")) {
-							op.setMethod("GET");
-						} else if (op.getOpName().startsWith("set") || op.getOpName().startsWith("post")) {
-							op.setMethod("POST");
-						} else {
-							op.setMethod("POST");
-						}
+						op.setMethod(UMLUtil.getStereotypeApplication(operation, HttpOperation.class).getKind().toString());
 
 						if (op.getMethod().equalsIgnoreCase("GET"))
 							response = true;
@@ -260,129 +247,73 @@ public class ModelParser {
 						op.setRequest(request);
 						op.setResponse(response);
 						EList<Parameter> parameters = operation.getOwnedParameters();
-						System.out.println("number of parameters:" + parameters.size());
+						System.out.println("number of parameters:" + parameters.size()); // TODO Remove Trace
+						
+						// Obtain parameter information
 						for (Parameter parameter : parameters) {
 
 							Type parameterType = parameter.getType();
 							if (parameterType != null) {
-								System.out.println("Parameter Name:" + parameter.getName());
+								System.out.println("Parameter Name:" + parameter.getName()); // TODO Remove Trace
 								String[] ele = new String[2];
 								ele[0] = parameter.getName();
-								System.out.println("Parameter Type:" + parameterType.getName());
+								System.out.println("Parameter Type:" + parameterType.getName()); // TODO Remove Trace
 								ele[1] = parameterType.getName();
 
 								String[] metadata = new String[4];
 								metadata[0] = ele[0];
 								metadata[1] = ele[1];
-								/*
-								 * NO METEDATA IN THE MODEL
-								 * 
-								 * metadata[2]= "temp"; metadata[3]= "celsius";
-								 */
 
 								if (response) {
 									payload_response.add(ele);
 									metadata_response.add(metadata);
-									ElementsPayload elementsResponse = new ElementsPayload(payload_response,
-											metadata_response);
+									ElementsPayload elementsResponse = new ElementsPayload(payload_response, metadata_response);
 									elements_response.add(elementsResponse);
 									op.setElements_response(elements_response);
 								}
 								if (request) {
 									payload_request.add(ele);
 									metadata_request.add(metadata);
-									ElementsPayload elementsrequest = new ElementsPayload(payload_request,
-											metadata_request);
+									ElementsPayload elementsrequest = new ElementsPayload(payload_request, metadata_request);
 									elements_request.add(elementsrequest);
 									op.setElements_request(elements_request);
 								}
-
 							}
-
 						}
-						if (elements_response.size() == 0) {
+						
+						if (elements_response.size() == 0)
 							op.setResponse(false);
-						}
-						if (elements_request.size() == 0) {
+
+						if (elements_request.size() == 0)
 							op.setRequest(false);
-						}
 
 						opList.add(op);
 
 					}
 					interfaceDescription.setOperations(opList);
-					System.out.println("INTERFACE:" + interfaceDescription.toString());
+					System.out.println("INTERFACE:" + interfaceDescription.toString()); // TODO Remove Trace
 					interfaces.add(interfaceDescription);
 
 				} else {
-
-					System.out.println("********* NO IDD ********");
-				}
-
-			}
-		}
-
-	}
-
-	public ArrayList<String[]> getConnections(PackageableElement element) {
-
-		ArrayList<String[]> connectorsSystems = new ArrayList<String[]>();
-		ArrayList<String[]> sysList = new ArrayList<String[]>();
-		String[] connector;
-		sysList.clear();
-		if (element instanceof Classifier) {
-			Classifier classifier = (Classifier) element;
-
-			if (classifier instanceof Class) {
-
-				Class LoCl = (Class) classifier;
-
-				if (LoCl != null) {
-					System.out.println("local cloud " + LoCl.getName());
-					EList<Connector> connectorsList = LoCl.getOwnedConnectors();
-					for (int j = 0; j < connectorsList.size(); j++) {
-						Connector c = connectorsList.get(j);
-						EList<ConnectorEnd> connectorsEndList = c.getEnds();
-						connector = new String[4];
-						connector[0] = c.getName();
-						for (int k = 0; k < connectorsEndList.size(); k++) {
-							ConnectorEnd ce = connectorsEndList.get(k);
-							ConnectableElement role = ce.getRole();
-							System.out.println("---------CONNECTOR: " + c.getName());
-							System.out.println(role.getType().getName());
-							connector[1] = role.getType().getName();
-							Element SysElement = role.getOwner();
-							Class SysClass = (Class) SysElement;
-							System.out.println(k + SysClass.getName());
-							connector[k + 2] = SysClass.getName();
-
-						}
-						connectorsSystems.add(connector);
-
-					}
+					System.out.println("********* NO IDD ********"); // TODO Remove Trace
 				}
 			}
 		}
-		return connectorsSystems;
 	}
+	
+	
+	// =================================================================================================
+	// auxiliary methods
 
-	public ArrayList<LocalCloudDTO> getLocalClouds() {
-		return localClouds;
-	}
+	// -------------------------------------------------------------------------------------------------
+	public ModelParser() { super(); }
 
-	public ArrayList<InterfaceMetadata> getInterfaces() {
-		return interfaces;
-	}
+	// -------------------------------------------------------------------------------------------------
+	public ArrayList<LocalCloudDTO> getLocalClouds() { return localClouds; }
+	public ArrayList<InterfaceMetadata> getInterfaces() { return interfaces; }
+	public ArrayList<String[]> getSystemServiceRegistry() { return systemServiceRegistry; }
+	
+	// -------------------------------------------------------------------------------------------------
+	public void setInterfaces(ArrayList<InterfaceMetadata> interfaces) { this.interfaces = interfaces; }
 
-	public void setInterfaces(ArrayList<InterfaceMetadata> interfaces) {
-		this.interfaces = interfaces;
-	}
-
-	public ArrayList<String[]> getSystemServiceRegistry() {
-		return systemServiceRegistry;
-	}
-
-	public void setSystemServiceRegistry(ArrayList<String[]> systemServiceRegistry) {
-		this.systemServiceRegistry = systemServiceRegistry;
-	}
 }
