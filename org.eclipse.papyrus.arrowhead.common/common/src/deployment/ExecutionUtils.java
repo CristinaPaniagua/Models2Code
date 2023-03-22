@@ -2,6 +2,7 @@ package deployment;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -129,6 +130,29 @@ public class ExecutionUtils {
 		}
 
 		return projects;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	/**
+	 * Reads the workspace defined by the path and returns the folders or files
+	 * in the given directory
+	 * 
+	 * @param path The path to the directory
+	 * @param directoryCheck Check the folders when True
+	 * @return A list of files or folders in the given directory
+	 */
+	public static String[] readWorkspace(String path, boolean directoryCheck)  {
+		File file = new File(path);
+		return directoryCheck
+		
+			? file.list(new FilenameFilter() { // Return a list of directories if directoryCheck
+				@Override
+				public boolean accept(File current, String name) {
+					return new File(current, name).isDirectory();
+				}
+			})
+					
+			: file.list(); // Return a list of files if !directoryCheck
 	}
 	
 	// -------------------------------------------------------------------------------------------------

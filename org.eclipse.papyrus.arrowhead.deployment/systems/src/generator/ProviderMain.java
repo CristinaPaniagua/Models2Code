@@ -49,20 +49,15 @@ public class ProviderMain {
 	public static void generateProviderMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
 
 		ArrayList<InterfaceMetadata> serviceInterfaces = new ArrayList<InterfaceMetadata>();
-		System.out.println("START GENERATION  PROVIDER: **" + system + "** " + systemServiceRegistry.size() + "--" + interfaces.size());
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
 			String[] systemService = systemServiceRegistry.get(m);
-			System.out.println("sys: " + systemService[0]); // TODO Remove Trace
-			System.out.println("serv: " + systemService[1]); // TODO Remove Trace
 
 			// If the entry is for this system
 			if (systemService[2].equals("provider") && systemService[0].equals(system)) {
-				System.out.println("MATCH:" + m); // TODO Remove Trace
 				// Find the matching service interface
 				for (int n = 0; n < interfaces.size(); n++)
 					if (interfaces.get(n).getID().equals(systemService[1])) {
-						System.out.println("MATCH interface number:" + n); // TODO Remove Trace
 						serviceInterfaces.add(interfaces.get(n));
 					}
 			}
@@ -90,13 +85,12 @@ public class ProviderMain {
 
 		try {
 			// Create and write Provider Main class file
-			Template t = velocityEngine.getTemplate("templates/providerMain.vm");
+			Template t = velocityEngine.getTemplate("templates/provider/providerMain.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "provider"); // _Provider
 			context.put("sysName", system);
 			context.put("coap", coap);
 
-			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
 			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
@@ -104,12 +98,11 @@ public class ProviderMain {
 
 			if (coap) {
 				// Create and write Coap Server Application class file
-				Template tc = velocityEngine.getTemplate("templates/coapServer.vm");
+				Template tc = velocityEngine.getTemplate("templates/provider/coapServer.vm");
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider"); // _Provider
 				
-				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java/eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -141,24 +134,18 @@ public class ProviderMain {
 
 		ArrayList<InterfaceMetadata> serviceInterfacesProvider = new ArrayList<InterfaceMetadata>();
 		ArrayList<InterfaceMetadata> serviceInterfacesConsumer = new ArrayList<InterfaceMetadata>();
-		System.out.println("START GENERATION  PROVIDER-CONSUMER: **" + system + "** " + systemServiceRegistry.size() + "--" + interfaces.size()); // TODO Remove Trace
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
 			String[] systemService = systemServiceRegistry.get(m);
-			System.out.println("sys: " + systemService[0]); // TODO Remove Trace
-			System.out.println("serv: " + systemService[1]); // TODO Remove Trace
-			System.out.println("type: " + systemService[2]); // TODO Remove Trace
 
 			// If the entry is for this system
 			if (systemService[0].equals(system)) {
-				System.out.println("MATCH:" + m); // TODO Remove Trace
 				String serv = systemService[1];
 
 				// If it acts as provider
 				if (systemService[2].equalsIgnoreCase("provider")) { 
 					for (int n = 0; n < interfaces.size(); n++)
 						if (interfaces.get(n).getID().equals(serv)) {
-							System.out.println("MATCH interface number:" + n); // TODO Remove Trace
 							serviceInterfacesProvider.add(interfaces.get(n));
 						}
 				}
@@ -166,7 +153,6 @@ public class ProviderMain {
 				else
 					for (int n = 0; n < interfaces.size(); n++) {
 						if (interfaces.get(n).getID().equals(serv)) {
-							System.out.println("MATCH interface number:" + n + interfaces.get(n).getID()); // TODO Remove Trace
 							serviceInterfacesConsumer.add(interfaces.get(n));
 						}
 					}
@@ -176,7 +162,6 @@ public class ProviderMain {
 		// For each service that the system provides
 		for (int l = 0; l < serviceInterfacesProvider.size(); l++) {
 			InterfaceMetadata MDP = serviceInterfacesProvider.get(l);
-			System.out.println(MDP.toString()); // TODO Remove Trace
 			String service = MDP.getID(); // TODO Not Used
 
 			// Generate response and request payload
@@ -194,7 +179,6 @@ public class ProviderMain {
 		// For each service that the system consumes
 		for (int p = 0; p < serviceInterfacesConsumer.size(); p++) {
 			InterfaceMetadata MDC = serviceInterfacesConsumer.get(p);
-			System.out.println(MDC.toString()); // TODO Remove Trace
 			String service = MDC.getID(); // TODO Not Used
 
 			// Generate response and request payload
@@ -220,7 +204,7 @@ public class ProviderMain {
 			serviceInterfacesConsumer = GenerationUtils.removeRepetitions(serviceInterfacesConsumer);
 
 			// Create and write Provider Main class file
-			Template t = velocityEngine.getTemplate("templates/providerConsumerMain.vm");
+			Template t = velocityEngine.getTemplate("templates/provider/providerConsumerMain.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "provider"); // _Provider
 			context.put("sysName", system);
@@ -229,7 +213,6 @@ public class ProviderMain {
 			context.put("httpFlag", consumerHttp);
 			context.put("coapFlag", consumerCoap);
 
-			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/" + system + "ProviderMain.java"));
 			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
@@ -237,11 +220,10 @@ public class ProviderMain {
 
 			if (providerCoap) {
 				// Create and write Coap Server Application class file
-				Template tc = velocityEngine.getTemplate("templates/coapServer.vm");
+				Template tc = velocityEngine.getTemplate("templates/provider/coapServer.vm");
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider"); // _Provider
 
-				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServerApplication.java"));
 				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
@@ -278,12 +260,11 @@ public class ProviderMain {
 		
 		try {
 			// Create and write the Application Listener
-			Template t = velocityEngine.getTemplate("templates/providerAppListener.vm");
+			Template t = velocityEngine.getTemplate("templates/provider/applicationListener.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "provider");
 			context.put("interfaces", serviceInterfaces);
 
-			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ProviderApplicationInitListener.java"));
 			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
@@ -328,12 +309,11 @@ public class ProviderMain {
 		try {
 			if (serviceInterfacesHttp.size() > 0) {
 				// Create and write Service Controller file for HTTP
-				Template th = velocityEngine.getTemplate("templates/providerController.vm");
+				Template th = velocityEngine.getTemplate("templates/provider/controllerHttp.vm");
 				VelocityContext contexth = new VelocityContext();
 				contexth.put("packagename", "provider");
 				contexth.put("interfaces", serviceInterfacesHttp);
 
-				// Writer writerh = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerHttp.java"));
 				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);
 				writerh.flush();
@@ -342,12 +322,11 @@ public class ProviderMain {
 
 			if (serviceInterfacesCoap.size() > 0) {
 				// Create and write Service Controller file for CoAP
-				Template tc = velocityEngine.getTemplate("templates/providerControllerCoap.vm");
+				Template tc = velocityEngine.getTemplate("templates/provider/controllerCoap.vm");
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider");
 				contextc.put("interfaces", serviceInterfacesCoap);
 
-				// Writer writerc = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Provider/src/main/java/eu/arrowhead/" + system + "_Provider/ServiceControllerCoap.java"));
 				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerCoap.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();

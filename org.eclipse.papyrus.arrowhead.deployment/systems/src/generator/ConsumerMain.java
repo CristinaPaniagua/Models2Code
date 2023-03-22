@@ -51,20 +51,15 @@ public class ConsumerMain {
 	public static void generateConsumerMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
 
 		ArrayList<InterfaceMetadata> serviceInterfaces = new ArrayList<InterfaceMetadata>();
-		System.out.println("START GENERATION CONSUMER: **" + system + "** " + systemServiceRegistry.size() + "--" + interfaces.size()); // TODO Remove Trace
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
 			String[] systemService = systemServiceRegistry.get(m);
-			System.out.println("sys: " + systemService[0]); // TODO Remove Trace
-			System.out.println("serv: " + systemService[1]); // TODO Remove Trace
 
 			// If the entry is for this system
 			if (systemService[2].equals("consumer") && systemService[0].equals(system)) {
-				System.out.println("MATCH:" + m); // TODO Remove Trace
 				// Find the matching service interface
 				for (int n = 0; n < interfaces.size(); n++)
 					if (interfaces.get(n).getID().equals(systemService[1])) {
-						System.out.println("MATCH interface number:" + n); // TODO Remove Trace
 						serviceInterfaces.add(interfaces.get(n));
 					}
 			}
@@ -72,7 +67,6 @@ public class ConsumerMain {
 
 		for (int p = 0; p < serviceInterfaces.size(); p++) { // For each registered service interface
 			InterfaceMetadata MDC = serviceInterfaces.get(p);
-			System.out.println(MDC.toString()); // TODO Remove Trace
 			String service = MDC.getID(); // TODO Not Used
 
 			ArrayList<OperationInt> operations = MDC.getOperations();
@@ -97,7 +91,7 @@ public class ConsumerMain {
 			serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
 
 			// Create and write Consumer Main class file
-			Template t = velocityEngine.getTemplate("templates/consumerMainHttpCoap.vm");
+			Template t = velocityEngine.getTemplate("templates/consumer/consumerMain.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "consumer"); // _Consumer
 			context.put("sysName", system);
@@ -106,8 +100,7 @@ public class ConsumerMain {
 			context.put("httpFlag", httpFlag);
 			context.put("coapFlag", coapFlag);
 
-			// Writer writer = new FileWriter(new File(Directory + "/" + name + "_ApplicationSystems/" + system + "_Consumer/src/main/java/eu/arrowhead/" + system + "_Consumer/" + system + "ConsumerMain.java"));
-			Writer writer = new FileWriter(new File(Directory + "/arrowhead/" + name + "/cloud-systems/" + ExecutionUtils.toKebabCase(system) + "-consumer/src/main/java/eu/arrowhead/consumer/" + system + "ConsumerMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

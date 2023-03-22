@@ -1,7 +1,0 @@
-%systemroot%\System32\xcopy  ${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\provider ${outputDirectory}\\arrowhead\\${name}\\cloud-systems\\${sysName}-provider /e
-${disk}
-cd ${outputDirectory}\\arrowhead\\${name}\\cloud-systems\\${sysName}-provider\src\main\java\eu\arrowhead
-mkdir provider
-cd provider
-mkdir security
-del "${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\\${sysName}ProviderStructure.bat"

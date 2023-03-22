@@ -42,13 +42,12 @@ public class ApplicationProperties {
 		
 		try {
 			// Generate application.properties file from template
-			Template t = velocityEngine.getTemplate("templates/properties.vm");
+			Template t = velocityEngine.getTemplate("templates/general/properties.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("type", SysType);
 			context.put("sysName", SysName);
 			
-			// Writer writer = new FileWriter(new File(directory + "/" + name + "_ApplicationSystems/" + SysName + "/src/main/resources/application.properties"));
-			Writer writer = new FileWriter(new File(directory + "/arrowhead/" + name + "/cloud-systems/" + SysName + "/src/main/resources/application.properties"));
+			Writer writer = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + SysName + "\\src\\main\\resources\\application.properties"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

@@ -43,11 +43,10 @@ public class ConsumerAppList {
 		
 		try {
 			// Generate consumer application listener from template
-			Template t = velocityEngine.getTemplate("templates/consumerApplListener.vm");
+			Template t = velocityEngine.getTemplate("templates/consumer/applicationListener.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "consumer");
-			// Writer writer = new FileWriter(new File(directory + "/" + name + "_ApplicationSystems/" + SysName + "/src/main/java/eu/arrowhead/" + SysName + "/ConsumerApplicationInitListener.java"));
-			Writer writer = new FileWriter(new File(directory + "/arrowhead/" + name + "/cloud-systems/" + SysName + "/src/main/java/eu/arrowhead/consumer/ConsumerApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + SysName + "\\src\\main\\java\\eu\\arrowhead\\consumer\\ConsumerApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

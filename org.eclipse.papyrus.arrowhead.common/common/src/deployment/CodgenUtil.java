@@ -126,7 +126,7 @@ public final class CodgenUtil {
     try {
     	IPath path = ResourcesPlugin.getWorkspace().getRoot().getLocation();
     	String workspacePath=  path.toString();
-      File file = new File(workspacePath + File.separator +"config" + File.separator + fileName);
+      File file = new File(workspacePath + File.separator +".config" + File.separator + fileName);
       FileInputStream inputStream = new FileInputStream(file);
       prop.load(inputStream);
     } catch (FileNotFoundException ex) {

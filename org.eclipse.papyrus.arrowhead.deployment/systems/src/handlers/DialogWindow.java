@@ -116,7 +116,6 @@ public class DialogWindow extends TitleAreaDialog {
 
 		// Obtain Local Cloud names
 		String[] lcNames = new String[localClouds.size()];
-		System.out.println(localClouds.size()); // TODO Remove Trace
 		for (int i = 0; i < localClouds.size(); i++)
 			lcNames[i] = localClouds.get(i).getLcName();
 
@@ -149,10 +148,10 @@ public class DialogWindow extends TitleAreaDialog {
 			public void handleEvent(Event event) {
 				selectedLC = list.getSelectionIndex();
 				selectedLCName = lcNames[selectedLC];
+				text.setText(selectedLCName);
 				listsys.removeAll();
 
 				String[] sysNames = new String[localClouds.get(selectedLC).getSystems().size()];
-				System.out.println(selectedLC + " " + localClouds.get(selectedLC).getSystems().size()); // TODO Remove Trace
 				
 				for (int i = 0; i < localClouds.get(selectedLC).getSystems().size(); i++) {
 					sysNames[i] = localClouds.get(selectedLC).getSystems().get(i)[0];
@@ -241,6 +240,10 @@ public class DialogWindow extends TitleAreaDialog {
 				}
 			}
 		});
+		
+
+		btnRadioButton_3.setSelection(true); // Java by default
+		btnRadioButton.setSelection(true); // Windows by default
 
 		return container;
 	}
@@ -324,7 +327,6 @@ public class DialogWindow extends TitleAreaDialog {
 				String cannonicalPath = "";
 				try {
 					cannonicalPath = file.getCanonicalPath();
-					System.out.println("PATH:" + cannonicalPath); // TODO Remove Trace
 				} catch (Exception e) {
 					System.err.println("ERROR: No Path");
 				}
@@ -334,7 +336,6 @@ public class DialogWindow extends TitleAreaDialog {
 
 				} else {
 					disk = cannonicalPath.substring(0, 2);
-					System.out.println("DISK:" + disk); // TODO Remove Trace
 					return true;
 				}
 		}
