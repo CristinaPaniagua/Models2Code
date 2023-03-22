@@ -1,1 +1,1 @@
-START ${workSpace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\coresystems\src\scripts\corescript.bat
+START ${workSpace}\.temp\corescript.bat

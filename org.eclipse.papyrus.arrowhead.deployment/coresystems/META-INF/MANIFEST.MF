@@ -9,7 +9,8 @@ Automatic-Module-Name: eu.arrowhead.coreSystems.deployment
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .
-Import-Package: org.eclipse.core.commands,
+Import-Package: org.apache.commons.io,
+ org.eclipse.core.commands,
  org.eclipse.jface.dialogs,
  org.eclipse.jface.window,
  org.eclipse.swt,

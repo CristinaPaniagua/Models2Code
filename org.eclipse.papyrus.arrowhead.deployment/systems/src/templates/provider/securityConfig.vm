@@ -21,6 +21,7 @@ public class ProviderSecurityConfig extends DefaultSecurityConfig {
 	
 	private ProviderTokenSecurityFilter tokenSecurityFilter;
 	
+	
 	//=================================================================================================
 	// methods
 

@@ -2,4 +2,3 @@ cp -a ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/consumer/. ${
 cd ${outputDirectory}/${name}_ApplicationSystems/${sysName}_Consumer/src/main/java/eu/arrowhead
 echo ...
 mkdir ${sysName}_Consumer
-rm ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/${sysName}ConsumerStructure.sh

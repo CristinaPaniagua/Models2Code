@@ -244,6 +244,7 @@ public class DialogWindow extends TitleAreaDialog {
 
 		btnRadioButton_3.setSelection(true); // Java by default
 		btnRadioButton.setSelection(true); // Windows by default
+		os = "windows";
 
 		return container;
 	}

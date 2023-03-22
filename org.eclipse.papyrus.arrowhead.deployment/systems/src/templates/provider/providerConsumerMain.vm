@@ -14,7 +14,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-
 import ai.aitia.arrowhead.application.library.ArrowheadService;
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.SSLProperties;
@@ -29,7 +28,6 @@ import eu.arrowhead.common.dto.shared.ServiceQueryFormDTO;
 import eu.arrowhead.common.exception.InvalidParameterException;
 import java.io.IOException;
 
-
 #if($httpFlag==true)
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -40,6 +38,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 #end
+
 #if($coapFlag==true)
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,6 +48,10 @@ import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.eclipse.californium.core.network.config.NetworkConfigDefaultHandler;
 import org.eclipse.californium.elements.exception.ConnectorException;
+#end
+
+#foreach( $dto in $dtos )
+import eu.arrowhead.provider.dto.$dto;
 #end
 
 @SpringBootApplication
@@ -66,6 +69,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
     
     private final Logger logger = LogManager.getLogger(${sysName}ProviderMain.class);
     
+    
     //=================================================================================================
 	// methods
 
@@ -77,36 +81,30 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
     //-------------------------------------------------------------------------------------------------
     @Override
 	public void run(final ApplicationArguments args) throws Exception {
-	#foreach( $interface in $interfaces )
-	#set($operations=$interface.getOperations())
-	#foreach( $operation in $operations  )
+		#foreach( $interface in $interfaces )
+			#set($operations=$interface.getOperations())
+			#foreach( $operation in $operations  )
     	$interface.getID()_$operation.getOpName()_Consumption();
-    #end
-    #end
-    
-    
-    		#if($coap==true)
-			try{
-                    ServerApplication coapServer= new ServerApplication();
-					coapServer.start();
-                  }
-                     catch (Exception e) {
-                     e.printStackTrace();
-                    }
-		
+    		#end
+    	#end
+		#if($coap==true)
+		try{
+            ServerApplication coapServer= new ServerApplication();
+			coapServer.start();
+          }
+        catch (Exception e) {
+         e.printStackTrace();
+        }
 		#end
-    
 	}
-	
-		
-		#set($GET_HTTP=0)
-		#set($POST_HTTP=0)
-		#set($GET_COAP=0)
-		#set($POST_COAP=0)
+	#set($GET_HTTP=0)
+	#set($POST_HTTP=0)
+	#set($GET_COAP=0)
+	#set($POST_COAP=0)
     
 	#foreach( $interface in $interfaces )
-	#set($operations=$interface.getOperations())
-	#foreach( $operation in $operations )
+		#set($operations=$interface.getOperations())
+		#foreach( $operation in $operations )
     //-------------------------------------------------------------------------------------------------
     public void $interface.getID()_$operation.getOpName()_Consumption() {
     	logger.info("Orchestration request for " + "$interface.getID()" + " service:");
@@ -134,61 +132,55 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 			validateOrchestrationResult(orchestrationResult, "$interface.getID()");
 			
 		 try{ 
-			
-			
-  #if($interface.getProtocol()=="CoAP")		
-			#if($operation.getMethod() == "GET")
+  			#if($interface.getProtocol()=="CoAP")		
+				#if($operation.getMethod() == "GET")
 			String result= sendCoapGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()");
-			#set($GET_COAP=$GET_COAP+1)
-			#elseif($operation.getMethod()== "POST")
-			#set($POST_COAP=$POST_COAP+1)
-			#if($operation.getMediatype_request()=="CBOR")
-				//PAYLOAD
-				 	CBORFactory f = new CBORFactory();
-            		ObjectMapper mapper = new ObjectMapper(f);
-            		$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
-					byte[] payload=mapper.writeValueAsBytes(request);
-				// SERVICE CONSUMPTION	
-					byte[] result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-				#elseif($operation.getMediatype_request()=="JSON")
-				//PAYLOAD
-					JsonFactory jsonFactory_objMapper = new JsonFactory();
-        			ObjectMapper objMapper=new ObjectMapper(jsonFactory_objMapper);
-					$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
-					String payload=objMapper.writeValueAsString(request);
-				// SERVICE CONSUMPTION	
-					String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-				#elseif($operation.getMediatype_request()=="XML")
-				//PAYLOAD
-					ObjectMapper objMapper=new XmlMapper();
-					$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
-					String payload=objMapper.writeValueAsString(request);
-				// SERVICE CONSUMPTION	
-					String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-				#else 
-				//TODO PAYLOAD 
-				// SERVICE CONSUMPTION	
-					String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);	
-				#end
+				#set($GET_COAP=$GET_COAP+1)
+				#elseif($operation.getMethod()== "POST")
+					#set($POST_COAP=$POST_COAP+1)
+					#if($operation.getMediatype_request()=="CBOR")
+					
+			// Payload
+		 	CBORFactory f = new CBORFactory();
+    		ObjectMapper mapper = new ObjectMapper(f);
+    		$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+			byte[] payload = mapper.writeValueAsBytes(request);
+			
+			// Service Consumption
+			byte[] result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+					#elseif($operation.getMediatype_request()=="JSON")
+						
+			// Payload
+			JsonFactory jsonFactory_objMapper = new JsonFactory();
+			ObjectMapper objMapper = new ObjectMapper(jsonFactory_objMapper);
+			$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+			String payload = objMapper.writeValueAsString(request);
+			
+			// Service Consumption
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+					#elseif($operation.getMediatype_request()=="XML")
+					
+			// Payload
+			ObjectMapper objMapper = new XmlMapper();
+			$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+			String payload = objMapper.writeValueAsString(request);
 				
-			
-			
-			#else
-   				//TODO PUT and DELETE methods
-			#end
-			
-			
-			
-			
+			// Service Consumption	
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+					#else 
+					
+			// TODO Payload 
+			// Service Consumption
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);	
+					#end
+				#else
+			// TODO PUT and DELETE methods
+				#end
 			}catch (Exception e) {
               e.printStackTrace();
-               }	
-			
+           }	
 		}
     }
-    
-    
-   
     
  #if($operation.getMethod()=="GET")
  #if($GET_COAP==1)

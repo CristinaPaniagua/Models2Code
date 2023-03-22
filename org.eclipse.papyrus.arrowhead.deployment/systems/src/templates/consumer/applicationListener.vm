@@ -20,6 +20,7 @@ public class ConsumerApplicationInitListener extends ApplicationInitListener {
 	
 	private final Logger logger = LogManager.getLogger(ConsumerApplicationInitListener.class);
 	
+	
 	//=================================================================================================
 	// methods
 
@@ -35,7 +36,6 @@ public class ConsumerApplicationInitListener extends ApplicationInitListener {
 		arrowheadService.updateCoreServiceURIs(CoreSystem.ORCHESTRATOR);
 
 		//TODO: implement here any custom behavior on application start up
-		
 	}
 	
 	//-------------------------------------------------------------------------------------------------

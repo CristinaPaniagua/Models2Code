@@ -265,7 +265,7 @@ public class ScriptDeployment {
 										ExecutionUtils.executebat(scriptPath);
 									}
 									
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\").exists()) {}
+									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
 									
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
@@ -348,7 +348,7 @@ public class ScriptDeployment {
 									}
 
 									// While the provider/consumer directories haven't been created wait
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\").exists()) {}
+									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
 					
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");

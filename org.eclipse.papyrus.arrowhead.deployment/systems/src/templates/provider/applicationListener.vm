@@ -32,6 +32,10 @@ import eu.arrowhead.common.dto.shared.ServiceSecurityType;
 import eu.arrowhead.common.dto.shared.SystemRequestDTO;
 import eu.arrowhead.common.exception.ArrowheadException;
 
+#foreach( $dto in $dtos )
+import eu.arrowhead.provider.dto.$dto;
+#end
+
 @Component
 public class ProviderApplicationInitListener extends ApplicationInitListener {
 	
@@ -61,6 +65,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 	
 	private final Logger logger = LogManager.getLogger(ProviderApplicationInitListener.class);
 	
+	
 	//=================================================================================================
 	// methods
 
@@ -70,7 +75,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 
 		//Checking the availability of necessary core systems
 		checkCoreSystemReachability(CoreSystem.SERVICEREGISTRY);
-	if (sslEnabled && tokenSecurityFilterEnabled) {
+		if (sslEnabled && tokenSecurityFilterEnabled) {
 			checkCoreSystemReachability(CoreSystem.AUTHORIZATION);			
 
 			//Initialize Arrowhead Context
@@ -81,26 +86,23 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 			logger.info("TokenSecurityFilter in not active");
 		}		
 
-	//Register services into ServiceRegistry
-#foreach( $interface in $interfaces )
-	#set($operations=$interface.getOperations())
-	#foreach( $operation in $operations )  
+		//Register services into ServiceRegistry
+		#foreach( $interface in $interfaces )
+			#set($operations=$interface.getOperations())
+			#foreach( $operation in $operations )  
 		final ServiceRegistryRequestDTO ${interface.getID()}_$operation.getOpName()_Request = createServiceRegistryRequest(" ${interface.getID()}","$operation.getPathResource()", HttpMethod.$operation.getMethod());		
 		arrowheadService.forceRegisterServiceToServiceRegistry( ${interface.getID()}_$operation.getOpName()_Request);
-
-	#end
-	#end
-
-
+			#end
+		#end
 	}
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void customDestroy() {
-		//Unregister service
-		// Eg. 
+		//Unregister service (example)
 		//arrowheadService.unregisterServiceFromServiceRegistry(<SERVICE DEFINITION>);
 	}
+	
 	
 	//=================================================================================================
 	// assistant methods
@@ -131,6 +133,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		final ServiceRegistryRequestDTO serviceRegistryRequest = new ServiceRegistryRequestDTO();
 		serviceRegistryRequest.setServiceDefinition(serviceDefinition);
 		final SystemRequestDTO systemRequest = new SystemRequestDTO();
+		
 		systemRequest.setSystemName(mySystemName);
 		systemRequest.setAddress(mySystemAddress);
 		systemRequest.setPort(mySystemPort);		
@@ -151,6 +154,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		serviceRegistryRequest.setServiceUri(serviceUri);
 		serviceRegistryRequest.setMetadata(new HashMap<>());
 		serviceRegistryRequest.getMetadata().put( "http-method", httpMethod.name());
+		
 		return serviceRegistryRequest;
 	}
 }

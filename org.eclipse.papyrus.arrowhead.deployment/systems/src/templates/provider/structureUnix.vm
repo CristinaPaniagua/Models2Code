@@ -3,5 +3,3 @@ cd ${outputDirectory}/${name}_ApplicationSystems/${sysName}_Provider/src/main/ja
 echo ...
 mkdir ${sysName}_Provider
 mkdir security
-sleep 60s
-rm ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/${sysName}ProviderStructure.sh

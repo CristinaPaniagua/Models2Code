@@ -115,6 +115,8 @@ public class DialogWindow extends TitleAreaDialog {
 			}
 		});
 		
+		list.select(0); // Mandatory Core Systems by default
+		
 		// For space purposes
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
@@ -144,7 +146,6 @@ public class DialogWindow extends TitleAreaDialog {
 				super.widgetSelected(e);
 				if (btnRadioButton.getSelection()) {
 					os = "windows";
-
 				}
 			}
 		});
@@ -167,6 +168,9 @@ public class DialogWindow extends TitleAreaDialog {
 			}
 		});
 
+		btnRadioButton.setSelection(true); // Windows by default
+		os = "windows";
+		
 		// Selection of Programming Language
 		Group grpLanguage = new Group(container, SWT.NULL);
 		grpLanguage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 2));
@@ -182,6 +186,8 @@ public class DialogWindow extends TitleAreaDialog {
 		btnRadioButton_4.setEnabled(false);
 		btnRadioButton_4.setText("C++");
 		new Label(grpLanguage, SWT.NONE);
+		
+		btnRadioButton_3.setSelection(true); // Java by deafult
 		
 		// For space purposes
 		new Label(container, SWT.NONE);
@@ -210,6 +216,8 @@ public class DialogWindow extends TitleAreaDialog {
 			}
 		});
 		btnCheckButton.setText("Skip Compilation Tests");
+		
+		btnCheckButton.setSelection(true); // Skip compilation tests by deafult
 		
 		// For space purposes
 		new Label(container, SWT.NONE);

@@ -19,6 +19,8 @@ import deployment.TypeSafeProperties;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.window.Window;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * Generation and Execution of Scripts
  * 
@@ -41,9 +43,6 @@ public class ScriptDeployment {
 	private Boolean supportSys = false; // TODO Not Used
 	private Boolean skipTest = false;
 	private String workspace = configuration.getProperty("workspace");
-	private String arrowheadPath = "\\arrowhead-papyrus-plugin";
-	private String deploymentPath = "\\org.eclipse.papyrus.arrowhead.deployment";
-	private String coresystemsPath = "\\coresystems";
 
 	
 	// =================================================================================================
@@ -106,6 +105,8 @@ public class ScriptDeployment {
 
 					try {
 						Writer writer = null;
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\"));
+						
 						if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) {
 
 							String terminal = os.equalsIgnoreCase("linux") ? "gnome-terminal" : "open -a terminal";
@@ -114,27 +115,27 @@ public class ScriptDeployment {
 							Template tInit = velocityEngine.getTemplate("/templates/initUnix.vm");
 							VelocityContext contextInit = new VelocityContext();
 							contextInit.put("terminal", terminal);
-							Writer wInit = new FileWriter(new File(workspace + arrowheadPath + deploymentPath + coresystemsPath + "\\src\\scripts\\init.sh"));
+							Writer wInit = new FileWriter(new File(workspace + "\\.temp\\init.sh"));
 							tInit.merge(contextInit, wInit);
 							wInit.flush();
 							wInit.close();
 
 							// Generation of the corescript.sh
 							context.put("fileEnd", "sh");
-							writer = new FileWriter(new File(workspace + arrowheadPath + deploymentPath + coresystemsPath + "\\src\\scripts\\corescript.sh"));
+							writer = new FileWriter(new File(workspace + "\\.temp\\corescript.sh"));
 						} else {
 							// Generation of the init.bat script
 							Template tInit = velocityEngine.getTemplate("/templates/initWin.vm");
 							VelocityContext contextInit = new VelocityContext();
 							contextInit.put("workSpace", workspace);
-							Writer wInit = new FileWriter(new File(workspace + arrowheadPath + deploymentPath + coresystemsPath + "\\src\\scripts\\init.bat"));
+							Writer wInit = new FileWriter(new File(workspace + "\\.temp\\init.bat"));
 							tInit.merge(contextInit, wInit);
 							wInit.flush();
 							wInit.close();
 
 							// Generation of the corescript.bat script
 							context.put("fileEnd", "bat");
-							writer = new FileWriter(new File(workspace + arrowheadPath + deploymentPath + coresystemsPath + "\\src\\scripts\\corescript.bat"));
+							writer = new FileWriter(new File(workspace + "\\.temp\\corescript.bat"));
 						}
 
 						t.merge(context, writer);
@@ -143,10 +144,12 @@ public class ScriptDeployment {
 
 						// Execute script
 						if (os.equalsIgnoreCase("windows")) {
-							ExecutionUtils.executebat(workspace + arrowheadPath + deploymentPath + coresystemsPath + "\\src\\scripts\\init.bat");
+							ExecutionUtils.executebat(workspace + "\\.temp\\init.bat");
 						} else
-							ExecutionUtils.executesh(workspace + arrowheadPath + deploymentPath + coresystemsPath, "init");
+							ExecutionUtils.executesh(workspace + "\\.temp\\", "init");
 
+						FileUtils.forceDelete(new File(workspace + "\\.temp\\"));
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (InterruptedException e) {

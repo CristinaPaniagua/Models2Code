@@ -4,4 +4,4 @@ cd ${outputDirectory}\\arrowhead\\${name}\\cloud-systems\\${sysName}-provider\sr
 mkdir provider
 cd provider
 mkdir security
-del "${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\\${sysName}ProviderStructure.bat"
+mkdir dto

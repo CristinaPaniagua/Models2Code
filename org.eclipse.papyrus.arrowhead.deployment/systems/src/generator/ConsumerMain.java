@@ -99,6 +99,13 @@ public class ConsumerMain {
 			context.put("address", "http://127.0.0.1:8888"); // TODO Update from service registry
 			context.put("httpFlag", httpFlag);
 			context.put("coapFlag", coapFlag);
+			
+			ArrayList<String> dtos = new ArrayList<String>(classesResponse);
+			for(ArrayList<String> classRequest : classesRequest)
+				dtos.add(classRequest.get(0).split(" ")[0]);
+			for(String classResponse : classesResponse)
+				dtos.add(classResponse.split(" ")[0]);
+			context.put("dtos", dtos);
 
 			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
 			t.merge(context, writer);

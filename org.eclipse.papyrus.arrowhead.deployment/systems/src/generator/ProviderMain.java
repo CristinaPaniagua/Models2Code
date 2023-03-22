@@ -212,6 +212,13 @@ public class ProviderMain {
 			context.put("address", "http://127.0.0.1:8888"); // TODO Update from service registry
 			context.put("httpFlag", consumerHttp);
 			context.put("coapFlag", consumerCoap);
+			
+			ArrayList<String> dtos = new ArrayList<String>();
+			for(ArrayList<String> classRequest : classesRequest)
+				dtos.add(classRequest.get(0).split(" ")[0]);
+			for(String classResponse : classesResponse)
+				dtos.add(classResponse.split(" ")[0]);
+			context.put("dtos", dtos);
 
 			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
@@ -222,7 +229,7 @@ public class ProviderMain {
 				// Create and write Coap Server Application class file
 				Template tc = velocityEngine.getTemplate("templates/provider/coapServer.vm");
 				VelocityContext contextc = new VelocityContext();
-				contextc.put("packagename", "provider"); // _Provider
+				contextc.put("packagename", "provider");
 
 				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
@@ -264,6 +271,13 @@ public class ProviderMain {
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "provider");
 			context.put("interfaces", serviceInterfaces);
+			
+			ArrayList<String> dtos = new ArrayList<String>();
+			for(ArrayList<String> classRequest : classesRequest)
+				dtos.add(classRequest.get(0).split(" ")[0]);
+			for(String classResponse : classesResponse)
+				dtos.add(classResponse.split(" ")[0]);
+			context.put("dtos", dtos);
 
 			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
@@ -314,6 +328,13 @@ public class ProviderMain {
 				contexth.put("packagename", "provider");
 				contexth.put("interfaces", serviceInterfacesHttp);
 
+				ArrayList<String> dtos = new ArrayList<String>();
+				for(ArrayList<String> classRequest : classesRequest)
+					dtos.add(classRequest.get(0).split(" ")[0]);
+				for(String classResponse : classesResponse)
+					dtos.add(classResponse.split(" ")[0]);
+				contexth.put("dtos", dtos);
+				
 				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);
 				writerh.flush();

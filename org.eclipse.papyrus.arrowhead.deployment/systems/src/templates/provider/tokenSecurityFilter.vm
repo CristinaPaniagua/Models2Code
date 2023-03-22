@@ -13,28 +13,17 @@ public class ProviderTokenSecurityFilter extends TokenSecurityFilter {
 	private PrivateKey myPrivateKey;
 	private PublicKey authorizationPublicKey;
 	
+	
 	//=================================================================================================
 	// methods
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
-	protected PrivateKey getMyPrivateKey() {
-		return myPrivateKey;
-	}
-
-	//-------------------------------------------------------------------------------------------------
+	protected PrivateKey getMyPrivateKey() { return myPrivateKey; }
 	@Override
-	protected PublicKey getAuthorizationPublicKey() {
-		return authorizationPublicKey;
-	}
+	protected PublicKey getAuthorizationPublicKey() { return authorizationPublicKey; }
 
 	//-------------------------------------------------------------------------------------------------
-	public void setMyPrivateKey(final PrivateKey myPrivateKey) {
-		this.myPrivateKey = myPrivateKey;
-	}
-
-	//-------------------------------------------------------------------------------------------------
-	public void setAuthorizationPublicKey(final PublicKey authorizationPublicKey) {
-		this.authorizationPublicKey = authorizationPublicKey;
-	}	
+	public void setMyPrivateKey(final PrivateKey myPrivateKey) { this.myPrivateKey = myPrivateKey; }
+	public void setAuthorizationPublicKey(final PublicKey authorizationPublicKey) { this.authorizationPublicKey = authorizationPublicKey; }	
 }

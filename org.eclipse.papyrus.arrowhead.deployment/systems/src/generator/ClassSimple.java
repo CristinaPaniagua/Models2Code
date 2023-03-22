@@ -239,7 +239,7 @@ public class ClassSimple {
 
 		// Create and write the new class
 		TypeSpec classGen = BclassGen.build();
-		String packageName = "eu.arrowhead." + system.split("-")[system.split("-").length - 1];
+		String packageName = "eu.arrowhead." + system.split("-")[system.split("-").length - 1] + ".dto";
 		JavaFile javaFile = JavaFile.builder(packageName, classGen).addFileComment("Auto generated").build();
 		
 		try {

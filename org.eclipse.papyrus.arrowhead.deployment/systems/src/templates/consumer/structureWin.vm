@@ -2,4 +2,5 @@
 ${disk}
 cd ${outputDirectory}\\arrowhead\\${name}\\cloud-systems\\${sysName}-consumer\src\main\java\eu\arrowhead
 mkdir consumer
-del "${workspace}\arrowhead-papyrus-plugin\org.eclipse.papyrus.arrowhead.deployment\systems\src\resources\\${sysName}ConsumerStructure.bat"
+cd consumer
+mkdir dto
