@@ -85,18 +85,18 @@ public class ScriptDeployment {
 					context.put("outputDirectory", directory);
 					if (mandatorySys) { // If the user selected only the mandatory systems
 						if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) {
-							t = velocityEngine.getTemplate("/templates/coreSysJavaLinux.vm");
+							t = velocityEngine.getTemplate("/templates/java/coreSystemsUnix.vm");
 						} else {
 							disk = dialog.getDisk();
-							t = velocityEngine.getTemplate("/templates/coreSysJavaWindows.vm");
+							t = velocityEngine.getTemplate("/templates/java/coreSystemsWin.vm");
 							context.put("disk", disk);
 						}
 					} else { // If the user selected the mandatory and support systems
 						if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) {
-							t = velocityEngine.getTemplate("/templates/AllSysJavaLinux.vm");
+							t = velocityEngine.getTemplate("/templates/java/allSystemsUnix.vm");
 						} else {
 							disk = dialog.getDisk();
-							t = velocityEngine.getTemplate("/templates/allSysJavaWindows.vm");
+							t = velocityEngine.getTemplate("/templates/java/allSystemsWin.vm");
 							context.put("disk", disk);
 						}
 					}
@@ -136,6 +136,12 @@ public class ScriptDeployment {
 							// Generation of the corescript.bat script
 							context.put("fileEnd", "bat");
 							writer = new FileWriter(new File(workspace + "\\.temp\\corescript.bat"));
+							
+							// Generation of the startCoreSystems.bat script
+							Writer wStart = new FileWriter(new File(workspace + "\\.temp\\startCoreSystems.bat"));
+							velocityEngine.getTemplate("/templates/startCoreSystems.vm").merge(new VelocityContext(), wStart);
+							wStart.flush();
+							wStart.close();
 						}
 
 						t.merge(context, writer);
@@ -148,8 +154,6 @@ public class ScriptDeployment {
 						} else
 							ExecutionUtils.executesh(workspace + "\\.temp\\", "init");
 
-						FileUtils.forceDelete(new File(workspace + "\\.temp\\"));
-						
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (InterruptedException e) {

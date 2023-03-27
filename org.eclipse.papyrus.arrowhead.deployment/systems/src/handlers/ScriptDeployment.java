@@ -140,6 +140,10 @@ public class ScriptDeployment {
 						String folders = "";
 						String type = "";
 
+						ExecutionUtils.newFolder(directory, "arrowhead");
+						ExecutionUtils.newFolder(directory + "/arrowhead/", name);
+						ExecutionUtils.newFolder(directory + "/arrowhead/" + name + "/", "cloud-systems");
+						
 						for (int j = 0; j < selectedSys.length; j++) { // For each of the systems
 							for (int i = 0; i < localClouds.get(selectedLC).getSystems().size(); i++) {
 

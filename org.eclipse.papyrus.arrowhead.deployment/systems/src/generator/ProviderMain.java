@@ -48,6 +48,9 @@ public class ProviderMain {
 	 */
 	public static void generateProviderMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
 
+		classesRequest.clear();
+		classesResponse.clear();
+		
 		ArrayList<InterfaceMetadata> serviceInterfaces = new ArrayList<InterfaceMetadata>();
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry

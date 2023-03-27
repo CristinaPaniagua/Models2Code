@@ -27,7 +27,11 @@ public class Generation extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ScriptDeployment window = new ScriptDeployment();
-		window.execute(shell);
+		try {
+			window.execute(shell);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

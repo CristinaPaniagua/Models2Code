@@ -7,7 +7,7 @@
     	<version>4.4.0.2</version>
   	</parent>
 	
-	<artifactId>${sysName}_Provider</artifactId>
+	<artifactId>${sysName}-provider</artifactId>
 	<name>Arrowhead Provider ${sysName}</name>
 	
 		    <dependencies>

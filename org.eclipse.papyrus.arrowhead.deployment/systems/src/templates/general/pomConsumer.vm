@@ -7,7 +7,7 @@
     	<version>4.4.0.2</version>
   	</parent>
 	
-	<artifactId>${sysName}_Consumer</artifactId>
+	<artifactId>${sysName}-consumer</artifactId>
 	<name>Arrowhead Consumer ${sysName}</name>
 	
 	    <dependencies>

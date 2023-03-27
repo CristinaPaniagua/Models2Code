@@ -13,6 +13,10 @@ import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDes
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
+import org.eclipse.uml2.uml.ConnectableElement;
+import org.eclipse.uml2.uml.Connector;
+import org.eclipse.uml2.uml.ConnectorEnd;
+import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.Operation;
 import org.eclipse.uml2.uml.PackageableElement;
@@ -93,6 +97,9 @@ public class ModelParser {
 	public void getDetails(PackageableElement element) {
 		LocalCloudDTO localcloud = new LocalCloudDTO();
 		ArrayList<String[]> sysList = new ArrayList<String[]>();
+		
+		ArrayList<String[]> connectorsSystems= new ArrayList<String []>();
+		connectorsSystems = getConnections(element);	
 
 		sysList.clear();
 		if (element instanceof Classifier) {
@@ -170,6 +177,7 @@ public class ModelParser {
 					}
 
 					localcloud.setSystems(sysList);
+					localcloud.setConnections(connectorsSystems);
 					localcloud.setSystemServiceRegistry(systemServiceRegistry);
 					localClouds.add(localcloud);
 
@@ -299,6 +307,59 @@ public class ModelParser {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * Obtain connection details from packageable element
+	 * 
+	 * @param element The packageable element defining the connections
+	 * @return A list with the name of the connector/service and the systems with their roles
+	 */
+	public ArrayList<String[]> getConnections(PackageableElement element) {
+
+		ArrayList<String[]> connectorsSystems = new ArrayList<String[]>();
+		ArrayList<String[]> sysList = new ArrayList<String[]>();
+		String[] connector;
+		sysList.clear();
+
+		if (element instanceof Classifier) {
+			Classifier classifier = (Classifier) element;
+
+			if (classifier instanceof Class) {
+
+				Class LoCl = (Class) classifier;
+
+				if (LoCl != null) {
+					System.out.println("local cloud " + LoCl.getName()); // TODO Remove Trace
+					EList<Connector> connectorsList = LoCl.getOwnedConnectors();
+					for (int j = 0; j < connectorsList.size(); j++) {
+						// Obtain connector and end systems
+						Connector c = connectorsList.get(j);
+						EList<ConnectorEnd> connectorsEndList = c.getEnds();
+						
+						connector = new String[4];
+						connector[0] = c.getName(); // Name of the connector/service
+						
+						for (int k = 0; k < connectorsEndList.size(); k++) { // For each end system
+							ConnectorEnd ce = connectorsEndList.get(k);
+							ConnectableElement role = ce.getRole();
+							connector[1] = role.getType().getName(); // Role of the system
+							
+							Element SysElement = role.getOwner();
+							Class SysClass = (Class) SysElement;
+							connector[k + 2] = SysClass.getName(); // Name of the system
+							
+							System.out.println("---------CONNECTOR: " + c.getName()); // TODO Remove Trace
+							System.out.println(role.getType().getName()); // TODO Remove Trace
+							System.out.println(k + SysClass.getName()); // TODO Remove Trace
+						}
+						connectorsSystems.add(connector);
+					}
+				}
+			}
+		}
+		return connectorsSystems;
 	}
 	
 	

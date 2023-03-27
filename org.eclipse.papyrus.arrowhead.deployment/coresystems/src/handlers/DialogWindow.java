@@ -38,9 +38,9 @@ public class DialogWindow extends TitleAreaDialog {
 	private static String os = "";
 	private static String language = "";
 	private static String disk = "";
-	private static Boolean mandatorySys = false;
+	private static Boolean mandatorySys = true;
 	private static Boolean supportSys = false;
-	private static Boolean skipTest = false;
+	private static Boolean skipTest = true;
 	private static Boolean badDirectory = false;
 	private static String workspace = "";
 

@@ -55,7 +55,7 @@ public class DialogWindow extends TitleAreaDialog {
 	private int[] selectedSysType = null;
 	private IProject[] projects = null;
 	private String selectedProject = null; // TODO Not Used
-	private String policyType = "";
+	private String policyType = "orchestration";
 	private String workDirectory = "";
 
 	
@@ -151,9 +151,16 @@ public class DialogWindow extends TitleAreaDialog {
 		btnRadioButton_3.setText("Orchestration");
 
 		Button btnRadioButton_4 = new Button(grpLanguage, SWT.RADIO);
-		btnRadioButton_4.setEnabled(true);
+		btnRadioButton_4.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				policyType = btnRadioButton_4.getText();
+			}
+		});
 		btnRadioButton_4.setText("Security");
 		new Label(grpLanguage, SWT.NONE);
+		
+		btnRadioButton_3.setSelection(true); // Orchestration by default
 
 		return container;
 	}
