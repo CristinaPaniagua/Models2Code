@@ -3,5 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Registry
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.consistency.registry
 Bundle-Version: 1.0.0.qualifier
+Import-Package: deployment,
+ org.eclipse.core.commands,
+ org.eclipse.e4.core.di.annotations,
+ org.eclipse.swt.widgets
+Require-Bundle: org.eclipse.papyrus.arrowhead.consistency.common;bundle-version="1.0.0"
 Automatic-Module-Name: org.eclipse.papyrus.arrowhead.consisitency.registry
 Bundle-RequiredExecutionEnvironment: JavaSE-16

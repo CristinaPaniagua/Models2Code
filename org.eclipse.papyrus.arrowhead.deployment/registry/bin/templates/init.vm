@@ -1,6 +1,0 @@
-CREATE USER IF NOT EXISTS '${user}'@'${host}' IDENTIFIED BY '${password}';
-GRANT ALL PRIVILEGES on arrowhead.* TO '${user}'@'${host}' WITH GRANT OPTION;
-FLUSH PRIVILEGES
-
-mysql -u ${user} -p < create_empty_arrowhead_db.sql
-mysql -u ${user} -p < create_arrowhead_tables.sql

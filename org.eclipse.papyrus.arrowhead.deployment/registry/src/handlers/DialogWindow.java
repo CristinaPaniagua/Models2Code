@@ -1,6 +1,10 @@
 package handlers;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
@@ -38,25 +42,19 @@ public class DialogWindow extends TitleAreaDialog {
 	// =================================================================================================
 	// attributes
 	
-	private static Boolean badDirectory = false;
-	private static String disk = "";
-	private static String name = "";
-	private static String language = "";
-	private static Boolean mandatorySys = false;
-	private static Boolean supportSys = false;
+	private static String rootUser = "root";
+	private static String rootPassword = "";
 	
-	private Text txtDirectory;
-	private String directory = "";
-	private GridData gridData_1;
-	private ArrayList<LocalCloudDTO> localClouds = new ArrayList<LocalCloudDTO>();
-	private int selectedLC = 0;
-	private String selectedLCName = "";
-	private String[] selectedSys = null;
-	private int[] selectedSysType = null;
-	private IProject[] projects = null;
-	private String selectedProject = null; // TODO Not Used
-	private String policyType = "orchestration";
-	private String workDirectory = "";
+	private static String user = "arrowhead";
+	private static String host = "localhost";
+	private static String password = "";
+	
+	private Text txtRootUser;
+	private Text txtRootPassword;
+	
+	private Text txtUser;
+	private Text txtHost;
+	private Text txtPassword;
 
 	
 	// =================================================================================================
@@ -66,7 +64,7 @@ public class DialogWindow extends TitleAreaDialog {
 	@Override
 	public void create() {
 		super.create();
-		setTitle("Arrowhead Deployment Generation Plugin");
+		setTitle("Arrowhead Database Setup");
 		setMessage("Select the configuration.", IMessageProvider.INFORMATION);
 	}
 
@@ -75,92 +73,83 @@ public class DialogWindow extends TitleAreaDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
+		container.setLayout(new GridLayout(2, false));
+		
 		GridData gd_container = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd_container.widthHint = 609;
-		gd_container.heightHint = 450;
 		container.setLayoutData(gd_container);
-		GridLayout layout = new GridLayout(2, false);
-		container.setLayout(layout);
+		gd_container.heightHint = 250;
+		
+		new Label(container, SWT.NONE).setText("Root DB Configuration");
+		new Label(container, SWT.NONE); // For space purposes
+		
+		// Root DB Configuration
+		Label lblRootUser = new Label(container, SWT.NONE);
+		lblRootUser.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblRootUser.setText("Root User:");
 
-		// Selection of Directory Dialog
-		Label lbldescription = new Label(container, SWT.NONE);
-		lbldescription.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lbldescription.setText("Directory:");
-
-		txtDirectory = new Text(container, SWT.BORDER);
-		txtDirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		txtDirectory.setText(workDirectory);
-		directory = workDirectory;
-		txtDirectory.addModifyListener(e -> {
+		txtRootUser = new Text(container, SWT.BORDER);
+		txtRootUser.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtRootUser.setText(rootUser);
+		txtRootUser.addModifyListener(e -> {
 			Text textWidget = (Text) e.getSource();
-			String descriptionText = textWidget.getText();
-			directory = descriptionText;
-		});
-
-		// Obtain Local Clouds names
-		String[] lcNames = new String[localClouds.size()];
-		System.out.println(localClouds.size()); // TODO Remove Trace
-		for (int i = 0; i < localClouds.size(); i++)
-			lcNames[i] = localClouds.get(i).getLcName();
-
-		// Selection of Local Cloud
-		Label lbltitle = new Label(container, SWT.NONE);
-		lbltitle.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
-		lbltitle.setText("Local Cloud:");
-
-		List list = new List(container, SWT.BORDER | SWT.V_SCROLL);
-		list.setItems(lcNames);
-		GridData gd_list = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_list.widthHint = 332;
-		gd_list.heightHint = 100;
-		list.setLayoutData(gd_list);
-
-		list.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				selectedLC = list.getSelectionIndex();
-				selectedLCName = lcNames[selectedLC];
-
-			}
+			String text = textWidget.getText();
+			rootUser = text;
 		});
 		
-		// For space purposes
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		Label lblRootPassword = new Label(container, SWT.NONE);
+		lblRootPassword.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblRootPassword.setText("Root Password:");
 
-		// Selection of Policy Type
-		Group grpLanguage = new Group(container, SWT.NULL);
-		grpLanguage.setText("Policy");
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 3;
-		grpLanguage.setLayout(gridLayout);
-		gridData_1 = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gridData_1.widthHint = 359;
-		gridData_1.verticalAlignment = SWT.TOP;
-		gridData_1.horizontalAlignment = SWT.LEFT;
-		gridData_1.heightHint = 31;
-		grpLanguage.setLayoutData(gridData_1);
-
-		Button btnRadioButton_3 = new Button(grpLanguage, SWT.RADIO);
-		btnRadioButton_3.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				policyType = btnRadioButton_3.getText();
-			}
+		txtRootPassword = new Text(container, SWT.PASSWORD);
+		txtRootPassword.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtRootPassword.setText(rootPassword);
+		txtRootPassword.addModifyListener(e -> {
+			Text textWidget = (Text) e.getSource();
+			String text = textWidget.getText();
+			rootPassword = text;
 		});
-		btnRadioButton_3.setText("Orchestration");
-
-		Button btnRadioButton_4 = new Button(grpLanguage, SWT.RADIO);
-		btnRadioButton_4.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				policyType = btnRadioButton_4.getText();
-			}
-		});
-		btnRadioButton_4.setText("Security");
-		new Label(grpLanguage, SWT.NONE);
 		
-		btnRadioButton_3.setSelection(true); // Orchestration by default
+		new Label(container, SWT.NONE).setText("Arrowhead DB Configuration");
+		new Label(container, SWT.NONE); // For space purposes
+		
+		// Arrowhead DB Configuration
+		Label lblUser = new Label(container, SWT.NONE);
+		lblUser.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblUser.setText("User:");
+
+		txtUser = new Text(container, SWT.BORDER);
+		txtUser.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtUser.setText(user);
+		txtUser.addModifyListener(e -> {
+			Text textWidget = (Text) e.getSource();
+			String text = textWidget.getText();
+			user = text;
+		});
+		
+		Label lblHost = new Label(container, SWT.NONE);
+		lblHost.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblHost.setText("Host:");
+		
+		txtHost = new Text(container, SWT.BORDER);
+		txtHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtHost.setText(host);
+		txtHost.addModifyListener(e -> {
+			Text textWidget = (Text) e.getSource();
+			String text = textWidget.getText();
+			host = text;
+		});
+		
+		Label lblPassword = new Label(container, SWT.NONE);
+		lblPassword.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblPassword.setText("Password:");
+		
+		txtPassword = new Text(container, SWT.PASSWORD);
+		txtPassword.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtPassword.addModifyListener(e -> {
+			Text textWidget = (Text) e.getSource();
+			String text = textWidget.getText();
+			password = text;
+		});
 
 		return container;
 	}
@@ -169,25 +158,17 @@ public class DialogWindow extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 
-		Shell shell = new Shell();
-		if (directory == null || directory.isEmpty()) {
-			MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
-			messageBox.setMessage("Please enter directory" + directory);
+		Shell shell = new Shell();		
+		
+		try { // Connect and check if root user is correct
+			DriverManager.getConnection("jdbc:mysql://" + host + ":3306/mysql", rootUser, rootPassword);
+		} catch (Exception e) {
+			MessageBox messageBox = new MessageBox(shell, SWT.ERROR);
+			messageBox.setMessage(e.getMessage());
+			messageBox.setText("Error during database connection");
 			messageBox.open();
-		} else {
-			if (isValidDirectory(directory)) {
-				MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WORKING);
-				messageBox.setText("Info");
-				messageBox.setMessage(directory);
-				messageBox.open();
-				badDirectory = false;
-			} else {
-				MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
-				messageBox.setMessage("Directory no correct:" + directory);
-				messageBox.open();
-				badDirectory = true;
-			}
 		}
+		
 		super.okPressed();
 	}
 	
@@ -199,63 +180,11 @@ public class DialogWindow extends TitleAreaDialog {
 	DialogWindow(Shell parentShell) { super(parentShell); }
 
 	//-------------------------------------------------------------------------------------------------
-	public String getDirectory() { return directory; }
-	public String getWorkDirectory() { return workDirectory; }
-	public String getName() { return name; }
-	public String getLanguage() { return language; }
-	public Boolean getMandatorySys() { return mandatorySys; }
-	public Boolean getSupportSys() { return supportSys; }
-	public ArrayList<LocalCloudDTO> getLocalClouds() { return localClouds; }
-	public int[] getSelectedSysType() { return selectedSysType; }
-	public String[] getSelectedSys() { return selectedSys; }
-	public int getSelectedLC() { return selectedLC; }
-	public String getSelectedLCName() { return selectedLCName; }
-	public String getDisk() { return disk; }
-	public Boolean getBadDirectory() { return badDirectory; }
-	public IProject[] getProjects() { return projects; }
-	public String getPolicyType() { return policyType; }
-
-	//-------------------------------------------------------------------------------------------------
-	public void setWorkDirectory(String workDirectory) { this.workDirectory = workDirectory; }
-	public void setLocalClouds(ArrayList<LocalCloudDTO> localClouds) { this.localClouds = localClouds; }
-	public void setSelectedSysType(int[] selectedSysType) { this.selectedSysType = selectedSysType; }
-	public void setSelectedSys(String[] selectedSys) { this.selectedSys = selectedSys; }
-	public void setSelectedLC(int selectedLC) { this.selectedLC = selectedLC; }
-	public void setSelectedLCName(String selectedLCName) { this.selectedLCName = selectedLCName; }
-	public void setProjects(IProject[] projects) { this.projects = projects; }	
+	public static String getUser() { return user; }
+	public static String getHost() { return host; }
+	public static String getPassword() { return password; }
+	public static String getRootUser() { return rootUser; }
+	public static String getRootPassword() { return rootPassword; }
 	
-	//-------------------------------------------------------------------------------------------------
-	/**
-	 * Check the validity of the file path for directory compliance
-	 * 
-	 * @param directory The path to the directory
-	 * @return The validity of the path
-	 */
-	public boolean isValidDirectory(String directory) {
-		File file = new File(directory);
-		
-		// If the file is not a directory
-		if (!file.isDirectory()) { return false; }
-		
-		// If the file exists
-		else if (file.exists()) {
-				String cannonicalPath = "";
-				try {
-					cannonicalPath = file.getCanonicalPath();
-					System.out.println("PATH:" + cannonicalPath); // TODO Remove Trace
-				} catch (Exception e) {
-					System.err.println("ERROR: No Path");
-				}
-
-				if (cannonicalPath.matches("[\n\r\t\0\f\'?*<>|\"/:]*")) {
-					return false;
-
-				} else {
-					disk = cannonicalPath.substring(0, 2);
-					System.out.println("DISK:" + disk); // TODO Remove Trace
-					return true;
-				}
-		}
-		return false;
-	}
+	
 }
