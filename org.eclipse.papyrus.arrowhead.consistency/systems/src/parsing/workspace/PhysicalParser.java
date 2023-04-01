@@ -1,4 +1,4 @@
-package plugin.parsing.workspace;
+package parsing.workspace;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -36,7 +36,7 @@ public class PhysicalParser {
 
 		// Identify deployed entities 
 		ArrayList<String> deployedEntitiesImplementation = new ArrayList<String>();
-		for (String deployedEntityPath : plugin.parsing.workspace.ParsingUtils.readWorkspace(workspace + localCloudPath + "\\", true))
+		for (String deployedEntityPath : parsing.workspace.ParsingUtils.readWorkspace(workspace + localCloudPath + "\\", true))
 			if(deployedEntityPath.endsWith("_Consumer") || deployedEntityPath.endsWith("_Provider"))
 				deployedEntitiesImplementation.add(deployedEntityPath);
 

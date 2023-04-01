@@ -1,4 +1,4 @@
-package plugin.parsing.model;
+package parsing.model;
 
 import java.io.IOException;
 

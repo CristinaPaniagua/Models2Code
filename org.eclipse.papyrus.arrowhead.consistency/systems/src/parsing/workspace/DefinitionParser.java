@@ -1,4 +1,4 @@
-package plugin.parsing.workspace;
+package parsing.workspace;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,7 +10,7 @@ import dto.APXInterfaceDesignDescription;
 import dto.APXSystemDesignDescription;
 import dto.APXInterfaceDesignDescription.APXServiceDescription;
 import dto.APXInterfaceDesignDescription.APXServiceDescription.APXPayload;
-import plugin.PluginExecution;
+import handlers.PluginExecution;
 
 /**
 *
@@ -80,8 +80,8 @@ public class DefinitionParser {
 		systemDesignDescription.setIDDs(parseInterface());
 
 		// TODO Check if it is necessary
-		if(!PluginExecution.workspaceSystemDescriptionMap.containsKey(systemDesignDescription.getName()))
-			PluginExecution.workspaceSystemDescriptionMap.put(systemDesignDescription.getName(), systemDesignDescription);
+		if(!ParsingSetup.workspaceSystemDescriptionMap.containsKey(systemDesignDescription.getName()))
+			ParsingSetup.workspaceSystemDescriptionMap.put(systemDesignDescription.getName(), systemDesignDescription);
 		
 		return systemDesignDescription;
 	}
@@ -99,7 +99,7 @@ public class DefinitionParser {
 		String serviceControllerPath = "";
 
 		// Identify IDDs based on the file names of the folder
-		for (String filePath : plugin.parsing.workspace.ParsingUtils.readWorkspace(systemPath, false))
+		for (String filePath : ParsingUtils.readWorkspace(systemPath, false))
 			if (filePath.contains("Main")) // Consumer or Consumer/Provider operations
 				mainPath = filePath;
 			else if (filePath.contains("DTO")) // Consumer or Provider payload
@@ -329,8 +329,8 @@ public class DefinitionParser {
 				interfaceDesign.setOperations(operationList);
 				
 				// TODO Check if it is necessary
-				if(!PluginExecution.workspaceInterfaceDescriptionMap.containsKey(interfaceName))
-					PluginExecution.workspaceInterfaceDescriptionMap.put(interfaceName, new APXInterfaceDesignDescription(interfaceDesign));
+				if(!ParsingSetup.workspaceInterfaceDescriptionMap.containsKey(interfaceName))
+					ParsingSetup.workspaceInterfaceDescriptionMap.put(interfaceName, new APXInterfaceDesignDescription(interfaceDesign));
 				
 				// Set role of the interface (if it has one provided service it's considered a provider)
 				interfaceDesign.setRole("Provider");

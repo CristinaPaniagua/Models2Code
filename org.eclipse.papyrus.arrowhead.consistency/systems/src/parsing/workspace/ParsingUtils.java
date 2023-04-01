@@ -1,4 +1,4 @@
-package plugin.parsing.workspace;
+package parsing.workspace;
 
 import java.io.File;
 import java.io.FilenameFilter;

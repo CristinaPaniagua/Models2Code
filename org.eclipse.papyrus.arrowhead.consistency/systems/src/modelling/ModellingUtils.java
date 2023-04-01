@@ -1,4 +1,4 @@
-package plugin.modelling;
+package modelling;
 
 /**
  * This class offers a set of utils for the updating of the notation model files

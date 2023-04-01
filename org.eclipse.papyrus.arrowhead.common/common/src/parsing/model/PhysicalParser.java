@@ -1,10 +1,10 @@
-package plugin.parsing.model;
+package parsing.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Comment;
 import org.eclipse.uml2.uml.PackageableElement;
@@ -13,8 +13,6 @@ import org.eclipse.uml2.uml.util.UMLUtil;
 
 import dto.APXDeployedEntity;
 import dto.APXLocalCloudDesignDescription;
-import dto.APXSystemDesignDescription;
-import plugin.PluginExecution;
 
 /**
  * This class parses the physical elements of the model, which are those blocks implementing
@@ -50,8 +48,7 @@ public class PhysicalParser {
 
 		for (Property umlDeployedEntity : umlDeployedEntities) { // For each deployed entity
 			APXDeployedEntity deployedEntity = new APXDeployedEntity();
-			org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity modelDeployedEntity = 
-					UMLUtil.getStereotypeApplication(umlDeployedEntity, org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity.class);
+			DeployedEntity modelDeployedEntity = UMLUtil.getStereotypeApplication(umlDeployedEntity, DeployedEntity.class);
 
 			if (modelDeployedEntity != null) { // If it has the DeployedEntity stereotype
 
@@ -63,7 +60,7 @@ public class PhysicalParser {
 				// Set the name, description and SystemDesignDescription
 				deployedEntity.setName(umlDeployedEntity.getName());						
 				deployedEntity.setDescription(description);
-				deployedEntity.setSysDD(PluginExecution.modelSystemDescriptionMap.get(umlDeployedEntity.getType().getName()));
+				deployedEntity.setSysDD(ParsingSetup.modelSystemDescriptionMap.get(umlDeployedEntity.getType().getName()));
 				
 				deployedEntities.add(deployedEntity);
 			}						

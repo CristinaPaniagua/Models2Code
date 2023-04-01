@@ -1,9 +1,10 @@
-package plugin.parsing.model;
+package parsing.model;
 
 import java.util.ArrayList;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.HttpOperation;
+import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription;
 import org.eclipse.uml2.uml.Classifier;
 import org.eclipse.uml2.uml.Operation;
 import org.eclipse.uml2.uml.PackageableElement;
@@ -15,7 +16,6 @@ import dto.APXInterfaceDesignDescription;
 import dto.APXSystemDesignDescription;
 import dto.APXInterfaceDesignDescription.APXServiceDescription;
 import dto.APXInterfaceDesignDescription.APXServiceDescription.APXPayload;
-import plugin.PluginExecution;
 
 /**
  *
@@ -53,7 +53,7 @@ public class DefinitionParser {
 		for (Port modelPort : modelPorts) { // For each of the interfaces
 			
 			// Get a copy of the interface from the parsed interfaces map
-			APXInterfaceDesignDescription portInterface = new APXInterfaceDesignDescription(PluginExecution.modelInterfaceDescriptionMap.get(modelPort.getType().getName()));
+			APXInterfaceDesignDescription portInterface = new APXInterfaceDesignDescription(ParsingSetup.modelInterfaceDescriptionMap.get(modelPort.getType().getName()));
 
 			// Set role of the interface
 			portInterface.setRole(modelPort.isConjugated() ? "Consumer" : "Provider");
@@ -81,8 +81,7 @@ public class DefinitionParser {
 		Classifier classifier = (Classifier) element;
 
 		APXInterfaceDesignDescription interfaceDescription = new APXInterfaceDesignDescription();
-		org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription modelInterface = 
-				UMLUtil.getStereotypeApplication(classifier, org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription.class);
+		InterfaceDesignDescription modelInterface = UMLUtil.getStereotypeApplication(classifier, InterfaceDesignDescription.class);
 
 		// Set name, protocol and encoding of the interface
 		interfaceDescription.setName(element.getName());

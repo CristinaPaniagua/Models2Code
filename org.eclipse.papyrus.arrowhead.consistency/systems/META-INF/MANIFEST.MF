@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Systems Code-Model Consistency
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.consistency.systems;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: plugin
+Export-Package: handlers
 Automatic-Module-Name: eu.arrowhead.deployment.consistency
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11

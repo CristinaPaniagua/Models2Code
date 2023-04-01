@@ -16,7 +16,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="plugin.PluginDeployment"
+            class="handlers.PluginDeployment"
             commandId="org.eclipse.papyrus.arrowhead.consistency.systems.command">
       </handler>
    </extension>

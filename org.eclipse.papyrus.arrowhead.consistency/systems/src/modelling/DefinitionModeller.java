@@ -1,4 +1,4 @@
-package plugin.modelling;
+package modelling;
 
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import dto.APXInterfaceDesignDescription;
 import dto.APXSystemDesignDescription;
 import dto.APXInterfaceDesignDescription.APXServiceDescription;
 import dto.APXInterfaceDesignDescription.APXServiceDescription.APXPayload;
-import plugin.PluginExecution;
+import handlers.PluginExecution;
 
 /**
  * This class adds and updates the definition elements of the model, which are those blocks implementing
@@ -80,7 +80,7 @@ public class DefinitionModeller {
 		ArrayList<APXInterfaceDesignDescription> newInterfaceList = newSystem.getIDDs();
 		
 		for(APXInterfaceDesignDescription newInterface : newInterfaceList) { // For each of the interfaces
-			PackageableElement existingInterface = PluginExecution.packageInterfaceDescriptionMap.get(newInterface.getName());
+			PackageableElement existingInterface = parsing.model.ParsingSetup.packageInterfaceDescriptionMap.get(newInterface.getName());
 			
 			// Create a new port on the existing interface (if any) or a newly created interface
 			modelSystem.getBase_Class().createOwnedPort(newInterface.getName(), existingInterface == null 
@@ -116,7 +116,7 @@ public class DefinitionModeller {
 		// modelSystem.getBase_Class().getOwnedConnectors().clear();
 		
 		for(APXInterfaceDesignDescription newInterface : newInterfaceList) { // For each of the interfaces
-			PackageableElement existingInterface = PluginExecution.packageInterfaceDescriptionMap.get(newInterface.getName());
+			PackageableElement existingInterface = parsing.model.ParsingSetup.packageInterfaceDescriptionMap.get(newInterface.getName());
 			
 			// Create a new port on the existing interface (if any) or a newly created interface
 			Port newPort = modelSystem.getBase_Class().createOwnedPort(newInterface.getName(), existingInterface == null 

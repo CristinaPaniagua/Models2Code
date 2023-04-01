@@ -1,4 +1,4 @@
-package plugin.modelling;
+package modelling;
 
 import java.util.ArrayList;
 
