@@ -5,8 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import plugin.pojo.DeployedEntity;
-import plugin.pojo.LocalCloudDesignDescription;
+import dto.APXDeployedEntity;
+import dto.APXLocalCloudDesignDescription;
 
 /**
  * 
@@ -29,9 +29,9 @@ public class PhysicalParser {
 	 * @param localCloudPath The path of the local cloud folder
 	 * @return The parsed LocalCloudDesignDescription object
 	 */
-	public static LocalCloudDesignDescription parseLocalCloud(String workspace, String localCloudPath){
+	public static APXLocalCloudDesignDescription parseLocalCloud(String workspace, String localCloudPath){
 
-		LocalCloudDesignDescription localCloud = new LocalCloudDesignDescription();
+		APXLocalCloudDesignDescription localCloud = new APXLocalCloudDesignDescription();
 		localCloud.setName(localCloudPath.split("_")[0]);
 
 		// Identify deployed entities 
@@ -55,9 +55,9 @@ public class PhysicalParser {
 	 * @param deployedEntityPath The path of the deployed entity folder
 	 * @return The parsed DeploydEntity object
 	 */
-	public static DeployedEntity parseDeployedEntity(String workspace, String deployedEntityPath) {
+	public static APXDeployedEntity parseDeployedEntity(String workspace, String deployedEntityPath) {
 
-		DeployedEntity deployedEntity = new DeployedEntity();
+		APXDeployedEntity deployedEntity = new APXDeployedEntity();
 		deployedEntity.setName(deployedEntityPath.split("_")[0]); // Obtain name of the deployed entity
 
 		BufferedReader reader;

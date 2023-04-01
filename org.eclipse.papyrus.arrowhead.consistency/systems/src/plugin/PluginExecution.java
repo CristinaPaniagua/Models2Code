@@ -20,6 +20,10 @@ import org.eclipse.uml2.uml.util.UMLUtil;
 import deployment.CodgenUtil;
 import deployment.ExecutionUtils;
 import deployment.ProjectSelectWindow;
+import dto.APXDeployedEntity;
+import dto.APXInterfaceDesignDescription;
+import dto.APXLocalCloudDesignDescription;
+import dto.APXSystemDesignDescription;
 
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.LocalCLoudDesignDescription;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.SysDD;
@@ -29,10 +33,6 @@ import plugin.modelling.PhysicalModeller;
 import plugin.parsing.model.DefinitionParser;
 import plugin.parsing.model.PhysicalParser;
 import plugin.parsing.workspace.ParsingUtils;
-import plugin.pojo.DeployedEntity;
-import plugin.pojo.InterfaceDesignDescription;
-import plugin.pojo.LocalCloudDesignDescription;
-import plugin.pojo.SystemDesignDescription;
 
 /**
  * 
@@ -50,16 +50,16 @@ public class PluginExecution {
 	// attributes
 		
 	// Local Cloud objects parsed from the model and workspace
-	private ArrayList<LocalCloudDesignDescription> modelLocalCloudList = new ArrayList<LocalCloudDesignDescription>();
-	public static ArrayList<LocalCloudDesignDescription> workspaceLocalCloudList = new ArrayList<LocalCloudDesignDescription>();
+	private ArrayList<APXLocalCloudDesignDescription> modelLocalCloudList = new ArrayList<APXLocalCloudDesignDescription>();
+	public static ArrayList<APXLocalCloudDesignDescription> workspaceLocalCloudList = new ArrayList<APXLocalCloudDesignDescription>();
 	
 	// System Design Description objects parsed from the model and workspace
-	public static HashMap<String, SystemDesignDescription> modelSystemDescriptionMap = new HashMap<String, SystemDesignDescription>();
-	public static HashMap<String, SystemDesignDescription> workspaceSystemDescriptionMap = new HashMap<String, SystemDesignDescription>();
+	public static HashMap<String, APXSystemDesignDescription> modelSystemDescriptionMap = new HashMap<String, APXSystemDesignDescription>();
+	public static HashMap<String, APXSystemDesignDescription> workspaceSystemDescriptionMap = new HashMap<String, APXSystemDesignDescription>();
 	
 	// Interface Design Description objects parsed from the model and workspace
-	public static HashMap<String, InterfaceDesignDescription> modelInterfaceDescriptionMap = new HashMap<String, InterfaceDesignDescription>();
-	public static HashMap<String, InterfaceDesignDescription> workspaceInterfaceDescriptionMap = new HashMap<String, InterfaceDesignDescription>();
+	public static HashMap<String, APXInterfaceDesignDescription> modelInterfaceDescriptionMap = new HashMap<String, APXInterfaceDesignDescription>();
+	public static HashMap<String, APXInterfaceDesignDescription> workspaceInterfaceDescriptionMap = new HashMap<String, APXInterfaceDesignDescription>();
 	
 	// Packaged Model Elements
 	public static HashMap<String, PackageableElement> packageLocalCloudDescriptionMap = new HashMap<String, PackageableElement>();
@@ -189,11 +189,11 @@ public class PluginExecution {
 		//								 	 Definition Additions Check										//
 		// ************************************************************************************************ //
 		
-		ArrayList<SystemDesignDescription> modelSystemList = new ArrayList<SystemDesignDescription>(modelSystemDescriptionMap.values());
-		ArrayList<SystemDesignDescription> workspaceSystemList = new ArrayList<SystemDesignDescription>(workspaceSystemDescriptionMap.values());
+		ArrayList<APXSystemDesignDescription> modelSystemList = new ArrayList<APXSystemDesignDescription>(modelSystemDescriptionMap.values());
+		ArrayList<APXSystemDesignDescription> workspaceSystemList = new ArrayList<APXSystemDesignDescription>(workspaceSystemDescriptionMap.values());
 		
-		ArrayList<InterfaceDesignDescription> modelInterfaceList = new ArrayList<InterfaceDesignDescription>(modelInterfaceDescriptionMap.values());
-		ArrayList<InterfaceDesignDescription> workspaceInterfaceList = new ArrayList<InterfaceDesignDescription>(workspaceInterfaceDescriptionMap.values());
+		ArrayList<APXInterfaceDesignDescription> modelInterfaceList = new ArrayList<APXInterfaceDesignDescription>(modelInterfaceDescriptionMap.values());
+		ArrayList<APXInterfaceDesignDescription> workspaceInterfaceList = new ArrayList<APXInterfaceDesignDescription>(workspaceInterfaceDescriptionMap.values());
 		
 		// Interface Design Description
 		int modelIndex = 0, workspaceIndex = 0;
@@ -212,7 +212,7 @@ public class PluginExecution {
 						workspaceInterfaceList.get(workspaceIndex).getName(),
 						DefinitionModeller.addInterfaceDesignDescription(workspaceInterfaceList.get(workspaceIndex), (Model) objectModel));
 				
-				InterfaceDesignDescription newInterface = workspaceInterfaceList.get(workspaceIndex);
+				APXInterfaceDesignDescription newInterface = workspaceInterfaceList.get(workspaceIndex);
 				
 				// Save the workspace Interface Design Description object
 				modelInterfaceList.add(newInterface);
@@ -239,7 +239,7 @@ public class PluginExecution {
 						workspaceSystemList.get(workspaceIndex).getName(),
 						DefinitionModeller.addSystemDesignDescription(workspaceSystemList.get(workspaceIndex), (Model) objectModel));
 				
-				SystemDesignDescription newSystem = workspaceSystemList.get(workspaceIndex);
+				APXSystemDesignDescription newSystem = workspaceSystemList.get(workspaceIndex);
 				
 				// Save the workspace System Design Description object
 				modelSystemList.add(newSystem);
@@ -278,7 +278,7 @@ public class PluginExecution {
 		// ************************************************************************************************ //
 		
 		// Order model and workspace local cloud list
-		Comparator comparator = new LocalCloudDesignDescription.LocalCloudComparator();
+		Comparator comparator = new APXLocalCloudDesignDescription.LocalCloudComparator();
 		modelLocalCloudList.sort(comparator);
 		workspaceLocalCloudList.sort(comparator);
 
@@ -286,15 +286,15 @@ public class PluginExecution {
 
 		// TODO Currently assumed that there is the same number of local clouds
 		while(localCloudIndex < workspaceLocalCloudList.size()) { // For each local cloud in the workspace
-			LocalCloudDesignDescription modelLocalCloud = modelLocalCloudList.get(localCloudIndex);
-			LocalCloudDesignDescription workspaceLocalCloud = workspaceLocalCloudList.get(localCloudIndex);		
+			APXLocalCloudDesignDescription modelLocalCloud = modelLocalCloudList.get(localCloudIndex);
+			APXLocalCloudDesignDescription workspaceLocalCloud = workspaceLocalCloudList.get(localCloudIndex);		
 			
 			// Order model and workspace deployed entity list
-			comparator = new DeployedEntity.DeployedEntityComparator();
+			comparator = new APXDeployedEntity.DeployedEntityComparator();
 			modelLocalCloud.getDeployedEntities().sort(comparator);
 			workspaceLocalCloud.getDeployedEntities().sort(comparator);
 
-			for(DeployedEntity workspaceEntity : workspaceLocalCloud.getDeployedEntities()) { // For each deployed entity in the workspace
+			for(APXDeployedEntity workspaceEntity : workspaceLocalCloud.getDeployedEntities()) { // For each deployed entity in the workspace
 				// If the deployed entity is not in the model
 				if(!modelLocalCloud.getDeployedEntities().contains(workspaceEntity))
 					// Add the deployed entity
@@ -302,21 +302,21 @@ public class PluginExecution {
 				
 				else {
 					// Check the basic attributes of the deployed entity
-					DeployedEntity modelEntity = modelLocalCloud.getDeployedEntities().get(modelLocalCloud.getDeployedEntities().indexOf(workspaceEntity));
+					APXDeployedEntity modelEntity = modelLocalCloud.getDeployedEntities().get(modelLocalCloud.getDeployedEntities().indexOf(workspaceEntity));
 					if(modelEntity.checkConsistency(workspaceEntity))
 						PhysicalModeller.updateInternalDeployedEntity(workspaceEntity, null); // TODO Update basic elements of block
 					
 					// Check the basic attributes of the system
-					SystemDesignDescription modelSystem = modelEntity.getSysDD();
-					SystemDesignDescription workspaceSystem = workspaceEntity.getSysDD();
+					APXSystemDesignDescription modelSystem = modelEntity.getSysDD();
+					APXSystemDesignDescription workspaceSystem = workspaceEntity.getSysDD();
 					if(modelSystem.checkConsistency(workspaceSystem))// Update internal elements of block
 						DefinitionModeller.updateInternalSystemDesignDescription(workspaceSystem, packageSystemDescriptionMap.get(modelSystem.getName()));
 						
-					comparator = new InterfaceDesignDescription.InterfaceComparator();
+					comparator = new APXInterfaceDesignDescription.InterfaceComparator();
 					modelSystem.getIDDs().sort(comparator);
 					workspaceSystem.getIDDs().sort(comparator);
 					
-					for(InterfaceDesignDescription workspaceInterface : workspaceSystem.getIDDs()) { // For each interface in the workspace
+					for(APXInterfaceDesignDescription workspaceInterface : workspaceSystem.getIDDs()) { // For each interface in the workspace
 						// If the interface is not in the model
 						if(!modelSystem.getIDDs().contains(workspaceInterface)) {							
 							// Add the interface
@@ -325,7 +325,7 @@ public class PluginExecution {
 						}
 						else {
 							// Check the basic attributes of the interface
-							InterfaceDesignDescription modelInterface = modelSystem.getIDDs().get(modelSystem.getIDDs().indexOf(workspaceInterface));
+							APXInterfaceDesignDescription modelInterface = modelSystem.getIDDs().get(modelSystem.getIDDs().indexOf(workspaceInterface));
 							if(modelInterface.checkConsistency(workspaceInterface)) // Update internal elements of block
 								DefinitionModeller.updateInternalInterfaceDesignDescription(workspaceInterface, packageInterfaceDescriptionMap.get(modelInterface.getName()));
 					
@@ -333,7 +333,7 @@ public class PluginExecution {
 							modelInterface.getOperations().sort(comparator);
 							workspaceInterface.getOperations().sort(comparator);
 							
-							for(InterfaceDesignDescription.ServiceDescription workspaceService : workspaceInterface.getOperations()) {
+							for(APXInterfaceDesignDescription.APXServiceDescription workspaceService : workspaceInterface.getOperations()) {
 								// If the operation is not in the model
 								if(!modelInterface.getOperations().contains(workspaceService))
 									// Add the operation
@@ -341,7 +341,7 @@ public class PluginExecution {
 								
 								else {
 									// Check the basic attributes of the operation
-									InterfaceDesignDescription.ServiceDescription modelService = modelInterface.getOperations().get(modelInterface.getOperations().indexOf(workspaceService));
+									APXInterfaceDesignDescription.APXServiceDescription modelService = modelInterface.getOperations().get(modelInterface.getOperations().indexOf(workspaceService));
 									modelService.checkConsistency(workspaceService); // TODO Update basic elements of block
 								}
 							}

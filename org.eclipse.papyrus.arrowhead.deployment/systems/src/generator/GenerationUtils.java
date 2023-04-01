@@ -16,8 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.squareup.javapoet.CodeBlock;
 
-import dto.InterfaceMetadata;
-import dto.OperationInt;
+import dto.APXInterfaceDesignDescription;
 
 /**
  *
@@ -92,7 +91,7 @@ public class GenerationUtils {
 	 * @param serviceInterfaces List of the service interfaces registered for a system
 	 * @return If this system implements CoAP
 	 */
-	public static boolean checkCoapProtocol(ArrayList<InterfaceMetadata> serviceInterfaces) {
+	public static boolean checkCoapProtocol(ArrayList<APXInterfaceDesignDescription> serviceInterfaces) {
 		
 		for (int i = 0; i < serviceInterfaces.size(); i++)
 			if (serviceInterfaces.get(i).getProtocol().equalsIgnoreCase("CoAP"))
@@ -109,7 +108,7 @@ public class GenerationUtils {
 	 * @param serviceInterfaces List of the service interfaces registered for a system
 	 * @return If this system implements HTTP
 	 */
-	public static boolean checkHttpProtocol(ArrayList<InterfaceMetadata> serviceInterfaces) {
+	public static boolean checkHttpProtocol(ArrayList<APXInterfaceDesignDescription> serviceInterfaces) {
 		
 		for (int i = 0; i < serviceInterfaces.size(); i++)
 			if (serviceInterfaces.get(i).getProtocol().startsWith("HTTP"))
@@ -129,29 +128,29 @@ public class GenerationUtils {
 	 * @param op The operation of the interface
 	 * @param systemType The type of the system (consumer/provider)
 	 */
-	public static void objectClassGen(String Directory, String name, String system, OperationInt op, String systemType) {
+	public static void objectClassGen(String Directory, String name, String system, APXInterfaceDesignDescription.APXServiceDescription op, String systemType) {
 
 		if (op.isRequest()) { // If it is a request operation
 			ClassSimple Request = new ClassSimple();
 
-			for (int k = 0; k < op.getElements_request().size(); k++) { // Add request payload
-				ArrayList<String[]> elements_request = op.getElements_request().get(k).getElements();
+			for (int k = 0; k < op.getRequestPayload().size(); k++) { // Add request payload
+				ArrayList<String[]> elements_request = op.getRequestPayload().get(k).getElements();
 				if (systemType.equals("consumer"))
-					ConsumerMain.classesRequest.add(Request.classGen(elements_request, op.getOpName() + "RequestDTO", Directory, name, system + "-consumer"));
+					ConsumerMain.classesRequest.add(Request.classGen(elements_request, op.getName() + "RequestDTO", Directory, name, system + "-consumer"));
 				else if (systemType.equals("provider") || systemType.equals("provider-consumer"))
-					ProviderMain.classesRequest.add(Request.classGen(elements_request, op.getOpName() + "RequestDTO", Directory, name, system + "-provider"));
+					ProviderMain.classesRequest.add(Request.classGen(elements_request, op.getName() + "RequestDTO", Directory, name, system + "-provider"));
 			}
 		}
 
 		if (op.isResponse()) { // If it is a response operation
 			ClassSimple Response = new ClassSimple();
 
-			for (int j = 0; j < op.getElements_response().size(); j++) { // Add response payload
-				ArrayList<String[]> elements_response = op.getElements_response().get(j).getElements();
+			for (int j = 0; j < op.getResponsePayload().size(); j++) { // Add response payload
+				ArrayList<String[]> elements_response = op.getResponsePayload().get(j).getElements();
 				if (systemType.equals("consumer"))
-					ConsumerMain.classesResponse = Response.classGen(elements_response, op.getOpName() + "ResponseDTO", Directory, name, system + "-consumer");
+					ConsumerMain.classesResponse = Response.classGen(elements_response, op.getName() + "ResponseDTO", Directory, name, system + "-consumer");
 				else if(systemType.equals("provider") || systemType.equals("provider-consumer"))
-					ProviderMain.classesResponse = Response.classGen(elements_response, op.getOpName() + "ResponseDTO", Directory, name, system + "-provider");
+					ProviderMain.classesResponse = Response.classGen(elements_response, op.getName() + "ResponseDTO", Directory, name, system + "-provider");
 			}
 
 		}
@@ -165,13 +164,13 @@ public class GenerationUtils {
 	 * @param serviceInterfaces List of the service interfaces registered for a system
 	 * @return Set of service interfaces
 	 */
-	public static ArrayList<InterfaceMetadata> removeRepetitions(ArrayList<InterfaceMetadata> serviceInterfaces) {
+	public static ArrayList<APXInterfaceDesignDescription> removeRepetitions(ArrayList<APXInterfaceDesignDescription> serviceInterfaces) {
 		// TODO: Look if this is correct or the problem is the service name convention
 		
-		ArrayList<InterfaceMetadata> withoutRepetitions = new ArrayList<InterfaceMetadata>();
+		ArrayList<APXInterfaceDesignDescription> withoutRepetitions = new ArrayList<APXInterfaceDesignDescription>();
 		
 		for (int i = 0; i < serviceInterfaces.size(); i++) {
-			InterfaceMetadata element = serviceInterfaces.get(i);
+			APXInterfaceDesignDescription element = serviceInterfaces.get(i);
 			
 			if(!withoutRepetitions.contains(element))
 				withoutRepetitions.add(element);

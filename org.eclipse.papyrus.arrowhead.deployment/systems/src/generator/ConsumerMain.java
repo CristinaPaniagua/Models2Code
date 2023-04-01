@@ -10,8 +10,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import deployment.ExecutionUtils;
-import dto.InterfaceMetadata;
-import dto.OperationInt;
+import dto.APXInterfaceDesignDescription;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +28,7 @@ public class ConsumerMain {
 	// =================================================================================================
 	// attributes
 
-	private static InterfaceMetadata MD = null; // TODO Not Used
+	private static APXInterfaceDesignDescription MD = null; // TODO Not Used
 	public static ArrayList<ArrayList<String>> classesRequest = new ArrayList<ArrayList<String>>();
 	public static ArrayList<String> classesResponse = new ArrayList<String>(); // TODO Not Used
 
@@ -48,12 +47,12 @@ public class ConsumerMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateConsumerMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
+	public static void generateConsumerMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
 
 		classesRequest.clear();
 		classesResponse.clear();
 		
-		ArrayList<InterfaceMetadata> serviceInterfaces = new ArrayList<InterfaceMetadata>();
+		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
 			String[] systemService = systemServiceRegistry.get(m);
@@ -62,20 +61,20 @@ public class ConsumerMain {
 			if (systemService[2].equals("consumer") && systemService[0].equals(system)) {
 				// Find the matching service interface
 				for (int n = 0; n < interfaces.size(); n++)
-					if (interfaces.get(n).getID().equals(systemService[1])) {
+					if (interfaces.get(n).getName().equals(systemService[1])) {
 						serviceInterfaces.add(interfaces.get(n));
 					}
 			}
 		}
 
 		for (int p = 0; p < serviceInterfaces.size(); p++) { // For each registered service interface
-			InterfaceMetadata MDC = serviceInterfaces.get(p);
-			String service = MDC.getID(); // TODO Not Used
+			APXInterfaceDesignDescription MDC = serviceInterfaces.get(p);
+			String service = MDC.getName(); // TODO Not Used
 
-			ArrayList<OperationInt> operations = MDC.getOperations();
+			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MDC.getOperations();
 			// Generate response and request payload
 			for (int i = 0; i < operations.size(); i++) {
-				OperationInt op = operations.get(i);
+				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
 				GenerationUtils.objectClassGen(Directory, name, system, op, "consumer");
 			}
 		}

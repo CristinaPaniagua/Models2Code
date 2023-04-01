@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
-import plugin.pojo.LocalCloudDesignDescription;
+import dto.APXLocalCloudDesignDescription;
 
 /**
  * This class offers a set of utils for the reading of files and folders.

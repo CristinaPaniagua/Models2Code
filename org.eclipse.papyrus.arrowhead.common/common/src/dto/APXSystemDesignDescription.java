@@ -1,4 +1,4 @@
-package plugin.pojo;
+package dto;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @author fernand0labra
  *
  */
-public class SystemDesignDescription {
+public class APXSystemDesignDescription {
 	
 	//=================================================================================================
 	// attributes
@@ -21,7 +21,7 @@ public class SystemDesignDescription {
 	private String serverAddress; // Server address of the (provider) system
 	private String serverPort; // Server port of the (provider) system
 	
-	private ArrayList<InterfaceDesignDescription> IDDs; // List of implementing interfaces
+	private ArrayList<APXInterfaceDesignDescription> IDDs; // List of implementing interfaces
 	
 	
 	//=================================================================================================
@@ -32,39 +32,39 @@ public class SystemDesignDescription {
 	public String getRole() { return role; }
 	public String getServerAddress() { return serverAddress; }
 	public String getServerPort() { return serverPort; }
-	public ArrayList<InterfaceDesignDescription> getIDDs() { return IDDs; }
+	public ArrayList<APXInterfaceDesignDescription> getIDDs() { return IDDs; }
 	
 	public void setName(String name) { this.name = name; }
 	public void setRole(String role) { this.role = role; }
 	public void setServerAddress(String serverAddress) { this.serverAddress = serverAddress; }
 	public void setServerPort(String serverPort) { this.serverPort = serverPort; }
-	public void setIDDs(ArrayList<InterfaceDesignDescription> iDDs) { IDDs = iDDs; }
+	public void setIDDs(ArrayList<APXInterfaceDesignDescription> iDDs) { IDDs = iDDs; }
 	
 	//-------------------------------------------------------------------------------------------------
-	public SystemDesignDescription() {
+	public APXSystemDesignDescription() {
 		this.name = "";
 		this.role = "";
 		this.serverAddress = "";
 		this.serverPort = "";
-		this.IDDs = new ArrayList<InterfaceDesignDescription>();
+		this.IDDs = new ArrayList<APXInterfaceDesignDescription>();
 	}
 	
-	public SystemDesignDescription(SystemDesignDescription other) {
+	public APXSystemDesignDescription(APXSystemDesignDescription other) {
 		this.name = other.getName();
 		this.role = other.getRole();
 		this.serverAddress = other.getServerAddress();
 		this.serverPort = other.getServerPort();
-		this.IDDs = new ArrayList<InterfaceDesignDescription>();
+		this.IDDs = new ArrayList<APXInterfaceDesignDescription>();
 		
-		for(InterfaceDesignDescription idd : other.getIDDs())
-			this.IDDs.add(new InterfaceDesignDescription(idd));
+		for(APXInterfaceDesignDescription idd : other.getIDDs())
+			this.IDDs.add(new APXInterfaceDesignDescription(idd));
 	}
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String toString() {
 		String interfaceDesignString = "";
-		for(InterfaceDesignDescription idd : IDDs)
+		for(APXInterfaceDesignDescription idd : IDDs)
 			interfaceDesignString += idd.toString();
 		
 		return name + "\n\t\t\tRole: " + role + "\n\t\t\tServer Address: " + serverAddress + "\n\t\t\tserverPort: " + serverPort + "\n\t\t\tInterfaceDesignDescriptions:" + interfaceDesignString; 
@@ -73,16 +73,16 @@ public class SystemDesignDescription {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean equals(Object o) {
-		if(!(o instanceof SystemDesignDescription))
+		if(!(o instanceof APXSystemDesignDescription))
 			return false;
 		
-		SystemDesignDescription system = (SystemDesignDescription) o;
+		APXSystemDesignDescription system = (APXSystemDesignDescription) o;
 		
 		return system.getName().equals(this.getName());
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public boolean checkConsistency(SystemDesignDescription other) {
+	public boolean checkConsistency(APXSystemDesignDescription other) {
 		return
 				this.getName() == other.getName() &&
 				this.getRole() == other.getRole() &&

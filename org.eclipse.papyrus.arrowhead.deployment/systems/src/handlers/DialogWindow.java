@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import dto.LocalCloudDTO;
+import dto.APXLocalCloudDesignDescription;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -49,7 +49,7 @@ public class DialogWindow extends TitleAreaDialog {
 	private Text txtDirectory;
 	private String directory = "";
 	private GridData gridData_1;
-	private ArrayList<LocalCloudDTO> localClouds = new ArrayList<LocalCloudDTO>();
+	private ArrayList<APXLocalCloudDesignDescription> localClouds = new ArrayList<APXLocalCloudDesignDescription>();
 	private int selectedLC;
 	private String selectedLCName = "";
 	private String[] selectedSys = null;
@@ -117,7 +117,7 @@ public class DialogWindow extends TitleAreaDialog {
 		// Obtain Local Cloud names
 		String[] lcNames = new String[localClouds.size()];
 		for (int i = 0; i < localClouds.size(); i++)
-			lcNames[i] = localClouds.get(i).getLcName();
+			lcNames[i] = localClouds.get(i).getName();
 
 		// Selection of Local Cloud
 		Label lbltitle = new Label(container, SWT.NONE);
@@ -151,11 +151,11 @@ public class DialogWindow extends TitleAreaDialog {
 				text.setText(selectedLCName);
 				listsys.removeAll();
 
-				String[] sysNames = new String[localClouds.get(selectedLC).getSystems().size()];
+				String[] sysNames = new String[localClouds.get(selectedLC).getSystemsModel().size()];
 				
-				for (int i = 0; i < localClouds.get(selectedLC).getSystems().size(); i++) {
-					sysNames[i] = localClouds.get(selectedLC).getSystems().get(i)[0];
-					listsys.add(localClouds.get(selectedLC).getSystems().get(i)[0]);
+				for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
+					sysNames[i] = localClouds.get(selectedLC).getSystemsModel().get(i)[0];
+					listsys.add(localClouds.get(selectedLC).getSystemsModel().get(i)[0]);
 				}
 
 			}
@@ -292,7 +292,7 @@ public class DialogWindow extends TitleAreaDialog {
 	public String getLanguage() { return language; }
 	public Boolean getMandatorySys() { return mandatorySys; }
 	public Boolean getSupportSys() { return supportSys; }
-	public ArrayList<LocalCloudDTO> getLocalClouds() { return localClouds; }
+	public ArrayList<APXLocalCloudDesignDescription> getLocalClouds() { return localClouds; }
 	public int[] getSelectedSysType() { return selectedSysType; }
 	public String[] getSelectedSys() { return selectedSys; }
 	public int getSelectedLC() { return selectedLC; }
@@ -302,7 +302,7 @@ public class DialogWindow extends TitleAreaDialog {
 	public IProject[] getProjects() { return projects; }
 
 	//-------------------------------------------------------------------------------------------------
-	public void setLocalClouds(ArrayList<LocalCloudDTO> localClouds) { this.localClouds = localClouds; }
+	public void setLocalClouds(ArrayList<APXLocalCloudDesignDescription> localClouds) { this.localClouds = localClouds; }
 	public void setSelectedSysType(int[] selectedSysType) { this.selectedSysType = selectedSysType; }
 	public void setSelectedSys(String[] selectedSys) { this.selectedSys = selectedSys; }
 	public void setSelectedLC(int selectedLC) { this.selectedLC = selectedLC; }

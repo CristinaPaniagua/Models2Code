@@ -7,10 +7,10 @@ import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.PackageableElement;
 import org.eclipse.uml2.uml.Stereotype;
 
-import plugin.pojo.DeployedEntity;
-import plugin.pojo.InterfaceDesignDescription;
-import plugin.pojo.LocalCloudDesignDescription;
-import plugin.pojo.SystemDesignDescription;
+import dto.APXDeployedEntity;
+import dto.APXInterfaceDesignDescription;
+import dto.APXLocalCloudDesignDescription;
+import dto.APXSystemDesignDescription;
 
 /**
  * 
@@ -40,7 +40,7 @@ public class PhysicalModeller {
 	 * @param umlModel The UML Model object
 	 * @return The UML PackageableElement describing the local cloud
 	 */
-	public static PackageableElement addLocalCloud(LocalCloudDesignDescription newLocalCloud, Model umlModel) {
+	public static PackageableElement addLocalCloud(APXLocalCloudDesignDescription newLocalCloud, Model umlModel) {
 		return null; // TODO Complete
 	}
 	
@@ -52,7 +52,7 @@ public class PhysicalModeller {
 	 * @param oldLocalCloud The PackageableElement containing the old local cloud
 	 * @return A PackageableElement containing the new local cloud
 	 */
-	public static PackageableElement updateLocalCloud(ArrayList<DeployedEntity> newDeployedEntityList, PackageableElement oldLocalCloud) {
+	public static PackageableElement updateLocalCloud(ArrayList<APXDeployedEntity> newDeployedEntityList, PackageableElement oldLocalCloud) {
 		return null; // TODO Complete
 	}
 	
@@ -63,7 +63,7 @@ public class PhysicalModeller {
 	 * @param newLocalCloud The LocalCloudDesignDescription object describing the new local cloud
 	 * @param oldLocalCloud The PackageableElement containingthe old local cloud
 	 */
-	public static void updateInternalLocalCloud(LocalCloudDesignDescription newLocalCloud, PackageableElement oldLocalCloud) {
+	public static void updateInternalLocalCloud(APXLocalCloudDesignDescription newLocalCloud, PackageableElement oldLocalCloud) {
 		// TODO Complete
 	}
 	
@@ -75,7 +75,7 @@ public class PhysicalModeller {
 	 * @param umlModel umlModel The UML Model object
 	 * @return The UML PackageableElement describing the deployed entity
 	 */
-	public static PackageableElement addDeployedEntity(DeployedEntity newDeployedEntity, Model umlModel) {
+	public static PackageableElement addDeployedEntity(APXDeployedEntity newDeployedEntity, Model umlModel) {
 		return null; // TODO Complete
 	}
 	
@@ -88,7 +88,7 @@ public class PhysicalModeller {
 	 * @param oldDeployedEntity The PackageableElement containing the old deployed entity
 	 * @return A PackageableElement containing the new deployed entity
 	 */
-	public static PackageableElement updateDeployedEntity(SystemDesignDescription newSystem, ArrayList<InterfaceDesignDescription> newInterfaceList, PackageableElement oldDeployedEntity) {
+	public static PackageableElement updateDeployedEntity(APXSystemDesignDescription newSystem, ArrayList<APXInterfaceDesignDescription> newInterfaceList, PackageableElement oldDeployedEntity) {
 		return null; // TODO Complete
 	}
 	
@@ -99,7 +99,7 @@ public class PhysicalModeller {
 	 * @param newDeployedEntity The DeployedEntity object describing the new deployed entity
 	 * @param oldDeployedEntity The PackageableElement containing the old deployed entity
 	 */
-	public static void updateInternalDeployedEntity(DeployedEntity newDeployedEntity, PackageableElement oldDeployedEntity) {
+	public static void updateInternalDeployedEntity(APXDeployedEntity newDeployedEntity, PackageableElement oldDeployedEntity) {
 		// TODO Complete
 	}
 }

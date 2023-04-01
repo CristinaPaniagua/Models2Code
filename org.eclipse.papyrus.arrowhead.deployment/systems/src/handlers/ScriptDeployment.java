@@ -19,8 +19,8 @@ import deployment.ExecutionUtils;
 import deployment.ModelParser;
 import deployment.ProjectSelectWindow;
 import deployment.TypeSafeProperties;
-import dto.InterfaceMetadata;
-import dto.LocalCloudDTO;
+import dto.APXInterfaceDesignDescription;
+import dto.APXLocalCloudDesignDescription;
 import generator.ApplicationProperties;
 import generator.ConsumerAppList;
 import generator.ConsumerMain;
@@ -93,8 +93,8 @@ public class ScriptDeployment {
 			ModelParser MP = new ModelParser();
 			MP.modelReader(selectedPathModel);
 
-			ArrayList<InterfaceMetadata> interfaces = MP.getInterfaces();
-			ArrayList<LocalCloudDTO> localClouds = MP.getLocalClouds();
+			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces();
+			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
 
 			// Display Local Clouds and open a dialog window
 			DialogWindow dialog = new DialogWindow(shell);
@@ -115,8 +115,8 @@ public class ScriptDeployment {
 					os = dialog.getOs();
 					
 					// Obtain selected local cloud and the associated connections
-					LocalCloudDTO LC= localClouds.get(selectedLC);
-		            ArrayList<String []> systemServiceRegistry= LC.getSystemServiceRegistry();
+					APXLocalCloudDesignDescription LC= localClouds.get(selectedLC);
+		            ArrayList<String []> systemServiceRegistry= LC.getSystemsSR();
 
 					final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
 					Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
@@ -145,15 +145,15 @@ public class ScriptDeployment {
 						ExecutionUtils.newFolder(directory + "/arrowhead/" + name + "/", "cloud-systems");
 						
 						for (int j = 0; j < selectedSys.length; j++) { // For each of the systems
-							for (int i = 0; i < localClouds.get(selectedLC).getSystems().size(); i++) {
+							for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
 
-								if (selectedSys[j].equals(localClouds.get(selectedLC).getSystems().get(i)[0])) {
+								if (selectedSys[j].equals(localClouds.get(selectedLC).getSystemsModel().get(i)[0])) {
 									
 									// Identify its type (provider/consumer/both)
-									if (localClouds.get(selectedLC).getSystems().get(i)[1].equals("Provider")) {
+									if (localClouds.get(selectedLC).getSystemsModel().get(i)[1].equals("Provider")) {
 										selectedSysType[j] = 0;
 										type = "-provider";
-									} else if (localClouds.get(selectedLC).getSystems().get(i)[1].equals("ProviderConsumer")) {
+									} else if (localClouds.get(selectedLC).getSystemsModel().get(i)[1].equals("ProviderConsumer")) {
 										selectedSysType[j] = 2;
 										type = "-provider";
 									} else {

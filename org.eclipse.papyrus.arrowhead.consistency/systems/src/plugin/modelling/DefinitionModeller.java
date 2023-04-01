@@ -22,11 +22,11 @@ import org.eclipse.uml2.uml.Type;
 import org.eclipse.uml2.uml.VisibilityKind;
 import org.eclipse.uml2.uml.util.UMLUtil;
 
+import dto.APXInterfaceDesignDescription;
+import dto.APXSystemDesignDescription;
+import dto.APXInterfaceDesignDescription.APXServiceDescription;
+import dto.APXInterfaceDesignDescription.APXServiceDescription.APXPayload;
 import plugin.PluginExecution;
-import plugin.pojo.InterfaceDesignDescription;
-import plugin.pojo.SystemDesignDescription;
-import plugin.pojo.InterfaceDesignDescription.ServiceDescription;
-import plugin.pojo.InterfaceDesignDescription.ServiceDescription.Payload;
 
 /**
  * This class adds and updates the definition elements of the model, which are those blocks implementing
@@ -56,7 +56,7 @@ public class DefinitionModeller {
 	 * @param umlModel The UML Model object
 	 * @return The UML PackageableElement describing the system
 	 */
-	public static PackageableElement addSystemDesignDescription(SystemDesignDescription newSystem, Model umlModel) {
+	public static PackageableElement addSystemDesignDescription(APXSystemDesignDescription newSystem, Model umlModel) {
 		System.out.println("addSystemDesignDescription\t" + newSystem.getName()); // TODO Remove trace
 		
 		// Create new PackageableElement for the new system
@@ -77,9 +77,9 @@ public class DefinitionModeller {
 		// Clear the ports (interfaces) that the system implements
 		modelSystem.getBase_Class().getOwnedPorts().clear(); // TODO Check if it's necessary
 		
-		ArrayList<InterfaceDesignDescription> newInterfaceList = newSystem.getIDDs();
+		ArrayList<APXInterfaceDesignDescription> newInterfaceList = newSystem.getIDDs();
 		
-		for(InterfaceDesignDescription newInterface : newInterfaceList) { // For each of the interfaces
+		for(APXInterfaceDesignDescription newInterface : newInterfaceList) { // For each of the interfaces
 			PackageableElement existingInterface = PluginExecution.packageInterfaceDescriptionMap.get(newInterface.getName());
 			
 			// Create a new port on the existing interface (if any) or a newly created interface
@@ -101,7 +101,7 @@ public class DefinitionModeller {
 	 * @param oldSystem The PackageableElement containing the old system
 	 * @return A PackageableElement containing the new system
 	 */
-	public static PackageableElement updateSystemDesignDescription(ArrayList<InterfaceDesignDescription> newInterfaceList, PackageableElement oldSystem) {	
+	public static PackageableElement updateSystemDesignDescription(ArrayList<APXInterfaceDesignDescription> newInterfaceList, PackageableElement oldSystem) {	
 		System.out.println("updateSystemDesignDescription\t" + oldSystem.getName()); // TODO Remove trace
 		Classifier classifier = (Classifier) oldSystem;
 
@@ -115,7 +115,7 @@ public class DefinitionModeller {
 		modelSystem.getBase_Class().getOwnedPorts().clear();
 		// modelSystem.getBase_Class().getOwnedConnectors().clear();
 		
-		for(InterfaceDesignDescription newInterface : newInterfaceList) { // For each of the interfaces
+		for(APXInterfaceDesignDescription newInterface : newInterfaceList) { // For each of the interfaces
 			PackageableElement existingInterface = PluginExecution.packageInterfaceDescriptionMap.get(newInterface.getName());
 			
 			// Create a new port on the existing interface (if any) or a newly created interface
@@ -142,7 +142,7 @@ public class DefinitionModeller {
 	 * @param newSystem The SystemDesignDescription object describing the new system
 	 * @param oldSystem The PackageableElement containing the old system
 	 */
-	public static void updateInternalSystemDesignDescription(SystemDesignDescription newSystem, PackageableElement oldSystem) {
+	public static void updateInternalSystemDesignDescription(APXSystemDesignDescription newSystem, PackageableElement oldSystem) {
 		System.out.println("updateInternalSystemDesignDescription\t" + oldSystem.getName()); // TODO Remove trace
 		// TODO Complete
 	}
@@ -155,7 +155,7 @@ public class DefinitionModeller {
 	 * @param umlModel The UML Model object
 	 * @return The UML PackageableElement describing the interface
 	 */
-	public static PackageableElement addInterfaceDesignDescription(InterfaceDesignDescription newInterface, Model umlModel) {
+	public static PackageableElement addInterfaceDesignDescription(APXInterfaceDesignDescription newInterface, Model umlModel) {
 		System.out.println("addInterfaceDesignDescription\t" + newInterface.getName()); // TODO Remove trace
 		
 		// Create new PackageableElement for the new interface
@@ -186,7 +186,7 @@ public class DefinitionModeller {
 		EList<Operation> modelOperations = classifier.getAllOperations();
 		modelOperations.clear(); // TODO Check if it's necessary
 		
-		for(ServiceDescription operation : newInterface.getOperations()) { // For each of the operations
+		for(APXServiceDescription operation : newInterface.getOperations()) { // For each of the operations
 			// Set the operation's type
 			BasicEList<String> stringType = new BasicEList<String>();
 			stringType.add(HttpOperation.class.getName());
@@ -197,13 +197,13 @@ public class DefinitionModeller {
 			Operation newOperation = modelInterface.getBase_Class().createOwnedOperation(operation.getName(), stringType, type);
 			
 			if(!operation.getRequestType().equals("String") && !operation.getRequestType().equals("")) // If the operation has a complex request
-				for(Payload payload : operation.getRequestPayload()) {
+				for(APXPayload payload : operation.getRequestPayload()) {
 					Parameter parameter = newOperation.createOwnedParameter(payload.getName(), null); // TODO Obtain type from payload.getType()
 					parameter.setDirection(ParameterDirectionKind.IN_LITERAL);
 				}
 			
 			if(!operation.getResponseType().equals("String") && !operation.getResponseType().equals("")) // If the operation has a complex response
-				for(Payload payload : operation.getResponsePayload()) {
+				for(APXPayload payload : operation.getResponsePayload()) {
 					Parameter parameter = newOperation.createOwnedParameter(payload.getName(), null); // TODO Obtain type from payload.getType()
 					parameter.setDirection(ParameterDirectionKind.RETURN_LITERAL);
 				}
@@ -221,7 +221,7 @@ public class DefinitionModeller {
 	 * @param newOperationList A list of the new ServiceDescription objects of the system
 	 * @param oldInterface The PackageableElement containing the old interface
 	 */
-	public static void updateInterfaceDesignDescription(ArrayList<ServiceDescription> newOperationList, PackageableElement oldInterface) {
+	public static void updateInterfaceDesignDescription(ArrayList<APXServiceDescription> newOperationList, PackageableElement oldInterface) {
 		System.out.println("updateInterfaceDesignDescription\t" + oldInterface.getName()); // TODO Remove trace
 		System.out.println(newOperationList);
 		// TODO Complete
@@ -235,7 +235,7 @@ public class DefinitionModeller {
 	 * @param oldInterface The PackageableElement containing the old interface
 	 * @return A PackageableElement containing the new interface
 	 */
-	public static void updateInternalInterfaceDesignDescription(InterfaceDesignDescription newInterface, PackageableElement oldInterface) {
+	public static void updateInternalInterfaceDesignDescription(APXInterfaceDesignDescription newInterface, PackageableElement oldInterface) {
 		System.out.println("updateInternalInterfaceDesignDescription\t" + oldInterface.getName()); // TODO Remove trace
 		// TODO Complete
 	}
@@ -247,7 +247,7 @@ public class DefinitionModeller {
 	 * @param newPayload The Payload object describing the new payload
 	 * @param umlModel The UML Model object
 	 */
-	public static void addPayload(Payload newPayload, Model umlModel) {
+	public static void addPayload(APXPayload newPayload, Model umlModel) {
 		// TODO Complete
 	}
 

@@ -27,8 +27,8 @@ import deployment.ModelSelectWindow;
 import deployment.ProjectSelectWindow;
 import deployment.TypeSafeProperties;
 import deployment.ExecutionUtils;
-import dto.InterfaceMetadata;
-import dto.LocalCloudDTO;
+import dto.APXInterfaceDesignDescription;
+import dto.APXLocalCloudDesignDescription;
 
 /**
  * 
@@ -86,8 +86,8 @@ public class ScriptDeployment {
 			MP.modelReader(selectedPathModel);
 					
 			ArrayList<String[]> systemServiceRegistry = MP.getSystemServiceRegistry();
-			ArrayList<InterfaceMetadata> interfaces = MP.getInterfaces(); // TODO Not Used
-			ArrayList<LocalCloudDTO> localClouds = MP.getLocalClouds();
+			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces(); // TODO Not Used
+			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
 
 			// Display Local Clouds and open a dialog window
 			DialogWindow dialog = new DialogWindow(shell);
@@ -112,7 +112,7 @@ public class ScriptDeployment {
 					if (!(directory == null || directory.isEmpty())) {
 						// Obtain information about selected local cloud
 						System.out.println(localClouds.size()); // TODO Remove Trace
-						String LCname = ExecutionUtils.toKebabCase(localClouds.get(selectedLC).getLcName());
+						String LCname = ExecutionUtils.toKebabCase(localClouds.get(selectedLC).getName());
 						ExecutionUtils.newFolder(directory, "arrowhead");
 						ExecutionUtils.newFolder(directory + "/arrowhead/", LCname);
 						ExecutionUtils.newFolder(directory + "/arrowhead/" + LCname + "/", "db-rules");

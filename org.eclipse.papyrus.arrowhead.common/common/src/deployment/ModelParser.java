@@ -27,10 +27,8 @@ import org.eclipse.uml2.uml.Type;
 import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.util.UMLUtil;
 
-import dto.LocalCloudDTO;
-import dto.ElementsPayload;
-import dto.InterfaceMetadata;
-import dto.OperationInt;
+import dto.APXLocalCloudDesignDescription;
+import dto.APXInterfaceDesignDescription;
 
 /**
  * 
@@ -45,11 +43,11 @@ public class ModelParser {
 	// attributes
 
 	// -------------------------------------------------------------------------------------------------
-	private ArrayList<LocalCloudDTO> localClouds = new ArrayList<LocalCloudDTO>();
+	private ArrayList<APXLocalCloudDesignDescription> localClouds = new ArrayList<APXLocalCloudDesignDescription>();
 	private Set<Classifier> systems = new HashSet<>();
 	private boolean isProvider = false;
 	private boolean isConsumer = false;
-	private ArrayList<InterfaceMetadata> interfaces = new ArrayList<InterfaceMetadata>();
+	private ArrayList<APXInterfaceDesignDescription> interfaces = new ArrayList<APXInterfaceDesignDescription>();
 	private ArrayList<String[]> systemServiceRegistry = new ArrayList<String[]>();
 	
 	// =================================================================================================
@@ -95,7 +93,7 @@ public class ModelParser {
 	 * @param element The packageable element implementing the LocalCloudDesignDescription Stereotype Application
 	 */
 	public void getDetails(PackageableElement element) {
-		LocalCloudDTO localcloud = new LocalCloudDTO();
+		APXLocalCloudDesignDescription localcloud = new APXLocalCloudDesignDescription();
 		ArrayList<String[]> sysList = new ArrayList<String[]>();
 		
 		ArrayList<String[]> connectorsSystems= new ArrayList<String []>();
@@ -112,7 +110,7 @@ public class ModelParser {
 				if (lc != null) {
 					System.out.println("local cloud " + lc.getBase_Class()); // TODO Remove Trace
 
-					localcloud.setLcName(element.getName());
+					localcloud.setName(element.getName());
 
 					EList<Property> system_parts = classifier.getAllAttributes();
 
@@ -176,9 +174,9 @@ public class ModelParser {
 
 					}
 
-					localcloud.setSystems(sysList);
+					localcloud.setSystemsModel(sysList);
 					localcloud.setConnections(connectorsSystems);
-					localcloud.setSystemServiceRegistry(systemServiceRegistry);
+					localcloud.setSystemsSR(systemServiceRegistry);
 					localClouds.add(localcloud);
 
 					System.out.println("number of local clouds:" + localClouds.size()); // TODO Remove Trace
@@ -200,8 +198,8 @@ public class ModelParser {
 	 * @param element The packageable element implementing the InterfaceDesignDescription Stereotype Application
 	 */
 	public void getInterface(PackageableElement element) {
-		InterfaceMetadata interfaceDescription = new InterfaceMetadata();
-		ArrayList<OperationInt> opList = new ArrayList<OperationInt>();
+		APXInterfaceDesignDescription interfaceDescription = new APXInterfaceDesignDescription();
+		ArrayList<APXInterfaceDesignDescription.APXServiceDescription> opList = new ArrayList<APXInterfaceDesignDescription.APXServiceDescription>();
 
 		if (element instanceof Classifier) {
 			Classifier classifier = (Classifier) element;
@@ -212,7 +210,7 @@ public class ModelParser {
 				if (idd != null) {
 
 					System.out.println("SERVICE NAME:" + element.getName()); // TODO Remove Trace
-					interfaceDescription.setID(element.getName());
+					interfaceDescription.setName(element.getName());
 					
 					System.out.println("SERVICE PROTOCOL:" + idd.getProtocol()); // TODO Remove Trace
 					interfaceDescription.setProtocol(idd.getProtocol().toString());
@@ -223,23 +221,23 @@ public class ModelParser {
 					// Obtain payload information
 					for (Operation operation : operations) {
 
-						ArrayList<ElementsPayload> elements_request = new ArrayList<ElementsPayload>();
-						ArrayList<ElementsPayload> elements_response = new ArrayList<ElementsPayload>();
+						ArrayList<APXInterfaceDesignDescription.APXServiceDescription.APXPayload> elements_request = new ArrayList<APXInterfaceDesignDescription.APXServiceDescription.APXPayload>();
+						ArrayList<APXInterfaceDesignDescription.APXServiceDescription.APXPayload> elements_response = new ArrayList<APXInterfaceDesignDescription.APXServiceDescription.APXPayload>();
 						ArrayList<String[]> payload_request = new ArrayList<String[]>();
 						ArrayList<String[]> payload_response = new ArrayList<String[]>();
 						ArrayList<String[]> metadata_request = new ArrayList<String[]>();
 						ArrayList<String[]> metadata_response = new ArrayList<String[]>();
 						Boolean request = false;
 						Boolean response = false;
-						OperationInt op = new OperationInt();
+						APXInterfaceDesignDescription.APXServiceDescription op = interfaceDescription . new APXServiceDescription();
 
 						System.out.println("SERVICE ENCODING:" + idd.getEncoding()); // TODO Remove Trace
-						op.setMediatype_request(idd.getEncoding().toString());
-						op.setMediatype_response(idd.getEncoding().toString());
+						op.setRequestEncoding(idd.getEncoding().toString());
+						op.setResponseEncoding(idd.getEncoding().toString());
 
 						System.out.println("Operation Name:" + operation.getName()); // TODO Remove Trace
-						op.setOpName(operation.getName());
-						op.setPathResource("/" + operation.getName());
+						op.setName(operation.getName());
+						op.setPath("/" + operation.getName());
 
 						op.setMethod(UMLUtil.getStereotypeApplication(operation, HttpOperation.class).getKind().toString());
 
@@ -275,16 +273,16 @@ public class ModelParser {
 								if (response) {
 									payload_response.add(ele);
 									metadata_response.add(metadata);
-									ElementsPayload elementsResponse = new ElementsPayload(payload_response, metadata_response);
+									APXInterfaceDesignDescription.APXServiceDescription.APXPayload elementsResponse =  op . new APXPayload(payload_response, metadata_response);
 									elements_response.add(elementsResponse);
-									op.setElements_response(elements_response);
+									op.setResponsePayload(elements_response);
 								}
 								if (request) {
 									payload_request.add(ele);
 									metadata_request.add(metadata);
-									ElementsPayload elementsrequest = new ElementsPayload(payload_request, metadata_request);
+									APXInterfaceDesignDescription.APXServiceDescription.APXPayload elementsrequest = op . new APXPayload(payload_request, metadata_request);
 									elements_request.add(elementsrequest);
-									op.setElements_request(elements_request);
+									op.setRequestPayload(elements_request);
 								}
 							}
 						}
@@ -370,11 +368,11 @@ public class ModelParser {
 	public ModelParser() { super(); }
 
 	// -------------------------------------------------------------------------------------------------
-	public ArrayList<LocalCloudDTO> getLocalClouds() { return localClouds; }
-	public ArrayList<InterfaceMetadata> getInterfaces() { return interfaces; }
+	public ArrayList<APXLocalCloudDesignDescription> getLocalClouds() { return localClouds; }
+	public ArrayList<APXInterfaceDesignDescription> getInterfaces() { return interfaces; }
 	public ArrayList<String[]> getSystemServiceRegistry() { return systemServiceRegistry; }
 	
 	// -------------------------------------------------------------------------------------------------
-	public void setInterfaces(ArrayList<InterfaceMetadata> interfaces) { this.interfaces = interfaces; }
+	public void setInterfaces(ArrayList<APXInterfaceDesignDescription> interfaces) { this.interfaces = interfaces; }
 
 }

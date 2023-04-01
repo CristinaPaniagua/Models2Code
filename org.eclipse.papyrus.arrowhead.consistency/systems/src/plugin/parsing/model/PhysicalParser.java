@@ -11,10 +11,10 @@ import org.eclipse.uml2.uml.PackageableElement;
 import org.eclipse.uml2.uml.Property;
 import org.eclipse.uml2.uml.util.UMLUtil;
 
+import dto.APXDeployedEntity;
+import dto.APXLocalCloudDesignDescription;
+import dto.APXSystemDesignDescription;
 import plugin.PluginExecution;
-import plugin.pojo.DeployedEntity;
-import plugin.pojo.LocalCloudDesignDescription;
-import plugin.pojo.SystemDesignDescription;
 
 /**
  * This class parses the physical elements of the model, which are those blocks implementing
@@ -36,20 +36,20 @@ public class PhysicalParser {
 	 * @param element The packageable element of the block
 	 * @return The parsed LocalCloudDesignDescription
 	 */
-	public static LocalCloudDesignDescription parseLocalCloud(PackageableElement element){
+	public static APXLocalCloudDesignDescription parseLocalCloud(PackageableElement element){
 		Classifier classifier = (Classifier) element;
 
-		LocalCloudDesignDescription localCloud = new LocalCloudDesignDescription();
+		APXLocalCloudDesignDescription localCloud = new APXLocalCloudDesignDescription();
 
 		// Set the name of the local cloud
 		localCloud.setName(element.getName());
 		
 		// Get the attributes of the local cloud (deployed entities)
 		EList<Property> umlDeployedEntities = classifier.getAllAttributes();
-		ArrayList<DeployedEntity> deployedEntities = new ArrayList<DeployedEntity>();
+		ArrayList<APXDeployedEntity> deployedEntities = new ArrayList<APXDeployedEntity>();
 
 		for (Property umlDeployedEntity : umlDeployedEntities) { // For each deployed entity
-			DeployedEntity deployedEntity = new DeployedEntity();
+			APXDeployedEntity deployedEntity = new APXDeployedEntity();
 			org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity modelDeployedEntity = 
 					UMLUtil.getStereotypeApplication(umlDeployedEntity, org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity.class);
 

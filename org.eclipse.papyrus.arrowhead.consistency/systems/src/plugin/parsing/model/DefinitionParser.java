@@ -11,11 +11,11 @@ import org.eclipse.uml2.uml.Port;
 import org.eclipse.uml2.uml.Type;
 import org.eclipse.uml2.uml.util.UMLUtil;
 
+import dto.APXInterfaceDesignDescription;
+import dto.APXSystemDesignDescription;
+import dto.APXInterfaceDesignDescription.APXServiceDescription;
+import dto.APXInterfaceDesignDescription.APXServiceDescription.APXPayload;
 import plugin.PluginExecution;
-import plugin.pojo.InterfaceDesignDescription;
-import plugin.pojo.SystemDesignDescription;
-import plugin.pojo.InterfaceDesignDescription.ServiceDescription;
-import plugin.pojo.InterfaceDesignDescription.ServiceDescription.Payload;
 
 /**
  *
@@ -38,10 +38,10 @@ public class DefinitionParser {
 	 * @param element The packageable element of the block
 	 * @return The parsed SystemDesignDescription (SysDD)
 	 */
-	public static SystemDesignDescription parseSystem(PackageableElement element) {
+	public static APXSystemDesignDescription parseSystem(PackageableElement element) {
 		Classifier classifier = (Classifier) element;
 
-		SystemDesignDescription systemDescription = new SystemDesignDescription();
+		APXSystemDesignDescription systemDescription = new APXSystemDesignDescription();
 		org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.SysDD modelSystem = 
 				UMLUtil.getStereotypeApplication(classifier, org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.SysDD.class);
 
@@ -53,7 +53,7 @@ public class DefinitionParser {
 		for (Port modelPort : modelPorts) { // For each of the interfaces
 			
 			// Get a copy of the interface from the parsed interfaces map
-			InterfaceDesignDescription portInterface = new InterfaceDesignDescription(PluginExecution.modelInterfaceDescriptionMap.get(modelPort.getType().getName()));
+			APXInterfaceDesignDescription portInterface = new APXInterfaceDesignDescription(PluginExecution.modelInterfaceDescriptionMap.get(modelPort.getType().getName()));
 
 			// Set role of the interface
 			portInterface.setRole(modelPort.isConjugated() ? "Consumer" : "Provider");
@@ -77,10 +77,10 @@ public class DefinitionParser {
 	 * @param element The packageable element of the block
 	 * @return The parsed InterfaceDesignDescription (IDD)
 	 */
-	public static InterfaceDesignDescription parseInterface(PackageableElement element) {
+	public static APXInterfaceDesignDescription parseInterface(PackageableElement element) {
 		Classifier classifier = (Classifier) element;
 
-		InterfaceDesignDescription interfaceDescription = new InterfaceDesignDescription();
+		APXInterfaceDesignDescription interfaceDescription = new APXInterfaceDesignDescription();
 		org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription modelInterface = 
 				UMLUtil.getStereotypeApplication(classifier, org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.InterfaceDesignDescription.class);
 
@@ -91,10 +91,10 @@ public class DefinitionParser {
 
 		// Get the operations of the interface
 		EList<Operation> modelOperations = classifier.getAllOperations();
-		ArrayList<ServiceDescription> operationList = new ArrayList<ServiceDescription>();
+		ArrayList<APXServiceDescription> operationList = new ArrayList<APXServiceDescription>();
 
 		for (Operation modelOperation : modelOperations) { // For each of the operations		
-			ServiceDescription operation = interfaceDescription . new ServiceDescription();
+			APXServiceDescription operation = interfaceDescription . new APXServiceDescription();
 			modelOperation = UMLUtil.getStereotypeApplication(modelOperation, HttpOperation.class).getBase_Operation();
 			
 			// Set name and method of the operation
@@ -105,7 +105,7 @@ public class DefinitionParser {
 			EList<org.eclipse.uml2.uml.Parameter> modelParameters = modelOperation.getOwnedParameters(); 
 
 			for(org.eclipse.uml2.uml.Parameter modelParameter : modelParameters) { // For each of the parameters
-				Payload payload = operation . new Payload();
+				APXPayload payload = operation . new APXPayload();
 				Type parameterType = modelParameter.getType();
 
 				if(parameterType != null) {

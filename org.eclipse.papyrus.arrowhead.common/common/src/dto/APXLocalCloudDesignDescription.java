@@ -1,4 +1,4 @@
-package plugin.pojo;
+package dto;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,13 +11,18 @@ import java.util.Comparator;
  * @author fernand0labra
  *
  */
-public class LocalCloudDesignDescription {
+public class APXLocalCloudDesignDescription {
 	
 	//=================================================================================================
 	// attributes
 	
 	private String name = ""; // Name of the Local Cloud
-	private ArrayList<DeployedEntity> deployedEntities = new ArrayList<DeployedEntity>(); // List of deployed entities of the Local Cloud
+	private ArrayList<APXDeployedEntity> deployedEntities = new ArrayList<APXDeployedEntity>(); // List of deployed entities of the Local Cloud
+	
+	// Legacy
+	private ArrayList<String[]> systemsModel = new ArrayList<String[]>();
+	private ArrayList<String[]> connections = new ArrayList<String[]>();
+	private ArrayList<String []> systemsSR = new  ArrayList<String []>();
 	
 	
 	//=================================================================================================
@@ -25,17 +30,23 @@ public class LocalCloudDesignDescription {
 	
 	//-------------------------------------------------------------------------------------------------	
 	public String getName() { return name; }
-	public ArrayList<DeployedEntity> getDeployedEntities() { return deployedEntities; }
+	public ArrayList<APXDeployedEntity> getDeployedEntities() { return deployedEntities; }
+	public ArrayList<String[]> getSystemsModel() { return systemsModel; }
+	public ArrayList<String[]> getConnections() { return connections; }
+	public ArrayList<String[]> getSystemsSR() { return systemsSR; }
 	
 	//-------------------------------------------------------------------------------------------------
 	public void setName(String name) { this.name = name; }
-	public void setDeployedEntities(ArrayList<DeployedEntity> deployedEntities) { this.deployedEntities = deployedEntities; }
-	
+	public void setDeployedEntities(ArrayList<APXDeployedEntity> deployedEntities) { this.deployedEntities = deployedEntities; }
+	public void setSystemsModel(ArrayList<String[]> systemsModel) { this.systemsModel = systemsModel; }
+	public void setConnections(ArrayList<String[]> connections) { this.connections = connections; }
+	public void setSystemsSR(ArrayList<String[]> systemsSR) { this.systemsSR = systemsSR; }
+
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String toString() {
 		String deployedEntitiesString = "";
-		for (DeployedEntity entity : deployedEntities)
+		for (APXDeployedEntity entity : deployedEntities)
 			deployedEntitiesString += entity.toString();
 		
 		return name + "\n" + deployedEntitiesString;
@@ -44,10 +55,10 @@ public class LocalCloudDesignDescription {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean equals(Object o) {
-		if(!(o instanceof LocalCloudDesignDescription))
+		if(!(o instanceof APXLocalCloudDesignDescription))
 			return false;
 		
-		LocalCloudDesignDescription lc = (LocalCloudDesignDescription) o;
+		APXLocalCloudDesignDescription lc = (APXLocalCloudDesignDescription) o;
 		
 		return lc.getName().equals(this.getName());
 	}
@@ -57,14 +68,14 @@ public class LocalCloudDesignDescription {
 	// auxiliary classes
 	
 	//-------------------------------------------------------------------------------------------------	
-	public static class LocalCloudComparator implements Comparator<LocalCloudDesignDescription> {
+	public static class LocalCloudComparator implements Comparator<APXLocalCloudDesignDescription> {
 
 		//=================================================================================================
 		// methods
 		
 		//-------------------------------------------------------------------------------------------------			
 		@Override
-		public int compare(LocalCloudDesignDescription o1, LocalCloudDesignDescription o2) {
+		public int compare(APXLocalCloudDesignDescription o1, APXLocalCloudDesignDescription o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
 		

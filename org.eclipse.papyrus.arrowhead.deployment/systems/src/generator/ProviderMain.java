@@ -13,8 +13,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import deployment.ExecutionUtils;
-import dto.InterfaceMetadata;
-import dto.OperationInt;
+import dto.APXInterfaceDesignDescription;
 
 /**
  * 
@@ -46,12 +45,12 @@ public class ProviderMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProviderMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
+	public static void generateProviderMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
 
 		classesRequest.clear();
 		classesResponse.clear();
 		
-		ArrayList<InterfaceMetadata> serviceInterfaces = new ArrayList<InterfaceMetadata>();
+		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
 			String[] systemService = systemServiceRegistry.get(m);
@@ -60,19 +59,19 @@ public class ProviderMain {
 			if (systemService[2].equals("provider") && systemService[0].equals(system)) {
 				// Find the matching service interface
 				for (int n = 0; n < interfaces.size(); n++)
-					if (interfaces.get(n).getID().equals(systemService[1])) {
+					if (interfaces.get(n).getName().equals(systemService[1])) {
 						serviceInterfaces.add(interfaces.get(n));
 					}
 			}
 		}
 
 		for (int h = 0; h < serviceInterfaces.size(); h++) { // For each registered service interface
-			InterfaceMetadata MD = serviceInterfaces.get(h);
+			APXInterfaceDesignDescription MD = serviceInterfaces.get(h);
 
-			ArrayList<OperationInt> operations = MD.getOperations();
+			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MD.getOperations();
 			// Generate response and request payload
 			for (int i = 0; i < operations.size(); i++) {
-				OperationInt op = operations.get(i);
+				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
 				GenerationUtils.objectClassGen(Directory, name, system, op, "provider");
 			}
 		}
@@ -133,10 +132,10 @@ public class ProviderMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProvConsMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<InterfaceMetadata> interfaces) {
+	public static void generateProvConsMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
 
-		ArrayList<InterfaceMetadata> serviceInterfacesProvider = new ArrayList<InterfaceMetadata>();
-		ArrayList<InterfaceMetadata> serviceInterfacesConsumer = new ArrayList<InterfaceMetadata>();
+		ArrayList<APXInterfaceDesignDescription> serviceInterfacesProvider = new ArrayList<APXInterfaceDesignDescription>();
+		ArrayList<APXInterfaceDesignDescription> serviceInterfacesConsumer = new ArrayList<APXInterfaceDesignDescription>();
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
 			String[] systemService = systemServiceRegistry.get(m);
@@ -148,14 +147,14 @@ public class ProviderMain {
 				// If it acts as provider
 				if (systemService[2].equalsIgnoreCase("provider")) { 
 					for (int n = 0; n < interfaces.size(); n++)
-						if (interfaces.get(n).getID().equals(serv)) {
+						if (interfaces.get(n).getName().equals(serv)) {
 							serviceInterfacesProvider.add(interfaces.get(n));
 						}
 				}
 				// If it acts as consumer
 				else
 					for (int n = 0; n < interfaces.size(); n++) {
-						if (interfaces.get(n).getID().equals(serv)) {
+						if (interfaces.get(n).getName().equals(serv)) {
 							serviceInterfacesConsumer.add(interfaces.get(n));
 						}
 					}
@@ -164,13 +163,13 @@ public class ProviderMain {
 		
 		// For each service that the system provides
 		for (int l = 0; l < serviceInterfacesProvider.size(); l++) {
-			InterfaceMetadata MDP = serviceInterfacesProvider.get(l);
-			String service = MDP.getID(); // TODO Not Used
+			APXInterfaceDesignDescription MDP = serviceInterfacesProvider.get(l);
+			String service = MDP.getName(); // TODO Not Used
 
 			// Generate response and request payload
-			ArrayList<OperationInt> operations = MDP.getOperations();
+			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MDP.getOperations();
 			for (int i = 0; i < operations.size(); i++) {
-				OperationInt op = operations.get(i);
+				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
 				GenerationUtils.objectClassGen(Directory, name, system, op, "provider");
 			}
 
@@ -181,13 +180,13 @@ public class ProviderMain {
 
 		// For each service that the system consumes
 		for (int p = 0; p < serviceInterfacesConsumer.size(); p++) {
-			InterfaceMetadata MDC = serviceInterfacesConsumer.get(p);
-			String service = MDC.getID(); // TODO Not Used
+			APXInterfaceDesignDescription MDC = serviceInterfacesConsumer.get(p);
+			String service = MDC.getName(); // TODO Not Used
 
 			// Generate response and request payload
-			ArrayList<OperationInt> operations = MDC.getOperations();
+			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MDC.getOperations();
 			for (int i = 0; i < operations.size(); i++) {
-				OperationInt op = operations.get(i);
+				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
 				GenerationUtils.objectClassGen(Directory, name, system, op, "provider-consumer");
 			}
 		}
@@ -259,7 +258,7 @@ public class ProviderMain {
 	 * @param Directory The path of the file
 	 * @param name The name of the local cloud
 	 */
-	public static void providerGenAppListener(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
+	public static void providerGenAppListener(ArrayList<APXInterfaceDesignDescription> serviceInterfaces, String system, String Directory, String name) {
 		serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
 
 		// Initialise VelocityEngine
@@ -302,15 +301,15 @@ public class ProviderMain {
 	 * @param Directory The path of the file
 	 * @param name The name of the local cloud
 	 */
-	public static void providerController(ArrayList<InterfaceMetadata> serviceInterfaces, String system, String Directory, String name) {
+	public static void providerController(ArrayList<APXInterfaceDesignDescription> serviceInterfaces, String system, String Directory, String name) {
 		serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
 		
-		ArrayList<InterfaceMetadata> serviceInterfacesCoap = new ArrayList<InterfaceMetadata>();
-		ArrayList<InterfaceMetadata> serviceInterfacesHttp = new ArrayList<InterfaceMetadata>();
+		ArrayList<APXInterfaceDesignDescription> serviceInterfacesCoap = new ArrayList<APXInterfaceDesignDescription>();
+		ArrayList<APXInterfaceDesignDescription> serviceInterfacesHttp = new ArrayList<APXInterfaceDesignDescription>();
 		
 		// Assign interface with type of protocol
 		for (int i = 0; i < serviceInterfaces.size(); i++) {
-			InterfaceMetadata interfaceM = serviceInterfaces.get(i);
+			APXInterfaceDesignDescription interfaceM = serviceInterfaces.get(i);
 			if (interfaceM.getProtocol().toLowerCase().contains("CoAP".toLowerCase()))
 				serviceInterfacesCoap.add(interfaceM);
 			if(interfaceM.getProtocol().toLowerCase().contains("HTTP".toLowerCase()))

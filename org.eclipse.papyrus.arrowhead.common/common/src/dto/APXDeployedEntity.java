@@ -1,4 +1,4 @@
-package plugin.pojo;
+package dto;
 
 import java.util.Comparator;
 
@@ -10,14 +10,14 @@ import java.util.Comparator;
  * @author fernand0labra
  *
  */
-public class DeployedEntity {	
+public class APXDeployedEntity {	
 	
 	//=================================================================================================
 	// attributes
 	
 	private String name; // Name of the deployed entity
 	private String description; // Description of the deployed entity
-	private SystemDesignDescription sysDD; // Block type of the deployed entity
+	private APXSystemDesignDescription sysDD; // Block type of the deployed entity
 	
 	
 	//=================================================================================================
@@ -26,24 +26,24 @@ public class DeployedEntity {
 	//-------------------------------------------------------------------------------------------------
 	public String getName() { return name; }
 	public String getDescription() { return description; }
-	public SystemDesignDescription getSysDD() { return sysDD; }
+	public APXSystemDesignDescription getSysDD() { return sysDD; }
 	
 	//-------------------------------------------------------------------------------------------------
 	public void setName(String name) { this.name = name; }
 	public void setDescription(String description) { this.description = description; }
-	public void setSysDD(SystemDesignDescription sysDD) { this.sysDD = sysDD; }
+	public void setSysDD(APXSystemDesignDescription sysDD) { this.sysDD = sysDD; }
 	
 	//-------------------------------------------------------------------------------------------------
-	public DeployedEntity() {
+	public APXDeployedEntity() {
 		this.name = "";
 		this.description = "";
-		this.sysDD = new SystemDesignDescription();
+		this.sysDD = new APXSystemDesignDescription();
 	}
 	
-	public DeployedEntity(DeployedEntity other) {
+	public APXDeployedEntity(APXDeployedEntity other) {
 		this.name = other.getName();
 		this.description = other.getDescription();
-		this.sysDD = new SystemDesignDescription(other.getSysDD());
+		this.sysDD = new APXSystemDesignDescription(other.getSysDD());
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -55,16 +55,16 @@ public class DeployedEntity {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean equals(Object o) {
-		if(!(o instanceof DeployedEntity))
+		if(!(o instanceof APXDeployedEntity))
 			return false;
 		
-		DeployedEntity entity = (DeployedEntity) o;
+		APXDeployedEntity entity = (APXDeployedEntity) o;
 		
 		return entity.getName().equals(this.getName());
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public boolean checkConsistency(DeployedEntity other) {
+	public boolean checkConsistency(APXDeployedEntity other) {
 		return false; // TODO Complete
 	}
 	
@@ -73,14 +73,14 @@ public class DeployedEntity {
 	// auxiliary classes
 	
 	//-------------------------------------------------------------------------------------------------
-	public static class DeployedEntityComparator implements Comparator<DeployedEntity> {
+	public static class DeployedEntityComparator implements Comparator<APXDeployedEntity> {
 
 		//=================================================================================================
 		// methods
 		
 		//-------------------------------------------------------------------------------------------------
 		@Override
-		public int compare(DeployedEntity o1, DeployedEntity o2) {
+		public int compare(APXDeployedEntity o1, APXDeployedEntity o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
 		

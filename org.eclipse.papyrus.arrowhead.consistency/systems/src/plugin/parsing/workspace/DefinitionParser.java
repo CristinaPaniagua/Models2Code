@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dto.APXInterfaceDesignDescription;
+import dto.APXSystemDesignDescription;
+import dto.APXInterfaceDesignDescription.APXServiceDescription;
+import dto.APXInterfaceDesignDescription.APXServiceDescription.APXPayload;
 import plugin.PluginExecution;
-import plugin.pojo.InterfaceDesignDescription;
-import plugin.pojo.SystemDesignDescription;
-import plugin.pojo.InterfaceDesignDescription.ServiceDescription;
-import plugin.pojo.InterfaceDesignDescription.ServiceDescription.Payload;
 
 /**
 *
@@ -40,8 +40,8 @@ public class DefinitionParser {
 	 * @param deployedEntityPath Path of the deployed entity folder
 	 * @return The parsed SystemDesignDescription (SysDD)
 	 */
-	public static SystemDesignDescription parseSystem(String workspace, String deployedEntityPath) {		
-		SystemDesignDescription systemDesignDescription = new SystemDesignDescription();	
+	public static APXSystemDesignDescription parseSystem(String workspace, String deployedEntityPath) {		
+		APXSystemDesignDescription systemDesignDescription = new APXSystemDesignDescription();	
 
 		// Set role of the system from the name of the folder (_Consumer || _Provider)
 		systemDesignDescription.setRole(deployedEntityPath.split("_")[1]);
@@ -93,7 +93,7 @@ public class DefinitionParser {
 	 * 
 	 * @return The parsed InterfaceDesignDescription (IDD)
 	 */
-	public static ArrayList<InterfaceDesignDescription> parseInterface() {
+	public static ArrayList<APXInterfaceDesignDescription> parseInterface() {
 		ArrayList<String> dtoPaths = new ArrayList<String>();
 		String mainPath = "";
 		String serviceControllerPath = "";
@@ -107,7 +107,7 @@ public class DefinitionParser {
 			else if (filePath.contains("ServiceController")) // Provider operations
 				serviceControllerPath = filePath;
 
-		ArrayList<InterfaceDesignDescription> interfaceDesignList = new ArrayList<InterfaceDesignDescription>();
+		ArrayList<APXInterfaceDesignDescription> interfaceDesignList = new ArrayList<APXInterfaceDesignDescription>();
 
 		if(!mainPath.equals("")) // If the system behaves as a consumer
 			interfaceDesignList.addAll(InterfaceParsingUtils.parseMain(systemPath + mainPath));
@@ -133,9 +133,9 @@ public class DefinitionParser {
 		 * @param mainPath The path to the __Main.java file
 		 * @return A list of consumer InterfaceDesignDescription objects
 		 */
-		public static ArrayList<InterfaceDesignDescription> parseMain(String mainPath) {
+		public static ArrayList<APXInterfaceDesignDescription> parseMain(String mainPath) {
 			BufferedReader reader;
-			ArrayList<InterfaceDesignDescription> interfaceDesignList = new ArrayList<InterfaceDesignDescription>();
+			ArrayList<APXInterfaceDesignDescription> interfaceDesignList = new ArrayList<APXInterfaceDesignDescription>();
 			HashMap<String, HashMap<String, HashMap<String, String>>> consumerInterfaces = new HashMap<String, HashMap<String, HashMap<String, String>>>();
 
 			try {
@@ -191,16 +191,16 @@ public class DefinitionParser {
 
 			for (String interfaceName : consumerInterfaces.keySet()) { // For each of the interfaces
 				// Parse the interface to an InterfaceDesignDescription object
-				InterfaceDesignDescription interfaceDesign = new InterfaceDesignDescription();
+				APXInterfaceDesignDescription interfaceDesign = new APXInterfaceDesignDescription();
 				interfaceDesign.setName(interfaceName);
 				interfaceDesign.setRole("Consumer");
 				interfaceDesign.setProtocol("HTTP"); // TODO Code not adjusted for COAP so far
 				interfaceDesign.setEncoding("JSON"); // TODO HTTP-SECURE-JSON  HTTP-INSECURE-JSON
 
-				ArrayList<InterfaceDesignDescription.ServiceDescription> operationList = new ArrayList<InterfaceDesignDescription.ServiceDescription>();
+				ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operationList = new ArrayList<APXInterfaceDesignDescription.APXServiceDescription>();
 				for (String serviceName : consumerInterfaces.get(interfaceName).keySet()) { // For each of the operations
 					// Parse the operation to a ServiceDescription object
-					InterfaceDesignDescription.ServiceDescription operation = interfaceDesign . new ServiceDescription ();
+					APXInterfaceDesignDescription.APXServiceDescription operation = interfaceDesign . new APXServiceDescription ();
 					operation.setName(serviceName);
 					operation.setMethod(consumerInterfaces.get(interfaceName).get(serviceName).get("method"));
 
@@ -229,10 +229,10 @@ public class DefinitionParser {
 		 * @param serviceControllerPath The path to the ServiceController__.java file
 		 * @return A list of provider InterfaceDesignDescription objects
 		 */
-		public static ArrayList<InterfaceDesignDescription> parseServiceController(String serviceControllerPath){
+		public static ArrayList<APXInterfaceDesignDescription> parseServiceController(String serviceControllerPath){
 			BufferedReader reader;
 			HashMap<String, HashMap<String, HashMap<String, String>>> providerInterfaces = new HashMap<String, HashMap<String, HashMap<String, String>>>();
-			ArrayList<InterfaceDesignDescription> interfaceDesignList = new ArrayList<InterfaceDesignDescription>();
+			ArrayList<APXInterfaceDesignDescription> interfaceDesignList = new ArrayList<APXInterfaceDesignDescription>();
 
 			try {
 				// Open ServiceController__.java file
@@ -286,18 +286,18 @@ public class DefinitionParser {
 
 			for (String interfaceName : providerInterfaces.keySet()) { // For each of the interfaces
 				// Parse the interface into a InterfaceDesignDescription object
-				InterfaceDesignDescription interfaceDesign = new InterfaceDesignDescription();
+				APXInterfaceDesignDescription interfaceDesign = new APXInterfaceDesignDescription();
 				
 				// Obtain the name, protocol and encoding of the interface
 				interfaceDesign.setName(interfaceName);
 				interfaceDesign.setProtocol(serviceControllerPath.split("ServiceController")[1].split("\\.")[0].toUpperCase());
 				interfaceDesign.setEncoding("JSON"); // TODO HTTP-SECURE-JSON  HTTP-INSECURE-JSON
 
-				ArrayList<InterfaceDesignDescription.ServiceDescription> operationList	= new ArrayList<InterfaceDesignDescription.ServiceDescription>();
+				ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operationList	= new ArrayList<APXInterfaceDesignDescription.APXServiceDescription>();
 
 				for(String operationName : providerInterfaces.get(interfaceName).keySet()) { // For each of the operations
 					// Parse the operation into a ServiceDescription object
-					InterfaceDesignDescription.ServiceDescription operation = interfaceDesign . new ServiceDescription ();
+					APXInterfaceDesignDescription.APXServiceDescription operation = interfaceDesign . new APXServiceDescription ();
 
 					// Set name and method of the operation
 					operation.setName(operationName);
@@ -330,7 +330,7 @@ public class DefinitionParser {
 				
 				// TODO Check if it is necessary
 				if(!PluginExecution.workspaceInterfaceDescriptionMap.containsKey(interfaceName))
-					PluginExecution.workspaceInterfaceDescriptionMap.put(interfaceName, new InterfaceDesignDescription(interfaceDesign));
+					PluginExecution.workspaceInterfaceDescriptionMap.put(interfaceName, new APXInterfaceDesignDescription(interfaceDesign));
 				
 				// Set role of the interface (if it has one provided service it's considered a provider)
 				interfaceDesign.setRole("Provider");
@@ -348,9 +348,9 @@ public class DefinitionParser {
 		 * @param pathDTO The path to the __DTO.java file
 		 * @return A list of Payload objects
 		 */
-		public static ArrayList<Payload> parsePayload(ServiceDescription service, String pathDTO) {
+		public static ArrayList<APXPayload> parsePayload(APXServiceDescription service, String pathDTO) {
 			BufferedReader reader;
-			ArrayList<Payload> payload = new ArrayList<Payload>();
+			ArrayList<APXPayload> payload = new ArrayList<APXPayload>();
 
 			try {
 				// Open ___DTO.java file
@@ -360,7 +360,7 @@ public class DefinitionParser {
 				while (line != null) { // Parse information into POJO object
 
 					if (line.contains("private") && !line.contains("\\(\\)")) {
-						Payload element = service . new Payload();
+						APXPayload element = service . new APXPayload();
 						
 						// Obtain name and type of the payload element
 						element.setName(line.split("private")[1].strip().split(" ")[1].split(";")[0]);
