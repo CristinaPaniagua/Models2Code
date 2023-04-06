@@ -15,6 +15,13 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Label;
 
+/**
+ * 
+ * Project Selection Window
+ * 
+ * @author cripan
+ *
+ */
 public class ProjectSelectWindow extends TitleAreaDialog {
 
 	//=================================================================================================

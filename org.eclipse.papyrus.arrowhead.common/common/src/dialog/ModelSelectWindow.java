@@ -26,6 +26,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * 
+ * Model Selection Window
+ * 
+ * @author cripan
+ *
+ */
 public class ModelSelectWindow extends TitleAreaDialog {
 
 	//=================================================================================================
