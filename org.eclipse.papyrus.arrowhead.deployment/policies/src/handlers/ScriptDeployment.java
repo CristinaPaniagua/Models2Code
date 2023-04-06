@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -21,14 +22,14 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import deployment.CodgenUtil;
-import deployment.ModelParser;
-import deployment.ModelSelectWindow;
-import deployment.ProjectSelectWindow;
-import deployment.TypeSafeProperties;
-import deployment.ExecutionUtils;
+import dialog.ModelSelectWindow;
+import dialog.ProjectSelectWindow;
 import dto.APXInterfaceDesignDescription;
 import dto.APXLocalCloudDesignDescription;
+import parsing.model.ModelParser;
+import parsing.workspace.ParsingUtils;
+import utils.CodgenUtil;
+import utils.ExecutionUtils;
 
 /**
  * 
@@ -43,7 +44,7 @@ public class ScriptDeployment {
 	// attributes
 	
 	protected static Shell shell;
-	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
 	
 	private Text Directory; // TODO Not Used
 	private String directory = "";
@@ -61,7 +62,7 @@ public class ScriptDeployment {
 	public void execute(Shell shell) throws Exception {
 
 		// Read workspace projects and show them in the dialog window
-		IProject[] projects = ExecutionUtils.readWorkspace();
+		IProject[] projects = ParsingUtils.readWorkspace();
 		ProjectSelectWindow projWin = new ProjectSelectWindow(null);
 		projWin.setProjects(projects);
 
@@ -71,7 +72,7 @@ public class ScriptDeployment {
 			IProject selectedProject = projWin.getSelectedProject();
 			IPath projectLocation = selectedProject.getLocation();
 			
-			String[] projectFiles = ExecutionUtils.readWorkspace(projectLocation.toString(), false);
+			String[] projectFiles = ParsingUtils.readWorkspace(projectLocation.toString(), false);
 			String selectedPathModel = "";
 			
 			for(String file : projectFiles)
@@ -112,10 +113,10 @@ public class ScriptDeployment {
 					if (!(directory == null || directory.isEmpty())) {
 						// Obtain information about selected local cloud
 						System.out.println(localClouds.size()); // TODO Remove Trace
-						String LCname = ExecutionUtils.toKebabCase(localClouds.get(selectedLC).getName());
-						ExecutionUtils.newFolder(directory, "arrowhead");
-						ExecutionUtils.newFolder(directory + "/arrowhead/", LCname);
-						ExecutionUtils.newFolder(directory + "/arrowhead/" + LCname + "/", "db-rules");
+						String LCname = ParsingUtils.toKebabCase(localClouds.get(selectedLC).getName());
+						ParsingUtils.newFolder(directory, "arrowhead");
+						ParsingUtils.newFolder(directory + "/arrowhead/", LCname);
+						ParsingUtils.newFolder(directory + "/arrowhead/" + LCname + "/", "db-rules");
 						ArrayList<String[]> connectionsLC = localClouds.get(selectedLC).getConnections();
 						System.out.println(selectedLC); // TODO Remove Trace
 						for (int j = 0; j < connectionsLC.size(); j++) { // TODO Remove Trace
@@ -152,7 +153,7 @@ public class ScriptDeployment {
 							context.put("connectionsLCs", connectionsLC);
 									
 							try {
-								Writer writer = new FileWriter(directory + "/arrowhead/" + ExecutionUtils.toKebabCase(LCname) + "/db-rules/orchstore-rules.sql");
+								Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(LCname) + "/db-rules/orchstore-rules.sql");
 								t.merge(context, writer);
 								writer.flush();
 								writer.close();
@@ -169,7 +170,7 @@ public class ScriptDeployment {
 							context.put("connectionsLCs", connectionsLC);
 
 							try {
-								Writer writer = new FileWriter(directory + "/arrowhead/" + ExecutionUtils.toKebabCase(LCname) + "/db-rules/security-rules.sql");
+								Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(LCname) + "/db-rules/security-rules.sql");
 								t.merge(context, writer);
 								writer.flush();
 								writer.close();

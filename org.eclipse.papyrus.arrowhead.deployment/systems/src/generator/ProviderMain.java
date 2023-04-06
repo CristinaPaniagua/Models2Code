@@ -12,8 +12,9 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
-import deployment.ExecutionUtils;
 import dto.APXInterfaceDesignDescription;
+import parsing.workspace.ParsingUtils;
+import utils.ExecutionUtils;
 
 /**
  * 
@@ -93,7 +94,7 @@ public class ProviderMain {
 			context.put("sysName", system);
 			context.put("coap", coap);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -104,7 +105,7 @@ public class ProviderMain {
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider"); // _Provider
 				
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -222,7 +223,7 @@ public class ProviderMain {
 				dtos.add(classResponse.split(" ")[0]);
 			context.put("dtos", dtos);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -233,7 +234,7 @@ public class ProviderMain {
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider");
 
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -281,7 +282,7 @@ public class ProviderMain {
 				dtos.add(classResponse.split(" ")[0]);
 			context.put("dtos", dtos);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -337,7 +338,7 @@ public class ProviderMain {
 					dtos.add(classResponse.split(" ")[0]);
 				contexth.put("dtos", dtos);
 				
-				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
+				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);
 				writerh.flush();
 				writerh.close();
@@ -350,7 +351,7 @@ public class ProviderMain {
 				contextc.put("packagename", "provider");
 				contextc.put("interfaces", serviceInterfacesCoap);
 
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerCoap.java"));
+				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerCoap.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();

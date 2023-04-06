@@ -16,15 +16,12 @@
       [Enter License Description here.]
    </license>
 
-   <plugin
-         id="org.eclipse.papyrus.arrowhead.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <includes
+         id="org.eclipse.papyrus.arrowhead.profile.feature"
+         version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.papyrus.arrowhead.profile"
+         id="org.eclipse.papyrus.arrowhead.common"
          download-size="0"
          install-size="0"
          version="0.0.0"

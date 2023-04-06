@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Arrowhead Papyrus Consistency Common Utilities
-Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.consistency.common
-Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.papyrus.arrowhead.common;bundle-version="1.0.0"
-Automatic-Module-Name: org.eclipse.papyrus.arrowhead.consistency.common
-Bundle-RequiredExecutionEnvironment: JavaSE-11

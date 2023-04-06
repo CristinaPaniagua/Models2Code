@@ -16,8 +16,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import deployment.CodgenUtil;
-import deployment.ExecutionUtils;
+import parsing.workspace.ParsingUtils;
+import utils.CodgenUtil;
+import utils.ExecutionUtils;
 
 /**
  *
@@ -131,7 +132,7 @@ public class ClassNested {
 			String type = elements.get(i)[1];
 
 			if (type.equalsIgnoreCase("single") || type.startsWith("List")) {
-				TypeName t = CodgenUtil.getTypeCom(name, type);
+				TypeName t = CodgenUtil.getComplexType(name, type);
 				BFullConsructor.addParameter(t, name).addStatement("this.$N = $N", name, name);
 			} else
 				BFullConsructor.addParameter(CodgenUtil.getType(type), name).addStatement("this.$N = $N", name, name);
@@ -171,7 +172,7 @@ public class ClassNested {
 			
 			// Add generated methods
 			if (type.equalsIgnoreCase("single") || type.startsWith("List")) {
-				TypeName t = CodgenUtil.getTypeCom(name, type);
+				TypeName t = CodgenUtil.getComplexType(name, type);
 				BclassGen.addField(t, name, Modifier.PRIVATE).addMethod(methodget).addMethod(methodset);
 			} else {
 				Type T = CodgenUtil.getType(type);
@@ -184,7 +185,7 @@ public class ClassNested {
 		String packageName = "eu.arrowhead." + system.split("-")[system.split("-").length - 1];
 		JavaFile javaFile = JavaFile.builder(packageName, classGen).addFileComment("Auto generated").build();
 		try {
-			javaFile.writeTo(Paths.get(Directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "\\src\\main\\java\\"));
+			javaFile.writeTo(Paths.get(Directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "\\src\\main\\java\\"));
 		} catch (IOException ex) {
 			System.err.print("Exception:" + ex.getMessage());
 		}

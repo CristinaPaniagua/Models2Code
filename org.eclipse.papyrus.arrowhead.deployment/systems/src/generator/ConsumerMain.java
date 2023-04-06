@@ -9,8 +9,9 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
-import deployment.ExecutionUtils;
 import dto.APXInterfaceDesignDescription;
+import parsing.workspace.ParsingUtils;
+import utils.ExecutionUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -109,7 +110,7 @@ public class ConsumerMain {
 				dtos.add(classResponse.split(" ")[0]);
 			context.put("dtos", dtos);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
+			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

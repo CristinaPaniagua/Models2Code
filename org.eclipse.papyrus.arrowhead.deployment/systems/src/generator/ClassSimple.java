@@ -12,8 +12,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import deployment.CodgenUtil;
-import deployment.ExecutionUtils;
+import parsing.workspace.ParsingUtils;
+import utils.CodgenUtil;
+import utils.ExecutionUtils;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -84,7 +85,7 @@ public class ClassSimple {
 				var.add(new String[] {name, type});
 
 				if (type.equalsIgnoreCase("single") || type.startsWith("List")) {
-					TypeName t = CodgenUtil.getTypeCom(name, type);
+					TypeName t = CodgenUtil.getComplexType(name, type);
 					BFullConsructor.addParameter(t, name).addStatement("this.$N = $N", name, name);
 				} else
 					BFullConsructor.addParameter(CodgenUtil.getType(type), name).addStatement("this.$N = $N", name, name);
@@ -117,7 +118,7 @@ public class ClassSimple {
 
 		// Add return type
 		if (type.equalsIgnoreCase("single") || type.startsWith("List"))
-			get.returns(CodgenUtil.getTypeCom(name, type)).addStatement("return " + name);
+			get.returns(CodgenUtil.getComplexType(name, type)).addStatement("return " + name);
 		else
 			get.returns(CodgenUtil.getType(type)).addStatement("return " + name);
 
@@ -170,7 +171,7 @@ public class ClassSimple {
 
 		// Add assign sentences
 		if (type.equalsIgnoreCase("single") || type.startsWith("List"))
-			set.addParameter(CodgenUtil.getTypeCom(name, type), name).addStatement("this." + name + "=" + name);
+			set.addParameter(CodgenUtil.getComplexType(name, type), name).addStatement("this." + name + "=" + name);
 		else
 			set.addParameter(CodgenUtil.getType(type), name).addStatement("this." + name + "=" + name);
 
@@ -220,7 +221,7 @@ public class ClassSimple {
 				
 				// Add generated methods
 				if (type.equalsIgnoreCase("single") || type.startsWith("List")) {
-					TypeName t = CodgenUtil.getTypeCom(name, type);
+					TypeName t = CodgenUtil.getComplexType(name, type);
 					BclassGen.addField(t, name, Modifier.PRIVATE).addMethod(methodget).addMethod(methodset);
 				} else {
 					Type T = CodgenUtil.getType(type);
@@ -243,7 +244,7 @@ public class ClassSimple {
 		JavaFile javaFile = JavaFile.builder(packageName, classGen).addFileComment("Auto generated").build();
 		
 		try {
-			javaFile.writeTo(Paths.get(directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(system) + "\\src\\main\\java\\"));
+			javaFile.writeTo(Paths.get(directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "\\src\\main\\java\\"));
 		} catch (IOException ex) {
 			System.err.print("ERROR:" + ex.getMessage());
 		}

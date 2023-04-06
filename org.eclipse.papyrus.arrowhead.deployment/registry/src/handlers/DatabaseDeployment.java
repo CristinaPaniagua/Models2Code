@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.regex.Pattern;
 import org.eclipse.jface.window.Window;
 import org.apache.commons.io.FileUtils;
@@ -19,14 +20,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import deployment.CodgenUtil;
-import deployment.TypeSafeProperties;
+import utils.CodgenUtil;
 
 import java.sql.*;
 
 public class DatabaseDeployment {
 
-	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
 	private String workspace = configuration.getProperty("workspace");
 
 	@Execute

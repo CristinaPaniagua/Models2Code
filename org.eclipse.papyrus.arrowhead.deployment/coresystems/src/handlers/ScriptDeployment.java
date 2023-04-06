@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Properties;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -12,9 +13,8 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.swt.widgets.Shell;
 
-import deployment.CodgenUtil;
-import deployment.ExecutionUtils;
-import deployment.TypeSafeProperties;
+import utils.CodgenUtil;
+import utils.ExecutionUtils;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.window.Window;
@@ -33,7 +33,7 @@ public class ScriptDeployment {
 	// attributes
 
 	protected static Shell shell;
-	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
 
 	private String directory = "";
 	private String os = "";

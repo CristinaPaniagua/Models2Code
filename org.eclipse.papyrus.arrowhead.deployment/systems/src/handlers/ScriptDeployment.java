@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -14,17 +15,17 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import deployment.CodgenUtil;
-import deployment.ExecutionUtils;
-import deployment.ModelParser;
-import deployment.ProjectSelectWindow;
-import deployment.TypeSafeProperties;
+import dialog.ProjectSelectWindow;
 import dto.APXInterfaceDesignDescription;
 import dto.APXLocalCloudDesignDescription;
 import generator.ApplicationProperties;
 import generator.ConsumerAppList;
 import generator.ConsumerMain;
 import generator.ProviderMain;
+import parsing.model.ModelParser;
+import parsing.workspace.ParsingUtils;
+import utils.CodgenUtil;
+import utils.ExecutionUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -46,7 +47,7 @@ public class ScriptDeployment {
 	// attributes
 
 	protected static Shell shell;
-	private static TypeSafeProperties configuration = CodgenUtil.getProp("WorkSpaceConfiguration");
+	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
 
 	private String directory = "";
 	private String name = "";
@@ -69,7 +70,7 @@ public class ScriptDeployment {
 	public void execute(Shell shell) throws Exception {
 
 		// Read workspace projects and show them in the dialog window
-		IProject[] projects = ExecutionUtils.readWorkspace();
+		IProject[] projects = ParsingUtils.readWorkspace();
 		ProjectSelectWindow projWin = new ProjectSelectWindow(null);
 		projWin.setProjects(projects);
 
@@ -79,7 +80,7 @@ public class ScriptDeployment {
 			IProject selectedProject = projWin.getSelectedProject();
 			IPath projectLocation = selectedProject.getLocation();
 			
-			String[] projectFiles = ExecutionUtils.readWorkspace(projectLocation.toString(), false);
+			String[] projectFiles = ParsingUtils.readWorkspace(projectLocation.toString(), false);
 			String selectedPathModel = "";
 			
 			for(String file : projectFiles)
@@ -107,7 +108,7 @@ public class ScriptDeployment {
 
 					// Obtain information from dialog window
 					directory = dialog.getDirectory();
-					name = ExecutionUtils.toKebabCase(dialog.getName());
+					name = ParsingUtils.toKebabCase(dialog.getName());
 					selectedSys = dialog.getSelectedSys();
 					selectedSysType = new int[selectedSys.length];
 					selectedLC = dialog.getSelectedLC();
@@ -140,9 +141,9 @@ public class ScriptDeployment {
 						String folders = "";
 						String type = "";
 
-						ExecutionUtils.newFolder(directory, "arrowhead");
-						ExecutionUtils.newFolder(directory + "/arrowhead/", name);
-						ExecutionUtils.newFolder(directory + "/arrowhead/" + name + "/", "cloud-systems");
+						ParsingUtils.newFolder(directory, "arrowhead");
+						ParsingUtils.newFolder(directory + "/arrowhead/", name);
+						ParsingUtils.newFolder(directory + "/arrowhead/" + name + "/", "cloud-systems");
 						
 						for (int j = 0; j < selectedSys.length; j++) { // For each of the systems
 							for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
@@ -163,10 +164,10 @@ public class ScriptDeployment {
 								}
 							}
 
-							modules = modules + "    <module>" + ExecutionUtils.toKebabCase(selectedSys[j]) + type + "</module>\r\n";
+							modules = modules + "    <module>" + ParsingUtils.toKebabCase(selectedSys[j]) + type + "</module>\r\n";
 							folders = os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac") 
-									? folders + "mkdir " + ExecutionUtils.toKebabCase(selectedSys[j]) + type + "\n"
-									: folders + "mkdir " + ExecutionUtils.toKebabCase(selectedSys[j]) + type + "\r\n";
+									? folders + "mkdir " + ParsingUtils.toKebabCase(selectedSys[j]) + type + "\n"
+									: folders + "mkdir " + ParsingUtils.toKebabCase(selectedSys[j]) + type + "\r\n";
 						}
 						context.put("createFolders", folders);
 						contextpom.put("modules", modules);
@@ -203,7 +204,7 @@ public class ScriptDeployment {
 								ExecutionUtils.executebat(scriptPath);
 							}
 
-							String kebabCaseSystem = ExecutionUtils.toKebabCase(selectedSys[selectedSys.length - 1]);
+							String kebabCaseSystem = ParsingUtils.toKebabCase(selectedSys[selectedSys.length - 1]);
 							
 							// While the local cloud directory hasn't been created wait
 							while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + type + "\\").exists()) {}
@@ -231,8 +232,8 @@ public class ScriptDeployment {
 									Template tpomPro = velocityEngine.getTemplate("templates/general/pomProvider.vm");
 									VelocityContext contextpomPro = new VelocityContext();
 									contextpomPro.put("name", name);
-									contextpomPro.put("sysName", ExecutionUtils.toKebabCase(selectedSys[j]));
-									Writer writerpomPro = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\pom.xml"));
+									contextpomPro.put("sysName", ParsingUtils.toKebabCase(selectedSys[j]));
+									Writer writerpomPro = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\pom.xml"));
 									tpomPro.merge(contextpomPro, writerpomPro);
 									writerpomPro.flush();
 									writerpomPro.close();
@@ -243,10 +244,10 @@ public class ScriptDeployment {
 									contextFoldPro.put("name", name);
 									contextFoldPro.put("disk", disk);
 									contextFoldPro.put("workspace", workspace);
-									contextFoldPro.put("sysName", ExecutionUtils.toKebabCase(selectedSys[j]));
+									contextFoldPro.put("sysName", ParsingUtils.toKebabCase(selectedSys[j]));
 
 									if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Provider Folder Generation
-										scriptPath = workspace + "\\.temp\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh";
+										scriptPath = workspace + "\\.temp\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh";
 										
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
 										Template tFoldPro = velocityEngine.getTemplate("templates/provider/structureUnix.vm");
@@ -254,10 +255,10 @@ public class ScriptDeployment {
 										writerFoldPro.flush();
 										writerFoldPro.close();
 										
-										ExecutionUtils.executesh(workspace + "\\.temp\\", ExecutionUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh");
+										ExecutionUtils.executesh(workspace + "\\.temp\\", ParsingUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh");
 									} 
 									else { // Windows Provider Folder Generation
-										scriptPath = workspace + "\\.temp\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.bat";
+										scriptPath = workspace + "\\.temp\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.bat";
 										
 										contextFoldPro.put("disk", disk);
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
@@ -269,12 +270,12 @@ public class ScriptDeployment {
 										ExecutionUtils.executebat(scriptPath);
 									}
 									
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
+									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
 									
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "Provider");
-									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\.project"));
+									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\.project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
 									writerProject.close();
@@ -282,23 +283,23 @@ public class ScriptDeployment {
 									// Generate the Provider Main
 									ProviderMain.generateProviderMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
 									// Generate the Application Properties
-									ApplicationProperties.GenerateAppProperties(directory, name, ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
+									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
 
 									// Security files generation
 									VelocityContext contextSecurity = new VelocityContext();
-									Writer writerSecurity1 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderTokenSecurityFilter.java"));
+									Writer writerSecurity1 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderTokenSecurityFilter.java"));
 									Template tsec1 = velocityEngine.getTemplate("templates/provider/tokenSecurityFilter.vm");
 									tsec1.merge(contextSecurity, writerSecurity1);
 									writerSecurity1.flush();
 									writerSecurity1.close();
 
-									Writer writerSecurity2 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderSecurityConfig.java"));
+									Writer writerSecurity2 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderSecurityConfig.java"));
 									Template tsec2 = velocityEngine.getTemplate("templates/provider/securityConfig.vm");
 									tsec2.merge(contextSecurity, writerSecurity2);
 									writerSecurity2.flush();
 									writerSecurity2.close();
 
-									Writer writerSecurity3 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderAccessControlFilter.java"));
+									Writer writerSecurity3 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderAccessControlFilter.java"));
 									Template tsec3 = velocityEngine.getTemplate("templates/provider/accessControlFilter.vm");
 									tsec3.merge(contextSecurity, writerSecurity3);
 									writerSecurity3.flush();
@@ -313,8 +314,8 @@ public class ScriptDeployment {
 									Template tpomPro = velocityEngine.getTemplate("templates/general/pomProvider.vm");
 									VelocityContext contextpomPro = new VelocityContext();
 									contextpomPro.put("name", name);
-									contextpomPro.put("sysName", ExecutionUtils.toKebabCase(selectedSys[j]));
-									Writer writerpomPro = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\pom.xml"));
+									contextpomPro.put("sysName", ParsingUtils.toKebabCase(selectedSys[j]));
+									Writer writerpomPro = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\pom.xml"));
 									tpomPro.merge(contextpomPro, writerpomPro);
 									writerpomPro.flush();
 									writerpomPro.close();
@@ -325,10 +326,10 @@ public class ScriptDeployment {
 									contextFoldPro.put("name", name);
 									contextFoldPro.put("disk", disk);
 									contextFoldPro.put("workspace", workspace);
-									contextFoldPro.put("sysName", ExecutionUtils.toKebabCase(selectedSys[j]));
+									contextFoldPro.put("sysName", ParsingUtils.toKebabCase(selectedSys[j]));
 
 									if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Provider/Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh";
+										scriptPath = workspace + "\\.temp\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh";
 												
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
 										Template tFoldPro = velocityEngine.getTemplate("templates/provider/structureUnix.vm");
@@ -336,11 +337,11 @@ public class ScriptDeployment {
 										writerFoldPro.flush();
 										writerFoldPro.close();
 										
-										ExecutionUtils.executesh(workspace + "\\.temp\\", ExecutionUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh");
+										ExecutionUtils.executesh(workspace + "\\.temp\\", ParsingUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.sh");
 									} 
 									
 									else { // Windows Provider/Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.bat";
+										scriptPath = workspace + "\\.temp\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "ProviderStructure.bat";
 										
 										contextFoldPro.put("disk", disk);
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
@@ -352,12 +353,12 @@ public class ScriptDeployment {
 									}
 
 									// While the provider/consumer directories haven't been created wait
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
+									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
 					
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "ProviderConsumer");
-									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\.project"));
+									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\.project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
 									writerProject.close();
@@ -365,23 +366,23 @@ public class ScriptDeployment {
 									// Generate Provider/Consumer Main
 									ProviderMain.generateProvConsMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
 									// Generate Application Properties
-									ApplicationProperties.GenerateAppProperties(directory, name, ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
+									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
 									
 									// Security files generation
 									VelocityContext contextSecurity = new VelocityContext();
-									Writer writerSecurity1 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderTokenSecurityFilter.java"));
+									Writer writerSecurity1 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderTokenSecurityFilter.java"));
 									Template tsec1 = velocityEngine.getTemplate("templates/provider/tokenSecurityFilter.vm");
 									tsec1.merge(contextSecurity, writerSecurity1);
 									writerSecurity1.flush();
 									writerSecurity1.close();
 
-									Writer writerSecurity2 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderSecurityConfig.java"));
+									Writer writerSecurity2 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderSecurityConfig.java"));
 									Template tsec2 = velocityEngine.getTemplate("templates/provider/securityConfig.vm");
 									tsec2.merge(contextSecurity, writerSecurity2);
 									writerSecurity2.flush();
 									writerSecurity2.close();
 
-									Writer writerSecurity3 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderAccessControlFilter.java"));
+									Writer writerSecurity3 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderAccessControlFilter.java"));
 									Template tsec3 = velocityEngine.getTemplate("templates/provider/accessControlFilter.vm");
 									tsec3.merge(contextSecurity, writerSecurity3);
 									writerSecurity3.flush();
@@ -395,8 +396,8 @@ public class ScriptDeployment {
 									Template tpomcon = velocityEngine.getTemplate("templates/general/pomConsumer.vm");
 									VelocityContext contextpomCons = new VelocityContext();
 									contextpomCons.put("name", name);
-									contextpomCons.put("sysName", ExecutionUtils.toKebabCase(selectedSys[j]));
-									Writer writerpomCons = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-consumer\\pom.xml"));
+									contextpomCons.put("sysName", ParsingUtils.toKebabCase(selectedSys[j]));
+									Writer writerpomCons = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer\\pom.xml"));
 									tpomcon.merge(contextpomCons, writerpomCons);
 									writerpomCons.flush();
 									writerpomCons.close();
@@ -407,10 +408,10 @@ public class ScriptDeployment {
 									contextFoldCon.put("name", name);
 									contextFoldCon.put("disk", disk);
 									contextFoldCon.put("workspace", workspace);
-									contextFoldCon.put("sysName", ExecutionUtils.toKebabCase(selectedSys[j]));
+									contextFoldCon.put("sysName", ParsingUtils.toKebabCase(selectedSys[j]));
 
 									if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "ConsumerStructure.sh";
+										scriptPath = workspace + "\\.temp\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "ConsumerStructure.sh";
 										
 										Template tFoldCon = velocityEngine.getTemplate("templates/consumer/structureUnix.vm");
 										Writer writerFoldCon = new FileWriter(new File(scriptPath));
@@ -418,9 +419,9 @@ public class ScriptDeployment {
 										writerFoldCon.flush();
 										writerFoldCon.close();
 										
-										ExecutionUtils.executesh(workspace + "\\.temp\\", ExecutionUtils.toKebabCase(selectedSys[j]) + "ConsumerStructure.sh");
+										ExecutionUtils.executesh(workspace + "\\.temp\\", ParsingUtils.toKebabCase(selectedSys[j]) + "ConsumerStructure.sh");
 									} else { // Windows Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "ConsumerStructure.bat";
+										scriptPath = workspace + "\\.temp\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "ConsumerStructure.bat";
 										
 										Template tFoldCon = velocityEngine.getTemplate("templates/consumer/structureWin.vm");
 										Writer writerFoldCon = new FileWriter(new File(scriptPath));
@@ -433,24 +434,24 @@ public class ScriptDeployment {
 									}
 
 									// While the provider/consumer directories haven't been created wait
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\").exists()) {}
+									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\").exists()) {}
 									
 									// new File(scriptPath).delete();
 									
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "Consumer");
-									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ExecutionUtils.toKebabCase(selectedSys[j]) + "-consumer\\.project"));
+									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer\\.project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
 									writerProject.close();
 									
 									// Generate Application Listener
-									ConsumerAppList.GenerateAppList(directory, name, ExecutionUtils.toKebabCase(selectedSys[j]) + "-consumer");
+									ConsumerAppList.GenerateAppList(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer");
 									// Generate Consumer Main
 									ConsumerMain.generateConsumerMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
 									// Generate Application Properties
-									ApplicationProperties.GenerateAppProperties(directory, name, ExecutionUtils.toKebabCase(selectedSys[j]) + "-consumer", "consumer");
+									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer", "consumer");
 								}
 							}
 						
