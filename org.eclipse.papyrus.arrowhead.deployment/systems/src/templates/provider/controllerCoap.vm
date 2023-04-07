@@ -38,22 +38,22 @@ public class ServiceControllerCoap extends CoapResource {
  	
  System.out.println(exchange.advanced().getEndpoint().getUri().getPath());
  System.out.println(exchange.advanced().getEndpoint().getUri().toString());
- if(exchange.advanced().getEndpoint().getUri().getPath().equalsIgnoreCase("$operation.getPathResource()")){
-  $operation.getOpNameCapitalize()ResponseDTO $operation.getOpNameCapitalize()Response=new $operation.getOpNameCapitalize()ResponseDTO();
-	#if($operation.getMediatype_response()=="CBOR")
+ if(exchange.advanced().getEndpoint().getUri().getPath().equalsIgnoreCase("$operation.getPath()")){
+  $operation.capitalizeService()ResponseDTO $operation.capitalizeService()Response=new $operation.capitalizeService()ResponseDTO();
+	#if($operation.getResponseEncoding()=="CBOR")
 				CBORFactory f = new CBORFactory();
-            	ObjectMapper objMapper_$operation.getOpNameCapitalize() = new ObjectMapper(f);
-				byte [] response_out= objMapper_${operation.getOpNameCapitalize()}.writeValueAsBytes( ${operation.getOpNameCapitalize()}Response);
+            	ObjectMapper objMapper_$operation.capitalizeService() = new ObjectMapper(f);
+				byte [] response_out= objMapper_${operation.capitalizeService()}.writeValueAsBytes( ${operation.capitalizeService()}Response);
                 exchange.respond(CoAP.ResponseCode.CONTENT,response_out,60); //60- application/cbor
-	#elseif($operation.getMediatype_response()=="XML")
-				ObjectMapper  objMapper_$operation.getOpNameCapitalize()=new XmlMapper();
-				String response_out= objMapper_${operation.getOpNameCapitalize()}.writeValueAsString( ${operation.getOpNameCapitalize()}Response);
+	#elseif($operation.getResponseEncoding()=="XML")
+				ObjectMapper  objMapper_$operation.capitalizeService()=new XmlMapper();
+				String response_out= objMapper_${operation.capitalizeService()}.writeValueAsString( ${operation.capitalizeService()}Response);
                 exchange.respond(CoAP.ResponseCode.CONTENT,response_out,41); //41- application/xml
 
       #else
         		JsonFactory jsonFactory_objMapper = new JsonFactory();
-        		ObjectMapper objMapper_$operation.getOpNameCapitalize()=new ObjectMapper(jsonFactory_objMapper);
-                String response_out= objMapper_${operation.getOpNameCapitalize()}.writeValueAsString( {$operation.getOpNameCapitalize()}Response);
+        		ObjectMapper objMapper_$operation.capitalizeService()=new ObjectMapper(jsonFactory_objMapper);
+                String response_out= objMapper_${operation.capitalizeService()}.writeValueAsString( {$operation.capitalizeService()}Response);
                 exchange.respond(CoAP.ResponseCode.CONTENT,response_out,50); //50- application/json
 	#end	
  }
@@ -84,31 +84,31 @@ public class ServiceControllerCoap extends CoapResource {
    try {     
 #end
 
-if(exchange.advanced().getEndpoint().getUri().getPath().equalsIgnoreCase("$operation.getPathResource()")){
-        #if($operation.getMediatype_request()=="CBOR")
+if(exchange.advanced().getEndpoint().getUri().getPath().equalsIgnoreCase("$operation.getPath()")){
+        #if($operation.getRequestEncoding()=="CBOR")
         
        		 byte[] receivedPayload=exchange.getRequest();
             byte[] response_out=null;
             CBORFactory f = new CBORFactory();
-            ObjectMapper objMapper_$operation.getOpNameCapitalize() = new ObjectMapper(f);
+            ObjectMapper objMapper_$operation.capitalizeService() = new ObjectMapper(f);
 
-        #elseif($operation.getMediatype_request()=="JSON")
+        #elseif($operation.getRequestEncoding()=="JSON")
 		
         String receivedPayload=exchange.getRequestText();
 		String response_out=" ";
                 JsonFactory jsonFactory_objMapper_consumer = new JsonFactory();
-		ObjectMapper objMapper_$operation.getOpNameCapitalize()=new ObjectMapper(jsonFactory_objMapper_consumer);
+		ObjectMapper objMapper_$operation.capitalizeService()=new ObjectMapper(jsonFactory_objMapper_consumer);
 		
-	  #elseif($operation.getMediatype_request()=="XML")
+	  #elseif($operation.getRequestEncoding()=="XML")
 	 
        		String receivedPayload=exchange.getRequestText();
             String response_out=" ";
-            ObjectMapper objMapper_$operation.getOpNameCapitalize()=new XmlMapper();
+            ObjectMapper objMapper_$operation.capitalizeService()=new XmlMapper();
 		
 	  #else
 			//TODO rest of encodings
 	  #end
-	$operation.getOpNameCapitalize()RequestDTO request=objMapper_${operation.getOpNameCapitalize()}.readValue(receivedPayload,$operation.getOpNameCapitalize()RequestDTO.class);
+	$operation.capitalizeService()RequestDTO request=objMapper_${operation.capitalizeService()}.readValue(receivedPayload,$operation.capitalizeService()RequestDTO.class);
 	
 	}
            

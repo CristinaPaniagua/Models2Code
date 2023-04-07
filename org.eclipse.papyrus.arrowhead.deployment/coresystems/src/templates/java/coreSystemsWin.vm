@@ -7,14 +7,16 @@ CALL mvn clean install ${skipTest}
 cd ${outputDirectory}
 mkdir arrowhead
 cd arrowhead
+
+rmdir core-systems\ /S /Q
 mkdir core-systems
 cd core-systems
 
-copy ${disk}\MinimalLocalCloud\serviceregistry\target\arrowhead-serviceregistry-4.4.1.jar .
-copy ${disk}\MinimalLocalCloud\authorization\target\arrowhead-authorization-4.4.1.jar .
-copy ${disk}\MinimalLocalCloud\orchestrator\target\arrowhead-orchestrator-4.4.1.jar .
+copy ${disk}\MinimalLocalCloud\serviceregistry\target\arrowhead-serviceregistry-${version}.jar .
+copy ${disk}\MinimalLocalCloud\authorization\target\arrowhead-authorization-${version}.jar .
+copy ${disk}\MinimalLocalCloud\orchestrator\target\arrowhead-orchestrator-${version}.jar .
 copy ${workSpace}\.temp\startCoreSystems.bat .
+copy ${workSpace}\.temp\stopCoreSystems.bat .
 
 rmdir ${disk}\MinimalLocalCloud /S /Q
 rmdir ${workSpace}\.temp\ /S /Q
-PAUSE

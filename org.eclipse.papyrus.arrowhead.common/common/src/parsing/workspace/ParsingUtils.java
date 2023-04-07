@@ -94,6 +94,42 @@ public class ParsingUtils {
 		System.out.println(bool ? "Folder is created successfully" : "Error Found!"); // TODO Remove Trace
 	}
 	
+	//-------------------------------------------------------------------------------------------------
+	/**
+	 * Check the validity of the file path for directory compliance
+	 * 
+	 * @param directory The path to the directory
+	 * @param disk The disk where the workspace is located
+	 * @return The validity of the path
+	 */
+	public static boolean isValidDirectory(String directory, String disk) {
+		File file = new File(directory);
+		
+		// If the file is not a directory
+		if (!file.isDirectory()) { return false; }
+		
+		// If the file exists
+		else if (file.exists()) {
+				String cannonicalPath = "";
+				try {
+					cannonicalPath = file.getCanonicalPath();
+					System.out.println("PATH:" + cannonicalPath); // TODO Remove Trace
+				} catch (Exception e) {
+					System.err.println("ERROR: No Path");
+				}
+
+				if (cannonicalPath.matches("[\n\r\t\0\f\'?*<>|\"/:]*")) {
+					return false;
+
+				} else {
+					disk = cannonicalPath.substring(0, 2);
+					System.out.println("DISK:" + disk); // TODO Remove Trace
+					return true;
+				}
+		}
+		return false;
+	}
+	
 	// -------------------------------------------------------------------------------------------------
 	/**
 	 * 

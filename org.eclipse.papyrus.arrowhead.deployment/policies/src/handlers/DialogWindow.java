@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import dto.APXLocalCloudDesignDescription;
+import parsing.workspace.ParsingUtils;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -175,7 +176,7 @@ public class DialogWindow extends TitleAreaDialog {
 			messageBox.setMessage("Please enter directory" + directory);
 			messageBox.open();
 		} else {
-			if (isValidDirectory(directory)) {
+			if (ParsingUtils.isValidDirectory(directory, disk)) {
 				MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WORKING);
 				messageBox.setText("Info");
 				messageBox.setMessage(directory);
@@ -224,38 +225,4 @@ public class DialogWindow extends TitleAreaDialog {
 	public void setSelectedLCName(String selectedLCName) { this.selectedLCName = selectedLCName; }
 	public void setProjects(IProject[] projects) { this.projects = projects; }	
 	
-	//-------------------------------------------------------------------------------------------------
-	/**
-	 * Check the validity of the file path for directory compliance
-	 * 
-	 * @param directory The path to the directory
-	 * @return The validity of the path
-	 */
-	public boolean isValidDirectory(String directory) {
-		File file = new File(directory);
-		
-		// If the file is not a directory
-		if (!file.isDirectory()) { return false; }
-		
-		// If the file exists
-		else if (file.exists()) {
-				String cannonicalPath = "";
-				try {
-					cannonicalPath = file.getCanonicalPath();
-					System.out.println("PATH:" + cannonicalPath); // TODO Remove Trace
-				} catch (Exception e) {
-					System.err.println("ERROR: No Path");
-				}
-
-				if (cannonicalPath.matches("[\n\r\t\0\f\'?*<>|\"/:]*")) {
-					return false;
-
-				} else {
-					disk = cannonicalPath.substring(0, 2);
-					System.out.println("DISK:" + disk); // TODO Remove Trace
-					return true;
-				}
-		}
-		return false;
-	}
 }

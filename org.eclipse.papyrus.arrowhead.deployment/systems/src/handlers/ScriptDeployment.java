@@ -97,6 +97,9 @@ public class ScriptDeployment {
 			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces();
 			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
 
+			System.out.println(interfaces);
+			System.out.println(localClouds);
+			
 			// Display Local Clouds and open a dialog window
 			DialogWindow dialog = new DialogWindow(shell);
 			dialog.setWorkDirectory(workspace);

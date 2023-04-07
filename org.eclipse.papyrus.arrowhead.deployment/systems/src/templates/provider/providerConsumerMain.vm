@@ -84,7 +84,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 		#foreach( $interface in $interfaces )
 			#set($operations=$interface.getOperations())
 			#foreach( $operation in $operations  )
-    	$interface.getID()_$operation.getOpName()_Consumption();
+    	$interface.getName()_$operation.getName()_Consumption();
     		#end
     	#end
 		#if($coap==true)
@@ -106,9 +106,9 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 		#set($operations=$interface.getOperations())
 		#foreach( $operation in $operations )
     //-------------------------------------------------------------------------------------------------
-    public void $interface.getID()_$operation.getOpName()_Consumption() {
-    	logger.info("Orchestration request for " + "$interface.getID()" + " service:");
-    	final ServiceQueryFormDTO serviceQueryForm = new ServiceQueryFormDTO.Builder("$interface.getID()").interfaces(getInterface()).build();
+    public void $interface.getName()_$operation.getName()_Consumption() {
+    	logger.info("Orchestration request for " + "$interface.getName()" + " service:");
+    	final ServiceQueryFormDTO serviceQueryForm = new ServiceQueryFormDTO.Builder("$interface.getName()").interfaces(getInterface()).build();
     	
 		final Builder orchestrationFormBuilder = arrowheadService.getOrchestrationFormBuilder();
 		final OrchestrationFormRequestDTO orchestrationFormRequest = orchestrationFormBuilder.requestedService(serviceQueryForm)
@@ -129,49 +129,49 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 			logger.info("No provider found during the orchestration");
 		} else {
 			final OrchestrationResultDTO orchestrationResult = orchestrationResponse.getResponse().get(0);
-			validateOrchestrationResult(orchestrationResult, "$interface.getID()");
+			validateOrchestrationResult(orchestrationResult, "$interface.getName()");
 			
 		 try{ 
   			#if($interface.getProtocol()=="CoAP")		
 				#if($operation.getMethod() == "GET")
-			String result= sendCoapGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()");
+			String result= sendCoapGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()");
 				#set($GET_COAP=$GET_COAP+1)
 				#elseif($operation.getMethod()== "POST")
 					#set($POST_COAP=$POST_COAP+1)
-					#if($operation.getMediatype_request()=="CBOR")
+					#if($operation.getRequestEncoding()=="CBOR")
 					
 			// Payload
 		 	CBORFactory f = new CBORFactory();
     		ObjectMapper mapper = new ObjectMapper(f);
-    		$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+    		$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 			byte[] payload = mapper.writeValueAsBytes(request);
 			
 			// Service Consumption
-			byte[] result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-					#elseif($operation.getMediatype_request()=="JSON")
+			byte[] result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+					#elseif($operation.getRequestEncoding()=="JSON")
 						
 			// Payload
 			JsonFactory jsonFactory_objMapper = new JsonFactory();
 			ObjectMapper objMapper = new ObjectMapper(jsonFactory_objMapper);
-			$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+			$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 			String payload = objMapper.writeValueAsString(request);
 			
 			// Service Consumption
-			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-					#elseif($operation.getMediatype_request()=="XML")
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+					#elseif($operation.getRequestEncoding()=="XML")
 					
 			// Payload
 			ObjectMapper objMapper = new XmlMapper();
-			$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+			$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 			String payload = objMapper.writeValueAsString(request);
 				
 			// Service Consumption	
-			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
 					#else 
 					
 			// TODO Payload 
 			// Service Consumption
-			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);	
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);	
 					#end
 				#else
 			// TODO PUT and DELETE methods
@@ -185,7 +185,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
  #if($operation.getMethod()=="GET")
  #if($GET_COAP==1)
   //Consumption service -GET COAP
-   #if($operation.getMediatype_response()=="CBOR")
+   #if($operation.getResponseEncoding()=="CBOR")
     public static byte[] sendCoapGet(String url) throws IOException {
    #else
     public static String sendCoapGet(String url) throws IOException {
@@ -217,7 +217,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
     CoapClient client= new CoapClient(uri);
     CoapResponse response = null;
 
-     #if($operation.getMediatype_response()=="CBOR")
+     #if($operation.getResponseEncoding()=="CBOR")
       byte[] responseText= null; 
       #else
       String responseText= " ";
@@ -254,7 +254,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
  #else
   #if($POST_COAP==1)
  	//Consumption service- POST COAP
-	#if($operation.getMediatype_response()=="CBOR")
+	#if($operation.getResponseEncoding()=="CBOR")
 	 public static byte[] sendCoapPost(String url, String payload) throws IOException {
 	#else 
 	 public static String sendCoapPost(String url, String payload) throws IOException {
@@ -286,7 +286,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
     CoapClient client= new CoapClient(uri);
     CoapResponse response = null;
 
-      #if($operation.getMediatype_response()=="CBOR")
+      #if($operation.getResponseEncoding()=="CBOR")
       byte[] responseText= null; 
       #else
       String responseText= " ";
@@ -305,7 +305,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
       System.err.println("Got an error: " + e);
     }
     if(response!=null) {
-      #if($operation.getMediatype_response()=="CBOR")
+      #if($operation.getResponseEncoding()=="CBOR")
       responseText= response.getPayload();
       #else
       responseText= response.getResponseText();
@@ -326,37 +326,37 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
   #elseif($interface.getProtocol()=="HTTP_1_1")	
   
   #if($operation.getMethod() == "GET")
-			String result= sendGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()");
+			String result= sendGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()");
 			#set($GET_HTTP=$GET_HTTP+1)
 			#elseif($operation.getMethod()== "POST")
 			#set($POST_HTTP=$POST_HTTP+1)
-				#if($operation.getMediatype_request()=="CBOR")
+				#if($operation.getRequestEncoding()=="CBOR")
 				//PAYLOAD
 				 	CBORFactory f = new CBORFactory();
             		ObjectMapper mapper = new ObjectMapper(f);
-            		$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+            		$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 					byte[] payload=mapper.writeValueAsBytes(request);
 				// SERVICE CONSUMPTION	
-					byte[] result= sendPost_Bytes("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-				#elseif($operation.getMediatype_request()=="JSON")
+					byte[] result= sendPost_Bytes("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+				#elseif($operation.getRequestEncoding()=="JSON")
 				//PAYLOAD
 					JsonFactory jsonFactory_objMapper = new JsonFactory();
         			ObjectMapper objMapper=new ObjectMapper(jsonFactory_objMapper);
-					$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+					$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 					String payload=objMapper.writeValueAsString(request);
 				// SERVICE CONSUMPTION	
-					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
-				#elseif($operation.getMediatype_request()=="XML")
+					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+				#elseif($operation.getRequestEncoding()=="XML")
 				//PAYLOAD
 					ObjectMapper objMapper=new XmlMapper();
-					$operation.getOpNameCapitalize()RequestDTO request = new $operation.getOpNameCapitalize()RequestDTO();
+					$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 					String payload=objMapper.writeValueAsString(request);
 				// SERVICE CONSUMPTION	
-					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);
+					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
 				#else 
 				//TODO PAYLOAD 
 				// SERVICE CONSUMPTION	
-					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPathResource()",payload);	
+					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);	
 				#end
 				
 			
@@ -411,7 +411,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 	#elseif($operation.getMethod() == "POST")
 	#if($POST_HTTP==1)
 	//SERVICE CONSUMPTION METHOD
-		 #if( $operation.getMediatype_request()== "CBOR")
+		 #if( $operation.getRequestEncoding()== "CBOR")
 		 private static  byte[] sendPost_Bytes(String url, byte[]  payload) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -467,9 +467,9 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 
        // add request headers
        
- 			request.addHeader("content-type", "application/$operation.getMediatype_request().toLowerCase()");
+ 			request.addHeader("content-type", "application/$operation.getRequestEncoding().toLowerCase()");
              
-        // send a $operation.getMediatype_request() data
+        // send a $operation.getRequestEncoding() data
         
         
             request.setEntity(new StringEntity(payload.toString()));

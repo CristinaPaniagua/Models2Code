@@ -90,6 +90,7 @@ public class ScriptDeployment {
 							disk = dialog.getDisk();
 							t = velocityEngine.getTemplate("/templates/java/coreSystemsWin.vm");
 							context.put("disk", disk);
+							context.put("version", "4.4.1");
 						}
 					} else { // If the user selected the mandatory and support systems
 						if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) {
@@ -98,6 +99,7 @@ public class ScriptDeployment {
 							disk = dialog.getDisk();
 							t = velocityEngine.getTemplate("/templates/java/allSystemsWin.vm");
 							context.put("disk", disk);
+							context.put("version", "4.6.0");
 						}
 					}
 					context.put("workSpace", workspace);
@@ -138,10 +140,30 @@ public class ScriptDeployment {
 							writer = new FileWriter(new File(workspace + "\\.temp\\corescript.bat"));
 							
 							// Generation of the startCoreSystems.bat script
-							Writer wStart = new FileWriter(new File(workspace + "\\.temp\\startCoreSystems.bat"));
-							velocityEngine.getTemplate("/templates/startCoreSystems.vm").merge(new VelocityContext(), wStart);
-							wStart.flush();
-							wStart.close();
+							Template tScripts = velocityEngine.getTemplate("/scripts/startCoreSystems.vm");
+							Writer wScripts = new FileWriter(new File(workspace + "\\.temp\\startCoreSystems.bat"));
+							tScripts.merge(context, wScripts);
+							wScripts.flush();
+							wScripts.close();
+							
+							// Generation of the stopCoreSystems.bat script
+							FileUtils.copyURLToFile(
+									this.getClass().getResource("/scripts/stopCoreSystems.bat"), 
+									new File(workspace + "\\.temp\\stopCoreSystems.bat"));
+							
+							if(!mandatorySys) {
+								// Generation of the startAllSystems.bat script
+								tScripts = velocityEngine.getTemplate("/scripts/startAllSystems.vm");
+								wScripts = new FileWriter(new File(workspace + "\\.temp\\startAllSystems.bat"));
+								tScripts.merge(context, wScripts);
+								wScripts.flush();
+								wScripts.close();
+								
+								// Generation of the stopAllSystems.bat script
+								FileUtils.copyURLToFile(
+										this.getClass().getResource("/scripts/stopAllSystems.bat"), 
+										new File(workspace + "\\.temp\\stopAllSystems.bat"));
+							}
 						}
 
 						t.merge(context, writer);

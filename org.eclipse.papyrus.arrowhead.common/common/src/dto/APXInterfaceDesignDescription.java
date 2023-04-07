@@ -254,9 +254,9 @@ public class APXInterfaceDesignDescription {
 			type += !requestComplexType.equals("") ? "\n\t\t\t\t\t\t\t Request Complex Type: " + requestComplexType : "";
 			type += !responseComplexType.equals("") ? "\n\t\t\t\t\t\t\t Response Complex Type: " + responseComplexType : "";
 			
-			String encodingString = "\n\t\t\t\t\t\t\t Encoding Type: ";
+			String encodingString = "";
 			encodingString += !requestEncoding.equals("") ? requestEncoding: "";
-			encodingString += !responseEncoding.equals("") ? responseEncoding : "";
+			encodingString += !responseEncoding.equals("") & !responseEncoding.equals(requestEncoding)? responseEncoding : "";
 			
 			String subpathsString = "";
 			for(String subpath : subpaths)

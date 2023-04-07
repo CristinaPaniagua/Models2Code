@@ -7,28 +7,36 @@ CALL mvn clean install ${skipTest}
 cd ${outputDirectory}
 mkdir arrowhead
 cd arrowhead
+
+rmdir core-systems\ /S /Q
 mkdir core-systems
+
+rmdir support-systems\ /S /Q
 mkdir support-systems
+
+copy ${workSpace}\.temp\startAllSystems.bat .
+copy ${workSpace}\.temp\stopAllSystems.bat .
+
 cd core-systems
 
-copy ${disk}\core-java-spring\serviceregistry\target\arrowhead-serviceregistry-4.4.1.jar .
-copy ${disk}\core-java-spring\authorization\target\arrowhead-authorization-4.4.1.jar .
-copy ${disk}\core-java-spring\orchestrator\target\arrowhead-orchestrator-4.4.1.jar .
+copy ${disk}\core-java-spring\serviceregistry\target\arrowhead-serviceregistry-${version}.jar .
+copy ${disk}\core-java-spring\authorization\target\arrowhead-authorization-${version}.jar .
+copy ${disk}\core-java-spring\orchestrator\target\arrowhead-orchestrator-${version}.jar .
 copy ${workSpace}\.temp\startCoreSystems.bat .
+copy ${workSpace}\.temp\stopCoreSystems.bat .
 
 cd ..\support-systems
 
-copy ${disk}\core-java-spring\certificate-authority\target\arrowhead-certificate-authority-4.4.1.jar .
-copy ${disk}\core-java-spring\choreographer\target\arrowhead-choreographer-4.4.1.jar .
-copy ${disk}\core-java-spring\datamanager\target\arrowhead-datamanager-4.4.1.jar .
-copy ${disk}\core-java-spring\deviceregistry\target\arrowhead-deviceregistry-4.4.1.jar .
-copy ${disk}\core-java-spring\eventhandler\target\arrowhead-eventhandler-4.4.1.jar .
-copy ${disk}\core-java-spring\gatekeeper\target\arrowhead-gatekeeper-4.4.1.jar .
-copy ${disk}\core-java-spring\gateway\target\arrowhead-gateway-4.4.1.jar .
-copy ${disk}\core-java-spring\onboarding\target\arrowhead-onboarding-4.4.1.jar .
-copy ${disk}\core-java-spring\systemregistry\target\arrowhead-systemregistry-4.4.1.jar .
-copy ${disk}\core-java-spring\translator\target\arrowhead-translator-4.4.1.jar .
+copy ${disk}\core-java-spring\certificate-authority\target\arrowhead-certificate-authority-${version}.jar .
+copy ${disk}\core-java-spring\choreographer\target\arrowhead-choreographer-${version}.jar .
+copy ${disk}\core-java-spring\datamanager\target\arrowhead-datamanager-${version}.jar .
+copy ${disk}\core-java-spring\deviceregistry\target\arrowhead-deviceregistry-${version}.jar .
+copy ${disk}\core-java-spring\eventhandler\target\arrowhead-eventhandler-${version}.jar .
+copy ${disk}\core-java-spring\gatekeeper\target\arrowhead-gatekeeper-${version}.jar .
+copy ${disk}\core-java-spring\gateway\target\arrowhead-gateway-${version}.jar .
+copy ${disk}\core-java-spring\onboarding\target\arrowhead-onboarding-${version}.jar .
+copy ${disk}\core-java-spring\systemregistry\target\arrowhead-systemregistry-${version}.jar .
+copy ${disk}\core-java-spring\translator\target\arrowhead-translator-${version}.jar .
 
 rmdir ${disk}\core-java-spring /S /Q
 rmdir ${workSpace}\.temp\ /S /Q
-PAUSE
