@@ -46,12 +46,10 @@ public class ExecutionUtils {
 
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		ProcessBuilder processBuilder = new ProcessBuilder();
-		System.out.println("Script generated"); // TODO Remove Trace
 		processBuilder.command(directory);
 
 		try {
 			Process process = processBuilder.start();
-			System.out.println("Script executed"); // TODO Remove Trace
 			executor.submit(new ProcessTask(process.getInputStream()));
 		} finally {
 			executor.shutdown();
@@ -73,13 +71,11 @@ public class ExecutionUtils {
 
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		ProcessBuilder processBuilder = new ProcessBuilder();
-		System.out.println("Script generated"); // TODO Remove Trace
 		processBuilder.command("sh", "-c", "sh ./" + file + ".sh");
 		processBuilder.directory(new File(directory + "\\src\\scripts\\"));
 
 		try {
 			Process process = processBuilder.start();
-			System.out.println("Script executed"); // TODO Remove Trace
 			executor.submit(new ProcessTask(process.getInputStream()));
 		} finally {
 			executor.shutdown();

@@ -1,6 +1,7 @@
 package parsing.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class ModelParser {
 	private boolean isProvider = false;
 	private boolean isConsumer = false;
 	private ArrayList<APXInterfaceDesignDescription> interfaces = new ArrayList<APXInterfaceDesignDescription>();
-	private ArrayList<String[]> systemServiceRegistry = new ArrayList<String[]>();
+	private ArrayList<ArrayList<String>> systemServiceRegistry = new ArrayList<ArrayList<String>>();
 	
 	
 	// =================================================================================================
@@ -79,7 +80,6 @@ public class ModelParser {
 				org.eclipse.uml2.uml.Package nestedPackage = (org.eclipse.uml2.uml.Package) element;
 				EList<PackageableElement> nestedPackagedElements = nestedPackage.getPackagedElements();
 			} else { 
-				System.out.println(element.getName()); // TODO Remove Trace
 				getDetails(element); // Obtain details
 				getInterface(element);
 			}
@@ -94,9 +94,8 @@ public class ModelParser {
 	 */
 	public void getDetails(PackageableElement element) {
 		APXLocalCloudDesignDescription localcloud = new APXLocalCloudDesignDescription();
-		ArrayList<String[]> sysList = new ArrayList<String[]>();
-		
-		ArrayList<String[]> connectorsSystems= new ArrayList<String []>();
+		ArrayList<ArrayList<String>> sysList = new ArrayList<ArrayList<String>>();
+		HashMap<String, ArrayList<String>> connectorsSystems= new HashMap<String, ArrayList<String>>();
 		connectorsSystems = getConnections(element);	
 
 		sysList.clear();
@@ -108,8 +107,6 @@ public class ModelParser {
 				LocalCLoudDesignDescription lc = UMLUtil.getStereotypeApplication(classifier, LocalCLoudDesignDescription.class);
 
 				if (lc != null) {
-					System.out.println("local cloud " + lc.getBase_Class()); // TODO Remove Trace
-
 					localcloud.setName(element.getName());
 
 					EList<Property> system_parts = classifier.getAllAttributes();
@@ -121,17 +118,14 @@ public class ModelParser {
 						DeployedEntity depSys = UMLUtil.getStereotypeApplication(system_part, DeployedEntity.class);
 						if (depSys != null) {
 							String name = system_part.getName();
-							String[] sysdetails = new String[2];
-							sysdetails[0] = name;
+							ArrayList<String> sysdetails = new ArrayList<String>();
+							sysdetails.add(name);
 
 							String description = "";
 							for (Iterator<Comment> iterator = system_part.getOwnedComments().iterator(); iterator.hasNext();) {
 								Comment comment = iterator.next();
 								description += comment.getBody();
 							}
-
-							if (name != null && name.length() > 0)
-								System.out.println("systemName: " + name); // TODO Remove Trace
 
 							Classifier system = (Classifier) system_part.getType();
 							EList<Property> atts = system.getAttributes();
@@ -140,36 +134,33 @@ public class ModelParser {
 								if (att instanceof Port) {
 									Type AttType = att.getType();
 									if (AttType != null && name != null) {
-										String[] registry = new String[3];
-										registry[0] = name;
-										registry[1] = AttType.getName();
+										ArrayList<String> registry = new ArrayList<String>();
+										registry.add(name);
+										registry.add(AttType.getName());
 
 										if (!((Port) att).isConjugated()) {
 											isProvider = true;
-											registry[2] = "provider";
+											registry.add("provider");
 										} else {
 											isConsumer = true;
-											registry[2] = "consumer";
+											registry.add("consumer");
 										}
 
 										if (isProvider && isConsumer)
-											registry[2] = "provider";
+											registry.add("provider");
 
-										System.out.println("System:" + registry[0] + "--Service: " + registry[1] + "--type: " + registry[2]); // TODO Remove Trace
 										systemServiceRegistry.add(registry);
 									}
 								}
 
-							System.out.println("P: " + isProvider + "--C: " + isConsumer); // TODO Remove Trace
 							if (isProvider && isConsumer)
-								sysdetails[1] = "ProviderConsumer";
+								sysdetails.add("ProviderConsumer");
 							else if (isProvider)
-								sysdetails[1] = "Provider";
+								sysdetails.add("Provider");
 							else
-								sysdetails[1] = "Consumer";
+								sysdetails.add("Consumer");
 
 							sysList.add(sysdetails);
-							System.out.println(sysdetails[0] + "---" + sysdetails[1]); // TODO Remove Trace
 						}
 
 					}
@@ -179,15 +170,9 @@ public class ModelParser {
 					localcloud.setSystemsSR(systemServiceRegistry);
 					localClouds.add(localcloud);
 
-					System.out.println("number of local clouds:" + localClouds.size()); // TODO Remove Trace
-					System.out.println("number of system-service register:" + systemServiceRegistry.size()); // TODO Remove Trace
-
-				} else
-					System.out.println("No local cloud"); // TODO Remove Trace
-			} else
-				System.out.println("No class"); // TODO Remove Trace
-		} else
-			System.out.println("No classifier"); // TODO Remove Trace
+				}
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------------------------------
@@ -209,14 +194,10 @@ public class ModelParser {
 
 				if (idd != null) {
 
-					System.out.println("SERVICE NAME:" + element.getName()); // TODO Remove Trace
 					interfaceDescription.setName(element.getName());
-					
-					System.out.println("SERVICE PROTOCOL:" + idd.getProtocol()); // TODO Remove Trace
 					interfaceDescription.setProtocol(idd.getProtocol().toString());
 
 					EList<Operation> operations = classifier.getAllOperations();
-					System.out.println("number of operations:" + operations.size()); // TODO Remove Trace
 
 					// Obtain payload information
 					for (Operation operation : operations) {
@@ -231,11 +212,8 @@ public class ModelParser {
 						Boolean response = false;
 						APXInterfaceDesignDescription.APXServiceDescription op = interfaceDescription . new APXServiceDescription();
 
-						System.out.println("SERVICE ENCODING:" + idd.getEncoding()); // TODO Remove Trace
 						op.setRequestEncoding(idd.getEncoding().toString());
 						op.setResponseEncoding(idd.getEncoding().toString());
-
-						System.out.println("Operation Name:" + operation.getName()); // TODO Remove Trace
 						op.setName(operation.getName());
 						op.setPath("/" + operation.getName());
 
@@ -253,17 +231,14 @@ public class ModelParser {
 						op.setRequest(request);
 						op.setResponse(response);
 						EList<Parameter> parameters = operation.getOwnedParameters();
-						System.out.println("number of parameters:" + parameters.size()); // TODO Remove Trace
 						
 						// Obtain parameter information
 						for (Parameter parameter : parameters) {
 
 							Type parameterType = parameter.getType();
 							if (parameterType != null) {
-								System.out.println("Parameter Name:" + parameter.getName()); // TODO Remove Trace
 								String[] ele = new String[2];
 								ele[0] = parameter.getName();
-								System.out.println("Parameter Type:" + parameterType.getName()); // TODO Remove Trace
 								ele[1] = parameterType.getName();
 
 								String[] metadata = new String[4];
@@ -297,11 +272,8 @@ public class ModelParser {
 
 					}
 					interfaceDescription.setOperations(opList);
-					System.out.println("INTERFACE:" + interfaceDescription.toString()); // TODO Remove Trace
 					interfaces.add(interfaceDescription);
 
-				} else {
-					System.out.println("********* NO IDD ********"); // TODO Remove Trace
 				}
 			}
 		}
@@ -314,11 +286,11 @@ public class ModelParser {
 	 * @param element The packageable element defining the connections
 	 * @return A list with the name of the connector/service and the systems with their roles
 	 */
-	public ArrayList<String[]> getConnections(PackageableElement element) {
+	public HashMap<String, ArrayList<String>> getConnections(PackageableElement element) {
 
-		ArrayList<String[]> connectorsSystems = new ArrayList<String[]>();
-		ArrayList<String[]> sysList = new ArrayList<String[]>();
-		String[] connector;
+		HashMap<String, ArrayList<String>> connectorsSystems = new HashMap<String, ArrayList<String>>();
+		ArrayList<ArrayList<String>> sysList = new ArrayList<ArrayList<String>>();
+		ArrayList<String> connector;
 		sysList.clear();
 
 		if (element instanceof Classifier) {
@@ -329,30 +301,34 @@ public class ModelParser {
 				Class LoCl = (Class) classifier;
 
 				if (LoCl != null) {
-					System.out.println("local cloud " + LoCl.getName()); // TODO Remove Trace
 					EList<Connector> connectorsList = LoCl.getOwnedConnectors();
 					for (int j = 0; j < connectorsList.size(); j++) {
 						// Obtain connector and end systems
 						Connector c = connectorsList.get(j);
 						EList<ConnectorEnd> connectorsEndList = c.getEnds();
 						
-						connector = new String[4];
-						connector[0] = c.getName(); // Name of the connector/service
+						connector = new ArrayList<String>();
+						connector.add(c.getName()); // Name of the connector/service
 						
-						for (int k = 0; k < connectorsEndList.size(); k++) { // For each end system
-							ConnectorEnd ce = connectorsEndList.get(k);
+						ArrayList<String> connectorRole = new ArrayList<String>();
+						ArrayList<String> connectorName = new ArrayList<String>();
+						ArrayList<String> connectorPort = new ArrayList<String>();
+						
+						for (ConnectorEnd ce : connectorsEndList) { // For each end system
 							ConnectableElement role = ce.getRole();
-							connector[1] = role.getType().getName(); // Role of the system
-							
+							connectorRole.add(role.getType().getName()); // Role of the system
+														
 							Element SysElement = role.getOwner();
 							Class SysClass = (Class) SysElement;
-							connector[k + 2] = SysClass.getName(); // Name of the system
-							
-							System.out.println("---------CONNECTOR: " + c.getName()); // TODO Remove Trace
-							System.out.println(role.getType().getName()); // TODO Remove Trace
-							System.out.println(k + SysClass.getName()); // TODO Remove Trace
+							connectorName.add(SysClass.getName()); // Name of the system
+							connectorPort.add(role.getName()); // Port of the system
 						}
-						connectorsSystems.add(connector);
+						
+						connector.addAll(connectorRole);
+						connector.addAll(connectorName);
+						connector.addAll(connectorPort);
+						
+						connectorsSystems.put(connectorName.get(0) + "-" + connectorName.get(1), connector);
 					}
 				}
 			}
@@ -370,7 +346,7 @@ public class ModelParser {
 	// -------------------------------------------------------------------------------------------------
 	public ArrayList<APXLocalCloudDesignDescription> getLocalClouds() { return localClouds; }
 	public ArrayList<APXInterfaceDesignDescription> getInterfaces() { return interfaces; }
-	public ArrayList<String[]> getSystemServiceRegistry() { return systemServiceRegistry; }
+	public ArrayList<ArrayList<String>> getSystemServiceRegistry() { return systemServiceRegistry; }
 	
 	// -------------------------------------------------------------------------------------------------
 	public void setInterfaces(ArrayList<APXInterfaceDesignDescription> interfaces) { this.interfaces = interfaces; }

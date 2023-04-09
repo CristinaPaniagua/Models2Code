@@ -46,7 +46,7 @@ public class ProviderMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProviderMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
+	public static void generateProviderMain(String Directory, String name, String system, ArrayList<ArrayList<String>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
 
 		classesRequest.clear();
 		classesResponse.clear();
@@ -54,13 +54,13 @@ public class ProviderMain {
 		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
-			String[] systemService = systemServiceRegistry.get(m);
+			ArrayList<String> systemService = systemServiceRegistry.get(m);
 
 			// If the entry is for this system
-			if (systemService[2].equals("provider") && systemService[0].equals(system)) {
+			if (systemService.get(2).equals("provider") && systemService.get(0).equals(system)) {
 				// Find the matching service interface
 				for (int n = 0; n < interfaces.size(); n++)
-					if (interfaces.get(n).getName().equals(systemService[1])) {
+					if (interfaces.get(n).getName().equals(systemService.get(1))) {
 						serviceInterfaces.add(interfaces.get(n));
 					}
 			}
@@ -133,20 +133,20 @@ public class ProviderMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProvConsMain(String Directory, String name, String system, ArrayList<String[]> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
+	public static void generateProvConsMain(String Directory, String name, String system, ArrayList<ArrayList<String>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
 
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesProvider = new ArrayList<APXInterfaceDesignDescription>();
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesConsumer = new ArrayList<APXInterfaceDesignDescription>();
 
 		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
-			String[] systemService = systemServiceRegistry.get(m);
+			ArrayList<String> systemService = systemServiceRegistry.get(m);
 
 			// If the entry is for this system
-			if (systemService[0].equals(system)) {
-				String serv = systemService[1];
+			if (systemService.get(0).equals(system)) {
+				String serv = systemService.get(1);
 
 				// If it acts as provider
-				if (systemService[2].equalsIgnoreCase("provider")) { 
+				if (systemService.get(2).equalsIgnoreCase("provider")) { 
 					for (int n = 0; n < interfaces.size(); n++)
 						if (interfaces.get(n).getName().equals(serv)) {
 							serviceInterfacesProvider.add(interfaces.get(n));
@@ -212,7 +212,7 @@ public class ProviderMain {
 			context.put("packagename", "provider"); // _Provider
 			context.put("sysName", system);
 			context.put("interfaces", serviceInterfacesConsumer);
-			context.put("address", "http://127.0.0.1:8888"); // TODO Update from service registry
+			context.put("address", "http://127.0.0.1:" +  port); // TODO Update from service registry
 			context.put("httpFlag", consumerHttp);
 			context.put("coapFlag", consumerCoap);
 			

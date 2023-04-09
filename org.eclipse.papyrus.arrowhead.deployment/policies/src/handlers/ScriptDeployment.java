@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.velocity.Template;
@@ -86,7 +87,7 @@ public class ScriptDeployment {
 			ModelParser MP = new ModelParser();
 			MP.modelReader(selectedPathModel);
 					
-			ArrayList<String[]> systemServiceRegistry = MP.getSystemServiceRegistry();
+			ArrayList<ArrayList<String>> systemServiceRegistry = MP.getSystemServiceRegistry();
 			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces(); // TODO Not Used
 			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
 
@@ -112,19 +113,11 @@ public class ScriptDeployment {
 
 					if (!(directory == null || directory.isEmpty())) {
 						// Obtain information about selected local cloud
-						System.out.println(localClouds.size()); // TODO Remove Trace
 						String LCname = ParsingUtils.toKebabCase(localClouds.get(selectedLC).getName());
 						ParsingUtils.newFolder(directory, "arrowhead");
 						ParsingUtils.newFolder(directory + "/arrowhead/", LCname);
 						ParsingUtils.newFolder(directory + "/arrowhead/" + LCname + "/", "db-rules");
-						ArrayList<String[]> connectionsLC = localClouds.get(selectedLC).getConnections();
-						System.out.println(selectedLC); // TODO Remove Trace
-						for (int j = 0; j < connectionsLC.size(); j++) { // TODO Remove Trace
-							System.out.println("connector: " + connectionsLC.get(j)[0]);
-							System.out.println("service: " + connectionsLC.get(j)[1]);
-							System.out.println("sys1: " + connectionsLC.get(j)[2]);
-							System.out.println("sys2: " + connectionsLC.get(j)[3]);
-						}
+						ArrayList<ArrayList<String>> connectionsLC = new ArrayList<ArrayList<String>>(localClouds.get(selectedLC).getConnections().values());
 
 						// Initialise Velocity Engine
 						VelocityEngine velocityEngine = new VelocityEngine();
@@ -135,14 +128,13 @@ public class ScriptDeployment {
 						// Order array so that second item is always the provider.
 						for (int k = 0; k < connectionsLC.size(); k++)
 							for (int m = 0; m < systemServiceRegistry.size(); m++) {
-								String[] SSR = systemServiceRegistry.get(m);
-								if (connectionsLC.get(k)[2].equals(SSR[0]) && connectionsLC.get(k)[1].equals(SSR[1])) {
-									if (SSR[3].equalsIgnoreCase("consumer")) {
-										String consumer = connectionsLC.get(k)[2];
-										connectionsLC.get(k)[2] = connectionsLC.get(k)[3];
-										connectionsLC.get(k)[3] = consumer;
+								ArrayList<String> SSR = systemServiceRegistry.get(m);
+								if (connectionsLC.get(k).get(2).equals(SSR.get(0)) && connectionsLC.get(k).get(1).equals(SSR.get(1)))
+									if (SSR.get(3).equalsIgnoreCase("consumer")) {
+										String consumer = connectionsLC.get(k).get(2);
+										connectionsLC.get(k).set(2, connectionsLC.get(k).get(3));
+										connectionsLC.get(k).set(3, consumer);
 									}
-								}
 							}
 						
 						// Orchestration DB Rule Generation

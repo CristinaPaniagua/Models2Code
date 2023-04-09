@@ -5,12 +5,12 @@ $hash$hash$hash     CUSTOM PARAMETERS     $hash$hash$hash
 $hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash
 
 $hash Name of the client system
-client_system_name=${sysName}
+application_system_name=${sysName}
 
 #if($type=="provider")
 $hash Client web-server parameters
 server.address=127.0.0.1
-server.port=8888
+server.port=${port}
 
 $hash Client application-server paramters
 container.max_keep_alive_requests=500
@@ -34,9 +34,9 @@ $hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash$hash
 $hash configure secure mode
 
 $hash Set this to false to disable https mode
-server.ssl.enabled=true
+server.ssl.enabled=false
 $hash Set this to false to deactivate the token security filter
-token.security.filter.enabled=true
+token.security.filter.enabled=false
 
 server.ssl.key-store-type=PKCS12
 server.ssl.key-store=classpath:certificates/provider_skeleton.p12

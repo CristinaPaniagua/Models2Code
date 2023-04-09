@@ -33,7 +33,7 @@ public class ApplicationProperties {
 	 * @param SysName   The name of the system
 	 * @param SysType   The type of the system (Consumer/Provider)
 	 */
-	public static void GenerateAppProperties(String directory, String name, String SysName, String SysType) {
+	public static void GenerateAppProperties(String directory, String name, String SysName, String SysType, String port) {
 		// Initialise Velocity Engine
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -44,6 +44,7 @@ public class ApplicationProperties {
 			// Generate application.properties file from template
 			Template t = velocityEngine.getTemplate("templates/general/properties.vm");
 			VelocityContext context = new VelocityContext();
+			context.put("port", port);
 			context.put("type", SysType);
 			context.put("sysName", SysName);
 			

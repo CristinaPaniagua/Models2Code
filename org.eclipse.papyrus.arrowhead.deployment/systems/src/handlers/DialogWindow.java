@@ -151,11 +151,11 @@ public class DialogWindow extends TitleAreaDialog {
 				text.setText(selectedLCName);
 				listsys.removeAll();
 
-				String[] sysNames = new String[localClouds.get(selectedLC).getSystemsModel().size()];
+				ArrayList<String> sysNames = new ArrayList<String>();
 				
 				for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
-					sysNames[i] = localClouds.get(selectedLC).getSystemsModel().get(i)[0];
-					listsys.add(localClouds.get(selectedLC).getSystemsModel().get(i)[0]);
+					sysNames.add(localClouds.get(selectedLC).getSystemsModel().get(i).get(0));
+					listsys.add(localClouds.get(selectedLC).getSystemsModel().get(i).get(0));
 				}
 
 			}

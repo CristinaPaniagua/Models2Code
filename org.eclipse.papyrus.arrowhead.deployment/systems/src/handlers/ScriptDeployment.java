@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -120,7 +122,7 @@ public class ScriptDeployment {
 					
 					// Obtain selected local cloud and the associated connections
 					APXLocalCloudDesignDescription LC= localClouds.get(selectedLC);
-		            ArrayList<String []> systemServiceRegistry= LC.getSystemsSR();
+		            ArrayList<ArrayList<String>> systemServiceRegistry= LC.getSystemsSR();
 
 					final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
 					Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
@@ -151,13 +153,13 @@ public class ScriptDeployment {
 						for (int j = 0; j < selectedSys.length; j++) { // For each of the systems
 							for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
 
-								if (selectedSys[j].equals(localClouds.get(selectedLC).getSystemsModel().get(i)[0])) {
+								if (selectedSys[j].equals(localClouds.get(selectedLC).getSystemsModel().get(i).get(0))) {
 									
 									// Identify its type (provider/consumer/both)
-									if (localClouds.get(selectedLC).getSystemsModel().get(i)[1].equals("Provider")) {
+									if (localClouds.get(selectedLC).getSystemsModel().get(i).get(1).equals("Provider")) {
 										selectedSysType[j] = 0;
 										type = "-provider";
-									} else if (localClouds.get(selectedLC).getSystemsModel().get(i)[1].equals("ProviderConsumer")) {
+									} else if (localClouds.get(selectedLC).getSystemsModel().get(i).get(1).equals("ProviderConsumer")) {
 										selectedSysType[j] = 2;
 										type = "-provider";
 									} else {
@@ -231,6 +233,15 @@ public class ScriptDeployment {
 								// If the system is a provider
 								if (selectedSysType[j] == 0) {
 									
+									String port = "";
+									Set<Entry<String, ArrayList<String>>> connections = localClouds.get(selectedLC).getConnections().entrySet();
+									for(Entry<String, ArrayList<String>> connection : connections)
+										if(connection.getKey().toLowerCase().contains(selectedSys[j].toLowerCase())) {
+											port = connection.getValue().get(5);
+											break;
+										}
+									
+									
 									// Maven pom file generation
 									Template tpomPro = velocityEngine.getTemplate("templates/general/pomProvider.vm");
 									VelocityContext contextpomPro = new VelocityContext();
@@ -286,7 +297,7 @@ public class ScriptDeployment {
 									// Generate the Provider Main
 									ProviderMain.generateProviderMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
 									// Generate the Application Properties
-									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
+									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-provider", "provider", port);
 
 									// Security files generation
 									VelocityContext contextSecurity = new VelocityContext();
@@ -312,6 +323,18 @@ public class ScriptDeployment {
 								
 								// If the system is a provider/consumer
 								else if (selectedSysType[j] == 2) {
+									
+									String port = "";
+									Set<Entry<String, ArrayList<String>>> connections = localClouds.get(selectedLC).getConnections().entrySet();
+									for(Entry<String, ArrayList<String>> connection : connections)
+										if(connection.getKey().toLowerCase().contains(selectedSys[j].toLowerCase() + "-")) { // Provider behavior
+											port = connection.getValue().get(5);
+											break;
+										}
+										else if (connection.getKey().toLowerCase().contains("-" + selectedSys[j].toLowerCase())) { // Consumer behavior
+											port = connection.getValue().get(6);
+											break;
+										}
 									
 									// Maven pom file generation
 									Template tpomPro = velocityEngine.getTemplate("templates/general/pomProvider.vm");
@@ -367,9 +390,9 @@ public class ScriptDeployment {
 									writerProject.close();
 
 									// Generate Provider/Consumer Main
-									ProviderMain.generateProvConsMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
+									ProviderMain.generateProvConsMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces, port);
 									// Generate Application Properties
-									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-provider", "provider");
+									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-provider", "provider", port);
 									
 									// Security files generation
 									VelocityContext contextSecurity = new VelocityContext();
@@ -394,6 +417,14 @@ public class ScriptDeployment {
 								
 								// If the system is a consumer
 								else {
+									
+									String port = "";
+									Set<Entry<String, ArrayList<String>>> connections = localClouds.get(selectedLC).getConnections().entrySet();
+									for(Entry<String, ArrayList<String>> connection : connections)
+										if(connection.getKey().contains(selectedSys[j])) {
+											port = connection.getValue().get(6);
+											break;
+										}
 									
 									// Maven pom file generation
 									Template tpomcon = velocityEngine.getTemplate("templates/general/pomConsumer.vm");
@@ -439,8 +470,6 @@ public class ScriptDeployment {
 									// While the provider/consumer directories haven't been created wait
 									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\").exists()) {}
 									
-									// new File(scriptPath).delete();
-									
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "Consumer");
@@ -452,9 +481,9 @@ public class ScriptDeployment {
 									// Generate Application Listener
 									ConsumerAppList.GenerateAppList(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer");
 									// Generate Consumer Main
-									ConsumerMain.generateConsumerMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
+									ConsumerMain.generateConsumerMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces, port);
 									// Generate Application Properties
-									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer", "consumer");
+									ApplicationProperties.GenerateAppProperties(directory, name, ParsingUtils.toKebabCase(selectedSys[j]) + "-consumer", "consumer", port);
 								}
 							}
 						

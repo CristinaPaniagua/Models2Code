@@ -35,25 +35,11 @@ public class ParsingUtils {
 	public static IProject[] readWorkspace() {
 		// Get the root of the workspace
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		System.out.println("WORKSPACE:"); // TODO Remove Trace
 		
 		IWorkspaceRoot root = workspace.getRoot();
-		System.out.println(workspace.toString()); // TODO Remove Trace
-		System.out.println(root.toString()); // TODO Remove Trace
 		
 		// Get all projects in the workspace
-		IProject[] projects = root.getProjects();
-		
-		// Loop over all projects
-		IPath path = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-		String workspacePath = path.toString();
-		System.out.println("Projects in the workspace:" + workspacePath); // TODO Remove Trace
-		for (IProject project : projects) { // TODO Remove Trace
-			System.out.println(project.getName());
-			System.out.println(project.getLocation());
-		}
-
-		return projects;
+		return root.getProjects();
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -91,7 +77,6 @@ public class ParsingUtils {
 		String path = Directory + "/" + FolderName;
 		File f1 = new File(path); // Instantiate the File class
 		boolean bool = f1.mkdir(); // Creating a folder using mkdir() method
-		System.out.println(bool ? "Folder is created successfully" : "Error Found!"); // TODO Remove Trace
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -113,9 +98,8 @@ public class ParsingUtils {
 				String cannonicalPath = "";
 				try {
 					cannonicalPath = file.getCanonicalPath();
-					System.out.println("PATH:" + cannonicalPath); // TODO Remove Trace
 				} catch (Exception e) {
-					System.err.println("ERROR: No Path");
+					System.err.println(e.getMessage());
 				}
 
 				if (cannonicalPath.matches("[\n\r\t\0\f\'?*<>|\"/:]*")) {
@@ -123,7 +107,6 @@ public class ParsingUtils {
 
 				} else {
 					disk = cannonicalPath.substring(0, 2);
-					System.out.println("DISK:" + disk); // TODO Remove Trace
 					return true;
 				}
 		}
