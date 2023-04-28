@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -46,25 +47,19 @@ public class ProviderMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProviderMain(String Directory, String name, String system, ArrayList<ArrayList<String>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
+	public static void generateProviderMain(String Directory, String name, String system, HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
 
 		classesRequest.clear();
 		classesResponse.clear();
 		
 		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
-
-		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
-			ArrayList<String> systemService = systemServiceRegistry.get(m);
-
-			// If the entry is for this system
-			if (systemService.get(2).equals("provider") && systemService.get(0).equals(system)) {
-				// Find the matching service interface
-				for (int n = 0; n < interfaces.size(); n++)
-					if (interfaces.get(n).getName().equals(systemService.get(1))) {
+		HashMap<String, ArrayList<String>> systemService = systemServiceRegistry.get(ParsingUtils.toKebabCase(system));
+		
+		if(!systemService.get("provider").isEmpty())
+			for (String service : systemService.get("provider")) 
+				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
+					if (interfaces.get(n).getName().equals(service))
 						serviceInterfaces.add(interfaces.get(n));
-					}
-			}
-		}
 
 		for (int h = 0; h < serviceInterfaces.size(); h++) { // For each registered service interface
 			APXInterfaceDesignDescription MD = serviceInterfaces.get(h);
@@ -116,7 +111,7 @@ public class ProviderMain {
 		}
 
 		// Generate the Application Listener
-		providerGenAppListener(serviceInterfaces, system, Directory, name);
+		providerGenAppListener(serviceInterfaces, system, Directory, name, false);
 		// Generate the Controller
 		providerController(serviceInterfaces, system, Directory, name);
 
@@ -133,34 +128,24 @@ public class ProviderMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProvConsMain(String Directory, String name, String system, ArrayList<ArrayList<String>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
+	public static void generateProvConsMain(String Directory, String name, String system,  HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
 
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesProvider = new ArrayList<APXInterfaceDesignDescription>();
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesConsumer = new ArrayList<APXInterfaceDesignDescription>();
 
-		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
-			ArrayList<String> systemService = systemServiceRegistry.get(m);
-
-			// If the entry is for this system
-			if (systemService.get(0).equals(system)) {
-				String serv = systemService.get(1);
-
-				// If it acts as provider
-				if (systemService.get(2).equalsIgnoreCase("provider")) { 
-					for (int n = 0; n < interfaces.size(); n++)
-						if (interfaces.get(n).getName().equals(serv)) {
-							serviceInterfacesProvider.add(interfaces.get(n));
-						}
-				}
-				// If it acts as consumer
-				else
-					for (int n = 0; n < interfaces.size(); n++) {
-						if (interfaces.get(n).getName().equals(serv)) {
-							serviceInterfacesConsumer.add(interfaces.get(n));
-						}
-					}
-			}
-		}
+		HashMap<String, ArrayList<String>> systemService = systemServiceRegistry.get(ParsingUtils.toKebabCase(system));
+		
+		if(!systemService.get("provider").isEmpty())
+			for (String service : systemService.get("provider")) 
+				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
+					if (interfaces.get(n).getName().equals(service))
+						serviceInterfacesProvider.add(interfaces.get(n));
+		
+		if(!systemService.get("consumer").isEmpty())
+			for (String service : systemService.get("consumer")) 
+				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
+					if (interfaces.get(n).getName().equals(service))
+						serviceInterfacesConsumer.add(interfaces.get(n));
 		
 		// For each service that the system provides
 		for (int l = 0; l < serviceInterfacesProvider.size(); l++) {
@@ -245,7 +230,7 @@ public class ProviderMain {
 		}
 
 		// Generate Application Listener
-		providerGenAppListener(serviceInterfacesProvider, system, Directory, name);
+		providerGenAppListener(serviceInterfacesProvider, system, Directory, name, true);
 
 	}
 
@@ -259,7 +244,7 @@ public class ProviderMain {
 	 * @param Directory The path of the file
 	 * @param name The name of the local cloud
 	 */
-	public static void providerGenAppListener(ArrayList<APXInterfaceDesignDescription> serviceInterfaces, String system, String Directory, String name) {
+	public static void providerGenAppListener(ArrayList<APXInterfaceDesignDescription> serviceInterfaces, String system, String Directory, String name, Boolean providerConsumer) {
 		serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
 
 		// Initialise VelocityEngine
@@ -274,6 +259,8 @@ public class ProviderMain {
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "provider");
 			context.put("interfaces", serviceInterfaces);
+			
+			context.put("type", providerConsumer ? "provider-consumer" : "provider");
 			
 			ArrayList<String> dtos = new ArrayList<String>();
 			for(ArrayList<String> classRequest : classesRequest)

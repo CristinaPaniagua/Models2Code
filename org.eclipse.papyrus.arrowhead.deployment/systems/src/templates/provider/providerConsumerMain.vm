@@ -134,7 +134,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 		 try{ 
   			#if($interface.getProtocol()=="CoAP")		
 				#if($operation.getMethod() == "GET")
-			String result= sendCoapGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()");
+			String result= sendCoapGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri());
 				#set($GET_COAP=$GET_COAP+1)
 				#elseif($operation.getMethod()== "POST")
 					#set($POST_COAP=$POST_COAP+1)
@@ -147,7 +147,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 			byte[] payload = mapper.writeValueAsBytes(request);
 			
 			// Service Consumption
-			byte[] result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+			byte[] result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);
 					#elseif($operation.getRequestEncoding()=="JSON")
 						
 			// Payload
@@ -157,7 +157,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 			String payload = objMapper.writeValueAsString(request);
 			
 			// Service Consumption
-			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);
 					#elseif($operation.getRequestEncoding()=="XML")
 					
 			// Payload
@@ -166,12 +166,12 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 			String payload = objMapper.writeValueAsString(request);
 				
 			// Service Consumption	
-			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);
 					#else 
 					
 			// TODO Payload 
 			// Service Consumption
-			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);	
+			String result= sendCoapPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);	
 					#end
 				#else
 			// TODO PUT and DELETE methods
@@ -326,7 +326,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
   #elseif($interface.getProtocol()=="HTTP_1_1")	
   
   #if($operation.getMethod() == "GET")
-			String result= sendGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()");
+			String result= sendGet("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri());
 			#set($GET_HTTP=$GET_HTTP+1)
 			#elseif($operation.getMethod()== "POST")
 			#set($POST_HTTP=$POST_HTTP+1)
@@ -337,7 +337,7 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
             		$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 					byte[] payload=mapper.writeValueAsBytes(request);
 				// SERVICE CONSUMPTION	
-					byte[] result= sendPost_Bytes("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+					byte[] result= sendPost_Bytes("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);
 				#elseif($operation.getRequestEncoding()=="JSON")
 				//PAYLOAD
 					JsonFactory jsonFactory_objMapper = new JsonFactory();
@@ -345,18 +345,18 @@ public class ${sysName}ProviderMain implements ApplicationRunner {
 					$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 					String payload=objMapper.writeValueAsString(request);
 				// SERVICE CONSUMPTION	
-					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);
 				#elseif($operation.getRequestEncoding()=="XML")
 				//PAYLOAD
 					ObjectMapper objMapper=new XmlMapper();
 					$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
 					String payload=objMapper.writeValueAsString(request);
 				// SERVICE CONSUMPTION	
-					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);
+					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);
 				#else 
 				//TODO PAYLOAD 
 				// SERVICE CONSUMPTION	
-					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri()+"$operation.getPath()",payload);	
+					String result= sendPost("http://"+orchestrationResult.getProvider().getAddress()+":"+orchestrationResult.getProvider().getPort()+"/"+orchestrationResult.getServiceUri(),payload);	
 				#end
 				
 			

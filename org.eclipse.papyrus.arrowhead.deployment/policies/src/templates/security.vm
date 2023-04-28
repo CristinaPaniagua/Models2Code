@@ -12,8 +12,8 @@ SELECT @srID :=id FROM service_registry WHERE service_id=@serviceID AND system_i
 SELECT @interfaceID :=interface_id FROM service_registry_interface_connection WHERE service_registry_id=@srID;
 INSERT INTO `authorization_intra_cloud` (`consumer_system_id`,`provider_system_id`, `service_id`) 
 VALUES (@consumerID,@providerID,@serviceID);
-SELECT @authoID :=id FROM authorization_intra_cloud WHERE service_id=@serviceID AND system_id=@providerID;
-INSERT INTO `authorization_intra_cloud_interface_connection` (`authorization_intra_cloud`,`interface_id`) 
+SELECT @authoID :=id FROM authorization_intra_cloud WHERE service_id=@serviceID AND provider_system_id=@providerID;
+INSERT INTO `authorization_intra_cloud_interface_connection` (`authorization_intra_cloud_id`,`interface_id`) 
 VALUES (@authoID,@interfaceID);
 
 #end

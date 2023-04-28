@@ -87,7 +87,7 @@ public class ScriptDeployment {
 			ModelParser MP = new ModelParser();
 			MP.modelReader(selectedPathModel);
 					
-			ArrayList<ArrayList<String>> systemServiceRegistry = MP.getSystemServiceRegistry();
+			HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry = MP.getSystemServiceRegistry();
 			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces(); // TODO Not Used
 			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
 
@@ -99,12 +99,9 @@ public class ScriptDeployment {
 			if (dialog.open() == Window.OK) {
 
 				if (!dialog.getBadDirectory()) {
-					System.out.println("OK"); // TODO Remove Trace
-
 					// Obtain information from dialog window
 					directory = dialog.getDirectory();
 					policyType = dialog.getPolicyType();
-					System.out.println("POLICY TYPE: " + policyType); // TODO Remove Trace
 					selectedLC = dialog.getSelectedLC();
 					disk = dialog.getDisk();
 					
@@ -125,17 +122,18 @@ public class ScriptDeployment {
 						velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 						velocityEngine.init();
 
-						// Order array so that second item is always the provider.
-						for (int k = 0; k < connectionsLC.size(); k++)
-							for (int m = 0; m < systemServiceRegistry.size(); m++) {
-								ArrayList<String> SSR = systemServiceRegistry.get(m);
-								if (connectionsLC.get(k).get(2).equals(SSR.get(0)) && connectionsLC.get(k).get(1).equals(SSR.get(1)))
-									if (SSR.get(3).equalsIgnoreCase("consumer")) {
-										String consumer = connectionsLC.get(k).get(2);
-										connectionsLC.get(k).set(2, connectionsLC.get(k).get(3));
-										connectionsLC.get(k).set(3, consumer);
-									}
-							}
+						// TODO The priority needs to change when the interface ID, consumer ID and service ID are the same
+						for (int k = 0; k < connectionsLC.size(); k++) {
+							ArrayList<String> connectionEntry = connectionsLC.get(k);
+							HashMap<String, ArrayList<String>> providerSystemServices = systemServiceRegistry.get(connectionEntry.get(2));
+							HashMap<String, ArrayList<String>> consumerSystemServices = systemServiceRegistry.get(connectionEntry.get(3));
+
+							String providerSystemBehavior = providerSystemServices.get("provider").isEmpty() ? "-consumer" : "-provider";
+							String consumerSystemBehavior = consumerSystemServices.get("provider").isEmpty() ? "-consumer" : "-provider";
+							
+							connectionEntry.set(2, connectionEntry.get(2) + providerSystemBehavior);
+							connectionEntry.set(3, connectionEntry.get(3) + consumerSystemBehavior);
+						}
 						
 						// Orchestration DB Rule Generation
 						if (policyType.equalsIgnoreCase("orchestration")) {

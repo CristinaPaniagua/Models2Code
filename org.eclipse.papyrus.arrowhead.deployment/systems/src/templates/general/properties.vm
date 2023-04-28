@@ -15,12 +15,18 @@ server.port=${port}
 $hash Client application-server paramters
 container.max_keep_alive_requests=500
 
+#elseif($type=="provider-consumer")
+$hash Set the web application type to 'servlet' if your consumer client should act as a web-server
+$hash and fill the address and port propetries with valid values [Defaults, when not adjusted: localhost:8080]
+spring.main.web-application-type=servlet
+server.address=127.0.0.1
+server.port=${port}
 #else
 $hash Set the web application type to 'servlet' if your consumer client should act as a web-server
 $hash and fill the address and port propetries with valid values [Defaults, when not adjusted: localhost:8080]
 spring.main.web-application-type=none
-$hash server.address=<your address>
-$hash server.port=<your port>
+server.address=127.0.0.1
+server.port=${port}
 #end
 
 $hash Service Registry Core System web-server parameters

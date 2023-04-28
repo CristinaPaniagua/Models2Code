@@ -75,6 +75,12 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 
 		//Checking the availability of necessary core systems
 		checkCoreSystemReachability(CoreSystem.SERVICEREGISTRY);
+		
+		#if($type=="provider-consumer")
+		checkCoreSystemReachability(CoreSystem.ORCHESTRATOR);
+		arrowheadService.updateCoreServiceURIs(CoreSystem.ORCHESTRATOR);
+		#end
+		
 		if (sslEnabled && tokenSecurityFilterEnabled) {
 			checkCoreSystemReachability(CoreSystem.AUTHORIZATION);			
 
@@ -90,7 +96,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		#foreach( $interface in $interfaces )
 			#set($operations=$interface.getOperations())
 			#foreach( $operation in $operations )  
-		final ServiceRegistryRequestDTO ${interface.getName()}_$operation.getName()_Request = createServiceRegistryRequest(" ${interface.getName()}","$operation.getPathResource()", HttpMethod.$operation.getMethod());		
+		final ServiceRegistryRequestDTO ${interface.getName()}_$operation.getName()_Request = createServiceRegistryRequest(" ${interface.getName()}","$operation.getPath()", HttpMethod.$operation.getMethod());		
 		arrowheadService.forceRegisterServiceToServiceRegistry( ${interface.getName()}_$operation.getName()_Request);
 			#end
 		#end

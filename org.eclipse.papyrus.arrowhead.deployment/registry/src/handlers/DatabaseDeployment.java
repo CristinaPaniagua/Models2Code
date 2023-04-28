@@ -78,38 +78,38 @@ public class DatabaseDeployment {
 			velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 			velocityEngine.init();
 
-			try { // Connect and check if the arrowhead database exists
-				DriverManager.getConnection("jdbc:mysql://" + host + ":3306/arrowhead", rootUser, rootPassword);
-			} catch (Exception noArrowheadDatabase) { // No Arrowhead Database
+			// try { // Connect and check if the arrowhead database exists
+			// 	DriverManager.getConnection("jdbc:mysql://" + host + ":3306/arrowhead", rootUser, rootPassword);
+			// } catch (Exception noArrowheadDatabase) { // No Arrowhead Database
 
-				// Database creation script generation
-				// TODO Change with online installation
-				String[] scriptDirectories = { "deploy", "core", "support" };
-				HashMap<String, String> files = new HashMap<String, String>();
-				files.put(scriptDirectories[0], "createArrowheadTables#createEmptyArrowheadDB");
-				files.put(scriptDirectories[1], "authorizationPrivileges#orchestratorPrivileges#serviceRegistryPrivileges");
-				files.put(scriptDirectories[2], ""
-						+ "certificateAuthorityPrivileges#choreographerPrivileges#configurationPrivileges#datamanagerPrivileges#"
-						+ "deviceRegistryPrivileges#eventHandlerPrivileges#eventHandlerPrivileges#gamsPrivileges#"
-						+ "gatekeeperPrivileges#gatewayPrivileges#mscvPrivileges#onboardingControllerPrivileges#"
-						+ "plantDescriptionEnginePrivileges#qosMonitorPrivileges#systemRegistryPrivileges#timemanagerPrivileges#"
-						+ "translatorPrivileges");
-				
-				for (String directory : scriptDirectories)
-					for(String file : files.get(directory).split("#"))
-						FileUtils.copyURLToFile(
-								this.getClass().getResource("/scripts/" + directory + "/" + file + ".sql"), 
-								new File(workspace + "\\.temp\\" + file + ".sql"));
+			// Database creation script generation
+			// TODO Change with online installation
+			String[] scriptDirectories = { "deploy", "core", "support" };
+			HashMap<String, String> files = new HashMap<String, String>();
+			files.put(scriptDirectories[0], "createArrowheadTables#createEmptyArrowheadDB");
+			files.put(scriptDirectories[1], "authorizationPrivileges#orchestratorPrivileges#serviceRegistryPrivileges");
+			files.put(scriptDirectories[2], ""
+					+ "certificateAuthorityPrivileges#choreographerPrivileges#configurationPrivileges#datamanagerPrivileges#"
+					+ "deviceRegistryPrivileges#eventHandlerPrivileges#eventHandlerPrivileges#gamsPrivileges#"
+					+ "gatekeeperPrivileges#gatewayPrivileges#mscvPrivileges#onboardingControllerPrivileges#"
+					+ "plantDescriptionEnginePrivileges#qosMonitorPrivileges#systemRegistryPrivileges#timemanagerPrivileges#"
+					+ "translatorPrivileges");
+			
+			for (String directory : scriptDirectories)
+				for(String file : files.get(directory).split("#"))
+					FileUtils.copyURLToFile(
+							this.getClass().getResource("/scripts/" + directory + "/" + file + ".sql"), 
+							new File(workspace + "\\.temp\\" + file + ".sql"));
 
-				// Database creation script execution
-				String command = "mysql --user="+ rootUser + " --password=" + rootPassword + " --host=\" + host + \" < "
-						+ workspace + "\\.temp\\" + "createEmptyArrowheadDB.sql";
-				new ProcessBuilder("cmd.exe", "/c", command).start();
+			// Database creation script execution
+			String command = "cd " + workspace + "\\.temp\\" + "& mysql --user="+ rootUser + " --password=" + rootPassword + " --host=" + host +" < "
+					+ "createEmptyArrowheadDB.sql";
+			new ProcessBuilder("cmd.exe", "/c", command).start();
 
-				messageBox = new MessageBox(new Shell(), SWT.ICON_INFORMATION);
-				messageBox.setMessage("Database created correctly");
-				messageBox.open();
-			}
+			messageBox = new MessageBox(new Shell(), SWT.ICON_INFORMATION);
+			messageBox.setMessage("Database created correctly");
+			messageBox.open();
+			// }
 
 			String user = DialogWindow.getUser();
 			String password = DialogWindow.getPassword();
@@ -130,7 +130,7 @@ public class DatabaseDeployment {
 				writer.close();
 				
 				// User creation query execution
-				String command = "mysql --user="+ rootUser + " --password=" + rootPassword + " --host=" + host + " < "
+				command = "mysql --user="+ rootUser + " --password=" + rootPassword + " --host=" + host + " < "
 						+ workspace + "\\.temp\\" + "createArrowheadUser.sql";
 				new ProcessBuilder("cmd.exe", "/c", command).start();
 

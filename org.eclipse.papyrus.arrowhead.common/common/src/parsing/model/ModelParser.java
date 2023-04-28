@@ -49,8 +49,7 @@ public class ModelParser {
 	private boolean isProvider = false;
 	private boolean isConsumer = false;
 	private ArrayList<APXInterfaceDesignDescription> interfaces = new ArrayList<APXInterfaceDesignDescription>();
-	private ArrayList<ArrayList<String>> systemServiceRegistry = new ArrayList<ArrayList<String>>();
-	
+	private HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry = new HashMap<String, HashMap<String, ArrayList<String>>>();
 	
 	// =================================================================================================
 	// methods
@@ -134,22 +133,22 @@ public class ModelParser {
 								if (att instanceof Port) {
 									Type AttType = att.getType();
 									if (AttType != null && name != null) {
-										ArrayList<String> registry = new ArrayList<String>();
-										registry.add(name);
-										registry.add(AttType.getName());
-
-										if (!((Port) att).isConjugated()) {
-											isProvider = true;
-											registry.add("provider");
-										} else {
-											isConsumer = true;
-											registry.add("consumer");
+										name = parsing.workspace.ParsingUtils.toKebabCase(name);
+										if(systemServiceRegistry.get(name) == null) {
+											systemServiceRegistry.put(name, new HashMap<String, ArrayList<String>>());
+											systemServiceRegistry.get(name).put("provider", new ArrayList<String>());
+											systemServiceRegistry.get(name).put("consumer", new ArrayList<String>());
 										}
 
-										if (isProvider && isConsumer)
-											registry.add("provider");
-
-										systemServiceRegistry.add(registry);
+										String serviceName =AttType.getName();
+										
+										if (!((Port) att).isConjugated()) {
+											isProvider = true;
+											systemServiceRegistry.get(name).get("provider").add(serviceName);
+										} else {
+											isConsumer = true;
+											systemServiceRegistry.get(name).get("consumer").add(serviceName);										
+										}
 									}
 								}
 
@@ -310,25 +309,38 @@ public class ModelParser {
 						connector = new ArrayList<String>();
 						connector.add(c.getName()); // Name of the connector/service
 						
-						ArrayList<String> connectorRole = new ArrayList<String>();
-						ArrayList<String> connectorName = new ArrayList<String>();
-						ArrayList<String> connectorPort = new ArrayList<String>();
+						String connectorRole = "";
+						
+						String connectorNameProvider = "";
+						String connectorNameConsumer = "";
+
+						String connectorPortProvider = "";
+						String connectorPortConsumer = "";
 						
 						for (ConnectorEnd ce : connectorsEndList) { // For each end system
 							ConnectableElement role = ce.getRole();
-							connectorRole.add(role.getType().getName()); // Role of the system
-														
-							Element SysElement = role.getOwner();
-							Class SysClass = (Class) SysElement;
-							connectorName.add(SysClass.getName()); // Name of the system
-							connectorPort.add(role.getName()); // Port of the system
+							connectorRole = role.getType().getName(); // Role of the system
+							
+							String connectorName = parsing.workspace.ParsingUtils.toKebabCase(ce.getPartWithPort().getName()); // Name of the system
+							String connectorPort = role.getName(); // Port of the system
+							
+							if(((Port) role).isConjugated()) {
+								connectorNameConsumer =  connectorName;
+								connectorPortConsumer = connectorPort;
+							} else {
+								connectorNameProvider =  connectorName;
+								connectorPortProvider = connectorPort;
+							}
+							
 						}
 						
-						connector.addAll(connectorRole);
-						connector.addAll(connectorName);
-						connector.addAll(connectorPort);
+						connector.add(connectorRole);
+						connector.add(connectorNameProvider);
+						connector.add(connectorNameConsumer);
+						connector.add(connectorPortProvider);
+						connector.add(connectorPortConsumer);
 						
-						connectorsSystems.put(connectorName.get(0) + "-" + connectorName.get(1), connector);
+						connectorsSystems.put(connectorNameProvider + "-" + connectorNameConsumer, connector);
 					}
 				}
 			}
@@ -346,7 +358,7 @@ public class ModelParser {
 	// -------------------------------------------------------------------------------------------------
 	public ArrayList<APXLocalCloudDesignDescription> getLocalClouds() { return localClouds; }
 	public ArrayList<APXInterfaceDesignDescription> getInterfaces() { return interfaces; }
-	public ArrayList<ArrayList<String>> getSystemServiceRegistry() { return systemServiceRegistry; }
+	public HashMap<String, HashMap<String, ArrayList<String>>> getSystemServiceRegistry() { return systemServiceRegistry; }
 	
 	// -------------------------------------------------------------------------------------------------
 	public void setInterfaces(ArrayList<APXInterfaceDesignDescription> interfaces) { this.interfaces = interfaces; }

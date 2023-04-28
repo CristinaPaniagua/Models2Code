@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Arrowhead Papyrus Database Setup
-Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.deployment.registry;singleton:=true
+Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.setup.registry;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: handlers
 Import-Package: org.apache.commons.io,

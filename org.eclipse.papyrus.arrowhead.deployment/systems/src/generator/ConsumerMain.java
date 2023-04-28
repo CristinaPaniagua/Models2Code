@@ -1,7 +1,7 @@
 package generator;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
 import java.io.IOException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -48,25 +48,19 @@ public class ConsumerMain {
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateConsumerMain(String Directory, String name, String system, ArrayList<ArrayList<String>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
+	public static void generateConsumerMain(String Directory, String name, String system, HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
 
 		classesRequest.clear();
 		classesResponse.clear();
 		
 		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
-
-		for (int m = 0; m < systemServiceRegistry.size(); m++) { // For each entry in the service registry
-			ArrayList<String> systemService = systemServiceRegistry.get(m);
-
-			// If the entry is for this system
-			if (systemService.get(2).equals("consumer") && systemService.get(0).equals(system)) {
-				// Find the matching service interface
-				for (int n = 0; n < interfaces.size(); n++)
-					if (interfaces.get(n).getName().equals(systemService.get(1))) {
+		HashMap<String, ArrayList<String>> systemService = systemServiceRegistry.get(ParsingUtils.toKebabCase(system));
+		
+		if(!systemService.get("consumer").isEmpty())
+			for (String service : systemService.get("consumer")) 
+				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
+					if (interfaces.get(n).getName().equals(service))
 						serviceInterfaces.add(interfaces.get(n));
-					}
-			}
-		}
 
 		for (int p = 0; p < serviceInterfaces.size(); p++) { // For each registered service interface
 			APXInterfaceDesignDescription MDC = serviceInterfaces.get(p);

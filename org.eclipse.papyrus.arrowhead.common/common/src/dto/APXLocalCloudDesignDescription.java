@@ -23,7 +23,7 @@ public class APXLocalCloudDesignDescription {
 	// Legacy
 	private ArrayList<ArrayList<String>> systemsModel = new ArrayList<ArrayList<String>>();
 	private HashMap<String, ArrayList<String>> connections = new HashMap<String, ArrayList<String>>();
-	private ArrayList<ArrayList<String>> systemsSR = new  ArrayList<ArrayList<String>>();
+	private HashMap<String, HashMap<String, ArrayList<String>>> systemsSR = new HashMap<String, HashMap<String, ArrayList<String>>>();
 	
 	
 	//=================================================================================================
@@ -34,14 +34,14 @@ public class APXLocalCloudDesignDescription {
 	public ArrayList<APXDeployedEntity> getDeployedEntities() { return deployedEntities; }
 	public ArrayList<ArrayList<String>> getSystemsModel() { return systemsModel; }
 	public HashMap<String, ArrayList<String>> getConnections() { return connections; }
-	public ArrayList<ArrayList<String>> getSystemsSR() { return systemsSR; }
+	public HashMap<String, HashMap<String, ArrayList<String>>> getSystemsSR() { return systemsSR; }
 	
 	//-------------------------------------------------------------------------------------------------
 	public void setName(String name) { this.name = name; }
 	public void setDeployedEntities(ArrayList<APXDeployedEntity> deployedEntities) { this.deployedEntities = deployedEntities; }
 	public void setSystemsModel(ArrayList<ArrayList<String>> systemsModel) { this.systemsModel = systemsModel; }
 	public void setConnections(HashMap<String, ArrayList<String>> connections) { this.connections = connections; }
-	public void setSystemsSR(ArrayList<ArrayList<String>> systemsSR) { this.systemsSR = systemsSR; }
+	public void setSystemsSR(HashMap<String, HashMap<String, ArrayList<String>>> systemsSR) { this.systemsSR = systemsSR; }
 
 	//-------------------------------------------------------------------------------------------------
 	@Override
