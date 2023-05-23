@@ -55,15 +55,7 @@ public class DefinitionParser {
 			while (line != null) {
 				if(line.contains("client_system_name"))
 					// Set name of the system
-					systemDesignDescription.setName(line.split("=")[1]);
-
-				// Save the server address for the provider
-				if(deployedEntityPath.endsWith("_Provider"))
-					if(line.contains("server.address"))
-						systemDesignDescription.setServerAddress(line.split("=")[1]);
-					else if(line.contains("server.port"))
-						systemDesignDescription.setServerPort(line.split("=")[1]);
-
+					systemDesignDescription.setName(ParsingUtils.toCamelCase(line.split("=")[1]));
 				line = reader.readLine();
 			}
 

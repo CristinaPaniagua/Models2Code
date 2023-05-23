@@ -2,6 +2,7 @@ package generator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.io.IOException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -9,6 +10,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import parsing.workspace.ParsingUtils;
 import utils.ExecutionUtils;
@@ -27,14 +29,6 @@ import java.io.Writer;
 public class ConsumerMain {
 
 	// =================================================================================================
-	// attributes
-
-	private static APXInterfaceDesignDescription MD = null; // TODO Not Used
-	public static ArrayList<ArrayList<String>> classesRequest = new ArrayList<ArrayList<String>>();
-	public static ArrayList<String> classesResponse = new ArrayList<String>(); // TODO Not Used
-
-
-	// =================================================================================================
 	// methods
 
 	// -------------------------------------------------------------------------------------------------
@@ -42,41 +36,33 @@ public class ConsumerMain {
 	 * 
 	 * Generation of the Consumer Main
 	 * 
-	 * @param Directory The path to the file
-	 * @param name The name of the local cloud
+	 * @param workspace The path to the file
+	 * @param localCloud The name of the local cloud
 	 * @param system The name of the system
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateConsumerMain(String Directory, String name, String system, HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
+	public static void generateConsumerMain(String workspace, String localCloud, String system, HashMap<String, APXDeployedEntity> deployedEntityMap) {
 
-		classesRequest.clear();
-		classesResponse.clear();
+		HashSet<String> dtoList = new HashSet<String>();
 		
-		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
-		HashMap<String, ArrayList<String>> systemService = systemServiceRegistry.get(ParsingUtils.toKebabCase(system));
+		APXDeployedEntity deployedEntity = deployedEntityMap.get(ParsingUtils.toKebabCase(system));
+		ArrayList<APXInterfaceDesignDescription> serviceInterfaceList = deployedEntity.getSysDD().getIDDs();
+		String port = deployedEntity.getServerPort();
 		
-		if(!systemService.get("consumer").isEmpty())
-			for (String service : systemService.get("consumer")) 
-				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
-					if (interfaces.get(n).getName().equals(service))
-						serviceInterfaces.add(interfaces.get(n));
-
-		for (int p = 0; p < serviceInterfaces.size(); p++) { // For each registered service interface
-			APXInterfaceDesignDescription MDC = serviceInterfaces.get(p);
-			String service = MDC.getName(); // TODO Not Used
-
-			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MDC.getOperations();
+		for (APXInterfaceDesignDescription serviceInterface : serviceInterfaceList) // For each registered service interface
 			// Generate response and request payload
-			for (int i = 0; i < operations.size(); i++) {
-				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
-				GenerationUtils.objectClassGen(Directory, name, system, op, "consumer");
+			for (APXInterfaceDesignDescription.APXServiceDescription operation : serviceInterface.getOperations()) {
+				GenerationUtils.buildDTO(workspace, localCloud, system, operation, "consumer");
+				if(!operation.getRequestType().equals(""))
+					dtoList.add(operation.getRequestType());
+				if(!operation.getResponseType().equals(""))
+					dtoList.add(operation.getResponseType());
 			}
-		}
 
 		// Check protocol type
-		boolean httpFlag = GenerationUtils.checkHttpProtocol(serviceInterfaces);
-		boolean coapFlag = GenerationUtils.checkCoapProtocol(serviceInterfaces);
+		boolean httpFlag = GenerationUtils.checkHttpProtocol(serviceInterfaceList);
+		boolean coapFlag = GenerationUtils.checkCoapProtocol(serviceInterfaceList);
 
 		// Initialise Velocity Engine
 		VelocityEngine velocityEngine = new VelocityEngine();
@@ -85,26 +71,20 @@ public class ConsumerMain {
 		velocityEngine.init();
 
 		try {
-			serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
+			serviceInterfaceList = GenerationUtils.removeRepetitions(serviceInterfaceList);
 
 			// Create and write Consumer Main class file
 			Template t = velocityEngine.getTemplate("templates/consumer/consumerMain.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", "consumer"); // _Consumer
+			context.put("packagename", "consumer");
 			context.put("sysName", system);
-			context.put("interfaces", serviceInterfaces);
+			context.put("interfaces", serviceInterfaceList);
 			context.put("address", "http://127.0.0.1:" + port);
 			context.put("httpFlag", httpFlag);
 			context.put("coapFlag", coapFlag);
-			
-			ArrayList<String> dtos = new ArrayList<String>(classesResponse);
-			for(ArrayList<String> classRequest : classesRequest)
-				dtos.add(classRequest.get(0).split(" ")[0]);
-			for(String classResponse : classesResponse)
-				dtos.add(classResponse.split(" ")[0]);
-			context.put("dtos", dtos);
+			context.put("dtos", dtoList);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
+			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

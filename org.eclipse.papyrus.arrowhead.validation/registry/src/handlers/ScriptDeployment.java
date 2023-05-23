@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.xml.XMLConstants;
@@ -42,6 +43,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.eclipse.jface.window.Window;
 
 import dialog.ProjectSelectWindow;
+import dto.APXDeployedEntity;
+import dto.APXLocalCloudDesignDescription;
 import dto.APXSystemDesignDescription;
 import parsing.workspace.ParsingUtils;
 import utils.CodgenUtil;
@@ -94,57 +97,123 @@ public class ScriptDeployment {
 			messageBox.open();
 		}
 		
+		ArrayList<String> localClouds = new ArrayList<String>();
 		ArrayList<String> nonSavedSystems = new ArrayList<String>();
-		for(APXSystemDesignDescription system : parsing.model.ParsingSetup.modelSystemDescriptionMap.values())
-			if(databaseSystems.contains(system.getName()))
-				nonSavedSystems.add(system.getName());
-
-		String documentPath = modelPath.split(".uml")[0] + ".notation";
+		HashMap<String, String> deployedEntityID = new HashMap<String, String>();
 		
+		for(APXLocalCloudDesignDescription localCloud : parsing.model.ParsingSetup.modelLocalCloudList) {
+			localClouds.add(localCloud.getName());
+			for(APXDeployedEntity deployedEntity : localCloud.getDeployedEntities().values()) {
+				String deployedEntityKebab = ParsingUtils.toKebabCase(deployedEntity.getName());
+				
+				int index = 0;
+				while(index < databaseSystems.size() && !databaseSystems.get(index).contains(deployedEntityKebab))
+					index ++;
+				
+				if(index == databaseSystems.size())
+					nonSavedSystems.add(deployedEntity.getName());
+			}
+		}
+
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 		documentBuilderFactory.setNamespaceAware(true);
 		
-		Document document = builder.parse(new InputSource(documentPath));
+		Document model = builder.parse(new InputSource(modelPath));
+		Node child = model.getDocumentElement().getFirstChild().getNextSibling();
+		child = child.getFirstChild();
 		
-		Node child = document.getDocumentElement().getFirstChild();
-		Node papyrusClassDiagram = null;
+		while(child.getNextSibling() != null) {
+			child = child.getNextSibling();
+			
+			if(child.getNodeName().equals("#text")) // Skip text nodes
+				continue;
+			
+			Node name = child.getAttributes().getNamedItem("name");
+			if(name != null)
+				// If we have found the local cloud tag
+				if(localClouds.contains(name.getNodeValue())) {
+					child = child.getFirstChild(); // Update the node
+					continue;
+				}
+			
+			Node umlProperty = child.getAttributes().getNamedItem("xmi:type");
+			if(umlProperty != null)
+				// If we have found the uml:Property tag of the local cloud
+				if(umlProperty.getNodeValue().equals("uml:Property"))
+					deployedEntityID.put( // Save the system identifier
+							child.getAttributes().getNamedItem("name").getNodeValue(), 
+							child.getAttributes().getNamedItem("xmi:id").getNodeValue());
+		}
+		
+		
+		// ############################################################################################################
+		
+		
+		String notationPath = modelPath.split(".uml")[0] + ".notation";
+		Document notation = builder.parse(new InputSource(notationPath));
+		
+		child = notation.getDocumentElement().getFirstChild();
 		ArrayList<Node> compositeStructures = new ArrayList<Node>(); // Local Clouds
 		
 		while(child.getNextSibling() != null) {
 			child = child.getNextSibling();
-			if(child.getNodeName().equals("#text"))
+			
+			if(child.getNodeName().equals("#text")) // Skip text nodes
 				continue;
 			
-			if(child.getAttributes().getNamedItem("type") != null) {
-				String type = child.getAttributes().getNamedItem("type").getNodeValue();
-				if(type.equals("PapyrusUMLClassDiagram"))
-					papyrusClassDiagram = child.cloneNode(true);
+			if(child.getAttributes().getNamedItem("type") != null)
+				if(child.getAttributes().getNamedItem("type").getNodeValue().equals("CompositeStructure"))
+					compositeStructures.add(child);
+		}
+
+		HashMap<String, Node> classShapeID = new HashMap<String, Node>();
+		
+		for(Node compositeStructure : compositeStructures) { // For each local cloud
+			child = compositeStructure.getFirstChild().getNextSibling();
+			child = child.getFirstChild();
+			
+			Node propertyNode = null;
+			
+			while(child.getNextSibling() != null) {
+				child = child.getNextSibling();
 				
-				if(type.equals("CompositeStructure"))
-					compositeStructures.add(child.cloneNode(true));
-			}
+				if(child.getNodeName().equals("#text"))
+					continue;
+				
+				if(child.getAttributes().getNamedItem("type") != null) {
+					String type = child.getAttributes().getNamedItem("type").getNodeValue();
+					
+					if(type.equals("Class_StructureCompartment"))
+						child = child.getFirstChild();
+					
+					else if(type.equals("Property_Shape")) {
+						propertyNode = child;
+						child = child.getFirstChild();
+					}
+				}
+				
+				else if(child.getAttributes().getNamedItem("xmi:type") != null && child.getAttributes().getNamedItem("href") != null) {
+					String xmiType = child.getAttributes().getNamedItem("xmi:type").getNodeValue();
+					String[] href = child.getAttributes().getNamedItem("href").getNodeValue().split("#");
+				
+					if(xmiType.equals("uml:Property") && localClouds.contains(href[0].split(".uml")[0])) {
+						classShapeID.put(href[1], propertyNode);
+						child = child.getParentNode().getNextSibling();
+					}
+				}
+			}	
 		}
-		
-		child = papyrusClassDiagram.getFirstChild();
-		
-		while(child.getNextSibling() != null) {
-			child = child.getNextSibling();
-			if(child.getNodeName().equals("#text"))
-				continue;
-			
-			if(child.getAttributes().getNamedItem("type") != null) 
-				if(child.getAttributes().getNamedItem("type").getNodeValue().equals("Class_Shape"))
-					((Element) child).setAttribute("fillColor", "13420443");
-		}
+
+		for(String deployedEntity : deployedEntityID.keySet())
+			((Element)classShapeID.get(deployedEntityID.get(deployedEntity))).setAttribute("fillColor", // "13420443"); // Default
+					nonSavedSystems.contains(deployedEntity) ? "10265827" : "10011046");
 		
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		Result output = new StreamResult(new File("C:\\Users\\usuario\\Documents\\ltu\\2022-support-software-engineer\\sysml-plugin-development\\workspace\\arrowhead-papyrus-plugin\\example.notation"));
-		Source input = new DOMSource(document);
+		Result output = new StreamResult(new File(notationPath));
+		Source input = new DOMSource(notation);
 		
 		transformer.transform(input, output);
-				
-		System.exit(0);
 	}
 	
 }

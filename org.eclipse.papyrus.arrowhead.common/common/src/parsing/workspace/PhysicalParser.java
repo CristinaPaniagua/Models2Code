@@ -40,10 +40,12 @@ public class PhysicalParser {
 			if(deployedEntityPath.endsWith("_Consumer") || deployedEntityPath.endsWith("_Provider"))
 				deployedEntitiesImplementation.add(deployedEntityPath);
 
-		for (String deployedEntityPath : deployedEntitiesImplementation) // For each provider and consumer folders
+		for (String deployedEntityPath : deployedEntitiesImplementation) { // For each provider and consumer folders
+			APXDeployedEntity deployedEntity = parseDeployedEntity(workspace + localCloudPath + "\\", deployedEntityPath);
 			// Parse system into a DeployedEntity
-			localCloud.getDeployedEntities().add(parseDeployedEntity(workspace + localCloudPath + "\\", deployedEntityPath));
+			localCloud.getDeployedEntities().put(deployedEntity.getName(), deployedEntity);
 
+		}
 		return localCloud;
 	}
 
@@ -63,20 +65,26 @@ public class PhysicalParser {
 		BufferedReader reader;
 
 		try {
-			// Open info.txt file
-			reader = new BufferedReader(new FileReader(workspace + deployedEntityPath + "\\src\\main\\java\\eu\\arrowhead\\info.txt"));
+			// Open and read application.properties file
+			reader = new BufferedReader(new FileReader(workspace + "\\src\\main\\resources\\application.properties"));
 			String line = reader.readLine();
 
-			// Obtain description of the deployed entity
-			String description = "";
 			while (line != null) {
-				description += line;
+				if(line.contains("client_system_name"))
+					// Set name of the system
+					deployedEntity.setName(line.split("=")[1]);
+
+				// Save the server address for the provider
+				if(deployedEntityPath.endsWith("_Provider"))
+					if(line.contains("server.address"))
+						deployedEntity.setServerAddress(line.split("=")[1]);
+					else if(line.contains("server.port"))
+						deployedEntity.setServerPort(line.split("=")[1]);
+
 				line = reader.readLine();
 			}
 
 			reader.close();
-
-			deployedEntity.setDescription(description);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

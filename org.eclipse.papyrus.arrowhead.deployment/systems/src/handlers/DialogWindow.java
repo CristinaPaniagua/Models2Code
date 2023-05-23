@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import dto.APXLocalCloudDesignDescription;
+import parsing.workspace.ParsingUtils;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -151,11 +152,8 @@ public class DialogWindow extends TitleAreaDialog {
 				text.setText(selectedLCName);
 				listsys.removeAll();
 
-				ArrayList<String> sysNames = new ArrayList<String>();
-				
-				for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
-					sysNames.add(localClouds.get(selectedLC).getSystemsModel().get(i).get(0));
-					listsys.add(localClouds.get(selectedLC).getSystemsModel().get(i).get(0));
+				for (String deployedEntity :  localClouds.get(selectedLC).getDeployedEntities().keySet()) {
+					listsys.add(ParsingUtils.toCamelCase(deployedEntity));
 				}
 
 			}

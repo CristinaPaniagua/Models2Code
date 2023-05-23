@@ -30,11 +30,11 @@ public class ConsumerAppList {
 	 * 
 	 * Generation of Consumer Application Listener
 	 * 
-	 * @param directory The path to the file
-	 * @param name The name of the local cloud
-	 * @param SysName The name of the system
+	 * @param workspace The path to the workspacae
+	 * @param localCloud The name of the local cloud
+	 * @param system The name of the system
 	 */
-	public static void GenerateAppList(String directory, String name, String SysName) {
+	public static void GenerateAppList(String workspace, String localCloud, String system) {
 		// Initialise Velocity Engine
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -46,7 +46,7 @@ public class ConsumerAppList {
 			Template t = velocityEngine.getTemplate("templates/consumer/applicationListener.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "consumer");
-			Writer writer = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + SysName + "\\src\\main\\java\\eu\\arrowhead\\consumer\\ConsumerApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + system + "\\src\\main\\java\\eu\\arrowhead\\consumer\\ConsumerApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

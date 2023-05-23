@@ -16,7 +16,10 @@ public class APXDeployedEntity {
 	// attributes
 	
 	private String name; // Name of the deployed entity
-	private String description; // Description of the deployed entity
+	
+	private String serverAddress; // Server address of the system
+	private String serverPort; // Server port of the system
+	
 	private APXSystemDesignDescription sysDD; // Block type of the deployed entity
 	
 	
@@ -25,31 +28,35 @@ public class APXDeployedEntity {
 	
 	//-------------------------------------------------------------------------------------------------
 	public String getName() { return name; }
-	public String getDescription() { return description; }
+	public String getServerAddress() { return serverAddress; }
+	public String getServerPort() { return serverPort; }
 	public APXSystemDesignDescription getSysDD() { return sysDD; }
 	
 	//-------------------------------------------------------------------------------------------------
 	public void setName(String name) { this.name = name; }
-	public void setDescription(String description) { this.description = description; }
+	public void setServerAddress(String serverAddress) { this.serverAddress = serverAddress; }
+	public void setServerPort(String serverPort) { this.serverPort = serverPort; }
 	public void setSysDD(APXSystemDesignDescription sysDD) { this.sysDD = sysDD; }
 	
 	//-------------------------------------------------------------------------------------------------
 	public APXDeployedEntity() {
 		this.name = "";
-		this.description = "";
+		this.serverAddress = "";
+		this.serverPort = "";
 		this.sysDD = new APXSystemDesignDescription();
 	}
 	
 	public APXDeployedEntity(APXDeployedEntity other) {
 		this.name = other.getName();
-		this.description = other.getDescription();
+		this.serverAddress = other.getServerAddress();
+		this.serverPort = other.getServerPort();
 		this.sysDD = new APXSystemDesignDescription(other.getSysDD());
 	}
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String toString() {
-		return "\n\t" + name + "\n\t\tDescription: " + description + "\n\t\tSystemDesignDescription: " + sysDD.toString(); 
+		return "\n\t" + name + "\n\t\tDescription: " + "\n\t\tServer Address: " + serverAddress + "\n\t\tserverPort: " + serverPort + "\n\t\tSystemDesignDescription: " + sysDD.toString(); 
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -65,7 +72,9 @@ public class APXDeployedEntity {
 	
 	//-------------------------------------------------------------------------------------------------
 	public boolean checkConsistency(APXDeployedEntity other) {
-		return false; // TODO Complete
+		return 
+				this.getServerAddress() == other.getServerAddress() &&
+				this.getServerPort() == other.getServerPort();
 	}
 	
 	

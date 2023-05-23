@@ -2,6 +2,7 @@ package parsing.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.EList;

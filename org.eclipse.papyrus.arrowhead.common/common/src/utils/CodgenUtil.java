@@ -88,7 +88,7 @@ public final class CodgenUtil {
 			t = Byte.class;
 		else if (type.equalsIgnoreCase("Double"))
 			t = double.class;
-		else if (type.equalsIgnoreCase("Float"))
+		else if (type.equalsIgnoreCase("Float") || type.equalsIgnoreCase("Real"))
 			t = float.class;
 		else if (type.equalsIgnoreCase("Short"))
 			t = short.class;

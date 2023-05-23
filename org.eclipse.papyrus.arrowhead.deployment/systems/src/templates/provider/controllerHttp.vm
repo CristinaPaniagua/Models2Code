@@ -23,42 +23,42 @@ public class ServiceControllerHttp {
 	//=================================================================================================
 	// methods
 	
-	#foreach( $interface in $interfaces )
-		#set($operations=$interface.getOperations())
-		#foreach( $operation in $operations )  
-			#if($operation.getMethod() == "GET")
-				#if($operation.isResponse()==true)
-	@GetMapping(value="$operation.getPath()", produces = MediaType.APPLICATION_$operation.getResponseEncoding()_VALUE)
+#foreach( $interface in $interfaces )
+#set($operations=$interface.getOperations())
+	#foreach( $operation in $operations )  
+		#if($operation.getMethod() == "GET")
+			#if($operation.isResponse()==true)
+	@GetMapping(value="$operation.getPath()", produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
     public $operation.capitalizeService()ResponseDTO $operation.getName() () {
 		// Complete with your own code
 		$operation.capitalizeService()ResponseDTO response= new $operation.capitalizeService()ResponseDTO();			
 		return response;
     }
-				#else 
-	@GetMapping(value="$operation.getPath()", produces = MediaType.APPLICATION_$operation.getResponseEncoding()_VALUE)
+			#else 
+	@GetMapping(value="$operation.getPath()", produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
     public String $operation.getName() () {
 		// Complete with your own code						
 	 	String response= "";
         return response;
     }
-   				#end
-			#else
+			#end
+		#else
 				#if($operation.isRequest()==true)
-    @PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$operation.getRequestEncoding()_VALUE, produces = MediaType.APPLICATION_$operation.getResponseEncoding()_VALUE)
+    @PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$interface.getEncoding()_VALUE, produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
 	@ResponseBody public String $operation.getName() (@RequestBody final $operation.capitalizeService()RequestDTO request) {
 		// Complete with your own code               
        	String response= "";
     	return response;
 	}
 				#else
-   	@PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$operation.getRequestEncoding()_VALUE, produces = MediaType.APPLICATION_$operation.getResponseEncoding()_VALUE)
+   	@PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$interface.getEncoding()_VALUE, produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
 	@ResponseBody public String $operation.getName() (@RequestBody final String request) {
 		// Complete with your own code               
     	String response= "";
     	return response;
 	}
 				#end
-    		#end    
-    	#end   
-    #end 
+		#end    
+	#end   
+#end 
 }

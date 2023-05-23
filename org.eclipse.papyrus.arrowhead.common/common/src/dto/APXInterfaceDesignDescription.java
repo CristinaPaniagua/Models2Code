@@ -139,13 +139,11 @@ public class APXInterfaceDesignDescription {
 		private String path;
 		private ArrayList<String> subpaths;
 
-		private boolean request;
 		private String requestType;
 		private String requestComplexType;
 		private String requestEncoding;
 		private ArrayList<APXPayload> requestPayload; // Request payload of the operation
 		
-		private boolean response;
 		private String responseType;
 		private String responseComplexType;
 		private String responseEncoding;
@@ -163,12 +161,10 @@ public class APXInterfaceDesignDescription {
 		public String getMethod() { return method; }
 		public String getPath() { return path; }
 		public ArrayList<String> getSubpaths() { return subpaths; }
-		public boolean isRequest() { return request; }
 		public String getRequestType() { return requestType; }
 		public String getRequestComplexType() { return requestComplexType; }
 		public String getRequestEncoding() { return requestEncoding; }
 		public ArrayList<APXPayload> getRequestPayload() { return requestPayload; }
-		public boolean isResponse() { return response; }
 		public String getResponseType() { return responseType; }
 		public String getResponseComplexType() { return responseComplexType; }
 		public String getResponseEncoding() { return responseEncoding; }
@@ -181,12 +177,10 @@ public class APXInterfaceDesignDescription {
 		public void setMethod(String method) { this.method = method; }
 		public void setPath(String path) { this.path = path; }
 		public void setSubpaths(ArrayList<String> subpaths) { this.subpaths = subpaths; }
-		public void setRequest(boolean request) { this.request = request; }
 		public void setRequestType(String requestType) { this.requestType = requestType; }
 		public void setRequestComplexType(String requestComplexType) { this.requestComplexType = requestComplexType; }
 		public void setRequestEncoding(String requestEncoding) { this.requestEncoding = requestEncoding; }
 		public void setRequestPayload(ArrayList<APXPayload> requestPayload) { this.requestPayload = requestPayload; }
-		public void setResponse(boolean response) { this.response = response; }
 		public void setResponseType(String responseType) { this.responseType = responseType; }
 		public void setResponseComplexType(String responseComplexType) { this.responseComplexType = responseComplexType; }
 		public void setResponseEncoding(String responseEncoding) { this.responseEncoding = responseEncoding; }
@@ -201,13 +195,11 @@ public class APXInterfaceDesignDescription {
 			this.path = "";
 			this.subpaths = new ArrayList<String>();
 			
-			this.request = false;
 			this.requestType = "";
 			this.requestComplexType = "";
 			this.requestEncoding = "";
 			this.requestPayload = new ArrayList<APXPayload>();
 
-			this.response = false;
 			this.responseType = "";
 			this.responseComplexType = "";
 			this.responseEncoding = "";
@@ -223,7 +215,6 @@ public class APXInterfaceDesignDescription {
 			this.path = other.getPath();
 			this.subpaths = other.getSubpaths();
 			
-			this.request = other.isRequest();
 			this.requestType = other.getRequestType();
 			this.requestComplexType = other.getRequestComplexType();
 			this.requestEncoding = other.getRequestEncoding();
@@ -231,7 +222,6 @@ public class APXInterfaceDesignDescription {
 			for(APXPayload payload : other.getRequestPayload())
 				this.requestPayload.add(new APXPayload(payload));
 			
-			this.response = other.isResponse();
 			this.responseType = other.getResponseType();
 			this.responseComplexType = other.getResponseComplexType();
 			this.responseEncoding = other.getResponseEncoding();
@@ -430,6 +420,7 @@ public class APXInterfaceDesignDescription {
 		 *
 		 */
 		public class APXParameter {
+			
 			//=================================================================================================
 			// attributes
 			
@@ -489,7 +480,6 @@ public class APXInterfaceDesignDescription {
 				public int compare(APXParameter o1, APXParameter o2) {
 					return o1.getName().compareTo(o2.getName());
 				}
-				
 			}
 		}
 		

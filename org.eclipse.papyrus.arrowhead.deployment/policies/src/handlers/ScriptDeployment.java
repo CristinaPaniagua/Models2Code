@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -25,9 +28,10 @@ import org.eclipse.swt.widgets.Text;
 
 import dialog.ModelSelectWindow;
 import dialog.ProjectSelectWindow;
+import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import dto.APXLocalCloudDesignDescription;
-import parsing.model.ModelParser;
+import parsing.model.ParsingSetup;
 import parsing.workspace.ParsingUtils;
 import utils.CodgenUtil;
 import utils.ExecutionUtils;
@@ -84,12 +88,8 @@ public class ScriptDeployment {
 				throw new Exception("The selected project does not have an .uml file.");
 
 			// Read model and parse information
-			ModelParser MP = new ModelParser();
-			MP.modelReader(selectedPathModel);
-					
-			HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry = MP.getSystemServiceRegistry();
-			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces(); // TODO Not Used
-			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
+			ParsingSetup.parseModel(selectedPathModel);
+			ArrayList<APXLocalCloudDesignDescription> localClouds = ParsingSetup.modelLocalCloudList;
 
 			// Display Local Clouds and open a dialog window
 			DialogWindow dialog = new DialogWindow(shell);
@@ -109,63 +109,148 @@ public class ScriptDeployment {
 					Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 
 					if (!(directory == null || directory.isEmpty())) {
+						APXLocalCloudDesignDescription localCloud = localClouds.get(selectedLC);
+						
 						// Obtain information about selected local cloud
-						String LCname = ParsingUtils.toKebabCase(localClouds.get(selectedLC).getName());
+						String localCloudName = ParsingUtils.toKebabCase(localCloud.getName());
 						ParsingUtils.newFolder(directory, "arrowhead");
-						ParsingUtils.newFolder(directory + "/arrowhead/", LCname);
-						ParsingUtils.newFolder(directory + "/arrowhead/" + LCname + "/", "db-rules");
-						ArrayList<ArrayList<String>> connectionsLC = new ArrayList<ArrayList<String>>(localClouds.get(selectedLC).getConnections().values());
-
+						ParsingUtils.newFolder(directory + "/arrowhead/", localCloudName);
+						ParsingUtils.newFolder(directory + "/arrowhead/" + localCloudName + "/", "db-rules");
+						
 						// Initialise Velocity Engine
 						VelocityEngine velocityEngine = new VelocityEngine();
 						velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 						velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 						velocityEngine.init();
 
-						// TODO The priority needs to change when the interface ID, consumer ID and service ID are the same
-						for (int k = 0; k < connectionsLC.size(); k++) {
-							ArrayList<String> connectionEntry = connectionsLC.get(k);
-							HashMap<String, ArrayList<String>> providerSystemServices = systemServiceRegistry.get(connectionEntry.get(2));
-							HashMap<String, ArrayList<String>> consumerSystemServices = systemServiceRegistry.get(connectionEntry.get(3));
-
-							String providerSystemBehavior = providerSystemServices.get("provider").isEmpty() ? "-consumer" : "-provider";
-							String consumerSystemBehavior = consumerSystemServices.get("provider").isEmpty() ? "-consumer" : "-provider";
+						// { providerName: [serviceName, providerName, providerUrl] }
+						HashMap<String, String[]> serviceMap = new HashMap<String, String[]>();
+						HashSet<String> interfaceNameList = new HashSet<String>();
+						
+						for(Entry<String, ArrayList<APXLocalCloudDesignDescription.APXConnector>> connector : localCloud.getConnectors().entrySet()) {
+							String providerName = ParsingUtils.toKebabCase(connector.getKey().split(":")[0]);
+							String interfaceName = connector.getValue().get(0).getService();
 							
-							connectionEntry.set(2, connectionEntry.get(2) + providerSystemBehavior);
-							connectionEntry.set(3, connectionEntry.get(3) + consumerSystemBehavior);
+							for(APXInterfaceDesignDescription.APXServiceDescription operation : ParsingSetup.modelInterfaceDescriptionMap.get(interfaceName).getOperations()) {
+								String[] service = {
+										interfaceName,
+										providerName + "-provider",
+										operation.getPath()
+								};
+								serviceMap.put(operation.getName() + "-" + providerName, service);
+							}
+							
+							interfaceNameList.add(interfaceName);
 						}
 						
-						// Orchestration DB Rule Generation
-						if (policyType.equalsIgnoreCase("orchestration")) {
+						// Consumer DB Registry Generation
+						if (policyType.equalsIgnoreCase("System-Service Registry")) {							
+							// { systemName: [systemName, address, port] }
+							HashMap<String, String[]> consumerMap = new HashMap<String, String[]>();
+							HashMap<String, String[]> providerMap = new HashMap<String, String[]>();
 							
-							Template t = velocityEngine.getTemplate("templates/orchstore.vm");
+							for(Entry<String, ArrayList<APXLocalCloudDesignDescription.APXConnector>> connector : localCloud.getConnectors().entrySet()) {
+								String[] connectorName = connector.getKey().split(":"); // provider:consumer
+								
+								String providerName = connectorName[0];
+								String[] provider = {
+										providerName + "-provider",
+										connector.getValue().get(0).getProviderAddress(),
+										connector.getValue().get(0).getProviderPort()
+								};
+								providerMap.put(providerName, provider);	
+								
+								String consumerName = ParsingUtils.toKebabCase(connectorName[1]); 
+								String[] consumer = {
+										consumerName + "-consumer",
+										connector.getValue().get(0).getConsumerAddress(),
+										connector.getValue().get(0).getConsumerPort()
+								};
+								consumerMap.put(consumerName, consumer);		
+							}
+							
+							// Remove provider-consumers from consumer map
+							for (String provider : providerMap.keySet())
+								consumerMap.remove(provider);
+							
+							Template t = velocityEngine.getTemplate("templates/system.vm");
 							VelocityContext context = new VelocityContext();
-							context.put("connectionsLCs", connectionsLC);
+							
+							consumerMap.putAll(providerMap);
+							context.put("systemList", consumerMap.values());
+							context.put("interfaceNameList", interfaceNameList);
+							context.put("serviceList", serviceMap.values());
 									
 							try {
-								Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(LCname) + "/db-rules/orchstore-rules.sql");
+								Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(localCloudName) + "/db-rules/system-service-registry.sql");
 								t.merge(context, writer);
 								writer.flush();
 								writer.close();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-						} 
-						
-						// Security DB Rule Generation
-						else { 
-
-							Template t = velocityEngine.getTemplate("templates/security.vm");
-							VelocityContext context = new VelocityContext();
-							context.put("connectionsLCs", connectionsLC);
-
-							try {
-								Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(LCname) + "/db-rules/security-rules.sql");
-								t.merge(context, writer);
-								writer.flush();
-								writer.close();
-							} catch (IOException e) {
-								e.printStackTrace();
+							
+						} else {
+							HashSet<String[]> connections = new HashSet<String[]>(); // [serviceName, providerName, consumerName, priority]
+							HashMap<String, Integer> priorities = new HashMap<String, Integer>();
+							
+							for (ArrayList<APXLocalCloudDesignDescription.APXConnector> connectorList : localCloud.getConnectors().values())
+								for (APXLocalCloudDesignDescription.APXConnector connector : connectorList) {
+									
+									Integer priority = priorities.get(connector.getService()) == null ? 1 : priorities.get(connector.getService());
+									String consumerName = connector.getConsumerName();
+									
+									int index = 0;
+									String[] serviceProviderArray = serviceMap.keySet().toArray(new String[serviceMap.size()]);
+									while(index < serviceProviderArray.length && !serviceProviderArray[index].contains("-" + consumerName))
+										index++;
+									
+									String providerConsumer = index < serviceProviderArray.length ? "-provider" : "-consumer";
+									
+									String providerName = connector.getProviderName();
+									String[] connection = {
+											connector.getService(),
+											providerName + "-provider",
+											connector.getConsumerName() + providerConsumer,
+											priority.toString()
+									};
+									connections.add(connection);
+									
+									priorities.put(connector.getService(), priority+1);
+								}
+							
+							// Orchestration DB Rule Generation
+							if (policyType.equalsIgnoreCase("orchestration")) {
+								
+								Template t = velocityEngine.getTemplate("templates/orchstore.vm");
+								VelocityContext context = new VelocityContext();
+								context.put("connections", connections);
+										
+								try {
+									Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(localCloudName) + "/db-rules/orchstore-rules.sql");
+									t.merge(context, writer);
+									writer.flush();
+									writer.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							} 
+							
+							// Security DB Rule Generation
+							else if(policyType.equalsIgnoreCase("security")){ 
+	
+								Template t = velocityEngine.getTemplate("templates/security.vm");
+								VelocityContext context = new VelocityContext();
+								context.put("connections", connections);
+	
+								try {
+									Writer writer = new FileWriter(directory + "/arrowhead/" + ParsingUtils.toKebabCase(localCloudName) + "/db-rules/security-rules.sql");
+									t.merge(context, writer);
+									writer.flush();
+									writer.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 						}
 
@@ -180,11 +265,4 @@ public class ScriptDeployment {
 			}
 		}
 	}
-
-
-	// =================================================================================================
-	// auxiliary methods
-
-
-
 }

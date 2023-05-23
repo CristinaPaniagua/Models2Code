@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -13,6 +14,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import parsing.workspace.ParsingUtils;
 import utils.ExecutionUtils;
@@ -28,11 +30,10 @@ public class ProviderMain {
 
 	// =================================================================================================
 	// attributes
-
-	public static ArrayList<ArrayList<String>> classesRequest = new ArrayList<ArrayList<String>>();
-	public static ArrayList<String> classesResponse = new ArrayList<String>();
-
-
+	
+	private static HashSet<String> dtoList = new HashSet<String>();
+	
+	
 	// =================================================================================================
 	// methods
 
@@ -41,39 +42,30 @@ public class ProviderMain {
 	 * 
 	 * Generation of the Provider Main and Server Application for providing system
 	 * 
-	 * @param Directory The path to the file
-	 * @param name The name of the local cloud
+	 * @param workspace The path to the file
+	 * @param localCloud The name of the local cloud
 	 * @param system The name of the system
-	 * @param systemServiceRegistry List of systems in the service registry
-	 * @param interfaces List of interfaces of the consumer
+	 * @param interfaceList List of interfaces of the consumer
 	 */
-	public static void generateProviderMain(String Directory, String name, String system, HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces) {
-
-		classesRequest.clear();
-		classesResponse.clear();
+	public static void generateProviderMain(String workspace, String localCloud, String system, HashMap<String, APXDeployedEntity> deployedEntityMap) {
 		
-		ArrayList<APXInterfaceDesignDescription> serviceInterfaces = new ArrayList<APXInterfaceDesignDescription>();
-		HashMap<String, ArrayList<String>> systemService = systemServiceRegistry.get(ParsingUtils.toKebabCase(system));
+		dtoList.clear();
 		
-		if(!systemService.get("provider").isEmpty())
-			for (String service : systemService.get("provider")) 
-				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
-					if (interfaces.get(n).getName().equals(service))
-						serviceInterfaces.add(interfaces.get(n));
-
-		for (int h = 0; h < serviceInterfaces.size(); h++) { // For each registered service interface
-			APXInterfaceDesignDescription MD = serviceInterfaces.get(h);
-
-			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MD.getOperations();
+		APXDeployedEntity deployedEntity = deployedEntityMap.get(ParsingUtils.toKebabCase(system));
+		ArrayList<APXInterfaceDesignDescription> serviceInterfaceList = deployedEntity.getSysDD().getIDDs();
+		
+		for (APXInterfaceDesignDescription serviceInterface : serviceInterfaceList) // For each registered service interface
 			// Generate response and request payload
-			for (int i = 0; i < operations.size(); i++) {
-				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
-				GenerationUtils.objectClassGen(Directory, name, system, op, "provider");
+			for (APXInterfaceDesignDescription.APXServiceDescription operation : serviceInterface.getOperations()) {
+				GenerationUtils.buildDTO(workspace, localCloud, system, operation, "provider");
+				if(!operation.getRequestType().equals(""))
+					dtoList.add(operation.getRequestType());
+				if(!operation.getResponseType().equals(""))
+					dtoList.add(operation.getResponseType());
 			}
-		}
 
 		// Check protocol type
-		boolean coap = GenerationUtils.checkCoapProtocol(serviceInterfaces);
+		boolean coap = GenerationUtils.checkCoapProtocol(serviceInterfaceList);
 
 		// Initialise Velocity Engine
 		VelocityEngine velocityEngine = new VelocityEngine();
@@ -85,11 +77,11 @@ public class ProviderMain {
 			// Create and write Provider Main class file
 			Template t = velocityEngine.getTemplate("templates/provider/providerMain.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("packagename", "provider"); // _Provider
+			context.put("packagename", "provider");
 			context.put("sysName", system);
 			context.put("coap", coap);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -98,9 +90,9 @@ public class ProviderMain {
 				// Create and write Coap Server Application class file
 				Template tc = velocityEngine.getTemplate("templates/provider/coapServer.vm");
 				VelocityContext contextc = new VelocityContext();
-				contextc.put("packagename", "provider"); // _Provider
+				contextc.put("packagename", "provider");
 				
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -111,9 +103,9 @@ public class ProviderMain {
 		}
 
 		// Generate the Application Listener
-		providerGenAppListener(serviceInterfaces, system, Directory, name, false);
+		providerGenAppListener(serviceInterfaceList, system, workspace, localCloud, false);
 		// Generate the Controller
-		providerController(serviceInterfaces, system, Directory, name);
+		providerController(serviceInterfaceList, system, workspace, localCloud);
 
 	}
 
@@ -122,60 +114,60 @@ public class ProviderMain {
 	 * 
 	 * Generation of the Provider Main and Server Application for consuming and providing system
 	 * 
-	 * @param Directory The path to the file
-	 * @param name The name of the local cloud
+	 * @param workspace The path to the file
+	 * @param localCloud The name of the local cloud
 	 * @param system The name of the system
 	 * @param systemServiceRegistry List of systems in the service registry
 	 * @param interfaces List of interfaces of the consumer
 	 */
-	public static void generateProvConsMain(String Directory, String name, String system,  HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry, ArrayList<APXInterfaceDesignDescription> interfaces, String port) {
+	public static void generateProvConsMain(String workspace, String localCloud, String system,  HashMap<String, APXDeployedEntity> deployedEntityMap) {
 
+		dtoList.clear();
+		
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesProvider = new ArrayList<APXInterfaceDesignDescription>();
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesConsumer = new ArrayList<APXInterfaceDesignDescription>();
 
-		HashMap<String, ArrayList<String>> systemService = systemServiceRegistry.get(ParsingUtils.toKebabCase(system));
+		ArrayList<String> dtoList = new ArrayList<String>();
 		
-		if(!systemService.get("provider").isEmpty())
-			for (String service : systemService.get("provider")) 
-				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
-					if (interfaces.get(n).getName().equals(service))
-						serviceInterfacesProvider.add(interfaces.get(n));
+		APXDeployedEntity deployedEntity = deployedEntityMap.get(ParsingUtils.toKebabCase(system));
+		ArrayList<APXInterfaceDesignDescription> serviceInterfaceList = deployedEntity.getSysDD().getIDDs();
+		String port = deployedEntity.getServerPort();
 		
-		if(!systemService.get("consumer").isEmpty())
-			for (String service : systemService.get("consumer")) 
-				for(int n = 0; n < interfaces.size(); n++) // Find the matching service interface
-					if (interfaces.get(n).getName().equals(service))
-						serviceInterfacesConsumer.add(interfaces.get(n));
+		for (APXInterfaceDesignDescription serviceInterface : serviceInterfaceList) { // For each registered service interface
+			// Generate response and request payload
+			for (APXInterfaceDesignDescription.APXServiceDescription operation : serviceInterface.getOperations()) {
+				GenerationUtils.buildDTO(workspace, localCloud, system, operation, "provider");
+				if(!operation.getRequestType().equals(""))
+					dtoList.add(operation.getRequestType());
+				if(!operation.getResponseType().equals(""))
+					dtoList.add(operation.getResponseType());
+			}
+	
+			if(serviceInterface.getRole().equals("Provider"))
+				serviceInterfacesProvider.add(serviceInterface);
+			else
+				serviceInterfacesConsumer.add(serviceInterface);
+			
+		}
 		
 		// For each service that the system provides
-		for (int l = 0; l < serviceInterfacesProvider.size(); l++) {
-			APXInterfaceDesignDescription MDP = serviceInterfacesProvider.get(l);
-			String service = MDP.getName(); // TODO Not Used
-
+		for (APXInterfaceDesignDescription serviceInterface : serviceInterfacesProvider) {
+			
 			// Generate response and request payload
-			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MDP.getOperations();
-			for (int i = 0; i < operations.size(); i++) {
-				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
-				GenerationUtils.objectClassGen(Directory, name, system, op, "provider");
-			}
+			for (APXInterfaceDesignDescription.APXServiceDescription operation : serviceInterface.getOperations())
+				GenerationUtils.buildDTO(workspace, localCloud, system, operation, "provider");
 
 			// Generate the Controller
-			providerController(serviceInterfacesProvider, system, Directory, name);
+			providerController(serviceInterfacesProvider, system, workspace, localCloud);
 
 		}
 
 		// For each service that the system consumes
-		for (int p = 0; p < serviceInterfacesConsumer.size(); p++) {
-			APXInterfaceDesignDescription MDC = serviceInterfacesConsumer.get(p);
-			String service = MDC.getName(); // TODO Not Used
-
+		for (APXInterfaceDesignDescription serviceInterface : serviceInterfacesConsumer)
+			
 			// Generate response and request payload
-			ArrayList<APXInterfaceDesignDescription.APXServiceDescription> operations = MDC.getOperations();
-			for (int i = 0; i < operations.size(); i++) {
-				APXInterfaceDesignDescription.APXServiceDescription op = operations.get(i);
-				GenerationUtils.objectClassGen(Directory, name, system, op, "provider-consumer");
-			}
-		}
+			for (APXInterfaceDesignDescription.APXServiceDescription operation : serviceInterface.getOperations())
+				GenerationUtils.buildDTO(workspace, localCloud, system, operation, "provider-consumer");
 
 		// Check protocol type
 		boolean providerCoap = GenerationUtils.checkCoapProtocol(serviceInterfacesProvider);
@@ -197,18 +189,12 @@ public class ProviderMain {
 			context.put("packagename", "provider"); // _Provider
 			context.put("sysName", system);
 			context.put("interfaces", serviceInterfacesConsumer);
-			context.put("address", "http://127.0.0.1:" +  port); // TODO Update from service registry
+			context.put("address", "http://127.0.0.1:" +  port);
 			context.put("httpFlag", consumerHttp);
 			context.put("coapFlag", consumerCoap);
-			
-			ArrayList<String> dtos = new ArrayList<String>();
-			for(ArrayList<String> classRequest : classesRequest)
-				dtos.add(classRequest.get(0).split(" ")[0]);
-			for(String classResponse : classesResponse)
-				dtos.add(classResponse.split(" ")[0]);
-			context.put("dtos", dtos);
+			context.put("dtos", dtoList);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -219,7 +205,7 @@ public class ProviderMain {
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider");
 
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -230,7 +216,7 @@ public class ProviderMain {
 		}
 
 		// Generate Application Listener
-		providerGenAppListener(serviceInterfacesProvider, system, Directory, name, true);
+		providerGenAppListener(serviceInterfacesProvider, system, workspace, localCloud, true);
 
 	}
 
@@ -239,13 +225,13 @@ public class ProviderMain {
 	 * 
 	 * Generation of the Application Listeners
 	 * 
-	 * @param serviceInterfaces List of service interfaces of the system
+	 * @param serviceInterfaceList List of service interfaces of the system
 	 * @param system The name of the system
-	 * @param Directory The path of the file
-	 * @param name The name of the local cloud
+	 * @param workspace The path of the file
+	 * @param localCloud The name of the local cloud
 	 */
-	public static void providerGenAppListener(ArrayList<APXInterfaceDesignDescription> serviceInterfaces, String system, String Directory, String name, Boolean providerConsumer) {
-		serviceInterfaces = GenerationUtils.removeRepetitions(serviceInterfaces);
+	public static void providerGenAppListener(ArrayList<APXInterfaceDesignDescription> serviceInterfaceList, String system, String workspace, String localCloud, Boolean providerConsumer) {
+		serviceInterfaceList = GenerationUtils.removeRepetitions(serviceInterfaceList);
 
 		// Initialise VelocityEngine
 		VelocityEngine velocityEngine = new VelocityEngine();
@@ -258,18 +244,12 @@ public class ProviderMain {
 			Template t = velocityEngine.getTemplate("templates/provider/applicationListener.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "provider");
-			context.put("interfaces", serviceInterfaces);
+			context.put("interfaces", serviceInterfaceList);
 			
 			context.put("type", providerConsumer ? "provider-consumer" : "provider");
-			
-			ArrayList<String> dtos = new ArrayList<String>();
-			for(ArrayList<String> classRequest : classesRequest)
-				dtos.add(classRequest.get(0).split(" ")[0]);
-			for(String classResponse : classesResponse)
-				dtos.add(classResponse.split(" ")[0]);
-			context.put("dtos", dtos);
+			context.put("dtos", dtoList);
 
-			Writer writer = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -317,13 +297,7 @@ public class ProviderMain {
 				VelocityContext contexth = new VelocityContext();
 				contexth.put("packagename", "provider");
 				contexth.put("interfaces", serviceInterfacesHttp);
-
-				ArrayList<String> dtos = new ArrayList<String>();
-				for(ArrayList<String> classRequest : classesRequest)
-					dtos.add(classRequest.get(0).split(" ")[0]);
-				for(String classResponse : classesResponse)
-					dtos.add(classResponse.split(" ")[0]);
-				contexth.put("dtos", dtos);
+				contexth.put("dtos", dtoList);
 				
 				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);

@@ -19,13 +19,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import dialog.ProjectSelectWindow;
+import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import dto.APXLocalCloudDesignDescription;
 import generator.ApplicationProperties;
 import generator.ConsumerAppList;
 import generator.ConsumerMain;
 import generator.ProviderMain;
-import parsing.model.ModelParser;
+import parsing.model.ParsingSetup;
 import parsing.workspace.ParsingUtils;
 import utils.CodgenUtil;
 import utils.ExecutionUtils;
@@ -55,11 +56,8 @@ public class ScriptDeployment {
 	private String directory = "";
 	private String name = "";
 	private String language = ""; // TODO Not Used
-	private Boolean mandatorySys = false; // TODO Not Used
-	private Boolean supportSys = false; // TODO Not Used
 	private String disk = "";
 	private String[] selectedSys = null;
-	private int[] selectedSysType = null;
 	private int selectedLC;
 	private String os = "";
 	private String workspace = configuration.getProperty("workspace");
@@ -94,11 +92,11 @@ public class ScriptDeployment {
 				throw new Exception("The selected project does not have an .uml file.");
 
 			// Read model and parse information
-			ModelParser MP = new ModelParser();
-			MP.modelReader(selectedPathModel);
+			ParsingSetup.parseModel(selectedPathModel);
 
-			ArrayList<APXInterfaceDesignDescription> interfaces = MP.getInterfaces();
-			ArrayList<APXLocalCloudDesignDescription> localClouds = MP.getLocalClouds();
+			ArrayList<APXInterfaceDesignDescription> interfaces =
+					new ArrayList<APXInterfaceDesignDescription> (ParsingSetup.modelInterfaceDescriptionMap.values());
+			ArrayList<APXLocalCloudDesignDescription> localClouds = ParsingSetup.modelLocalCloudList;
 
 			System.out.println(interfaces);
 			System.out.println(localClouds);
@@ -116,14 +114,12 @@ public class ScriptDeployment {
 					directory = dialog.getDirectory();
 					name = ParsingUtils.toKebabCase(dialog.getName());
 					selectedSys = dialog.getSelectedSys();
-					selectedSysType = new int[selectedSys.length];
 					selectedLC = dialog.getSelectedLC();
 					disk = dialog.getDisk();
 					os = dialog.getOs();
 					
 					// Obtain selected local cloud and the associated connections
-					APXLocalCloudDesignDescription LC= localClouds.get(selectedLC);
-					HashMap<String, HashMap<String, ArrayList<String>>> systemServiceRegistry= LC.getSystemsSR();
+					APXLocalCloudDesignDescription localCloud= localClouds.get(selectedLC);
 
 					final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
 					Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
@@ -151,32 +147,19 @@ public class ScriptDeployment {
 						ParsingUtils.newFolder(directory + "/arrowhead/", name);
 						ParsingUtils.newFolder(directory + "/arrowhead/" + name + "/", "cloud-systems");
 						
-						for (int j = 0; j < selectedSys.length; j++) { // For each of the systems
-							String kebabCaseSystem = ParsingUtils.toKebabCase(selectedSys[j]);
+						for (String system : selectedSys) { // For each of the systems
+							String kebabCaseSystem = ParsingUtils.toKebabCase(system);
 							
-							for (int i = 0; i < localClouds.get(selectedLC).getSystemsModel().size(); i++) {
-
-								if (selectedSys[j].equals(localClouds.get(selectedLC).getSystemsModel().get(i).get(0))) {
-									
-									// Identify its type (provider/consumer/both)
-									if (localClouds.get(selectedLC).getSystemsModel().get(i).get(1).equals("Provider")) {
-										selectedSysType[j] = 0;
-										type = "-provider";
-									} else if (localClouds.get(selectedLC).getSystemsModel().get(i).get(1).equals("ProviderConsumer")) {
-										selectedSysType[j] = 2;
-										type = "-provider";
-									} else {
-										selectedSysType[j] = 1;
-										type = "-consumer";
-									}
-								}
-							}
-
+							// Identify its type (provider/consumer/both)
+							type = localCloud.getDeployedEntities().get(kebabCaseSystem).getSysDD().getRole().contains("Provider") ?
+									"-provider" : "-consumer";
+							
 							modules = modules + "    <module>" + kebabCaseSystem + type + "</module>\r\n";
 							folders = os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac") 
 									? folders + "mkdir " + kebabCaseSystem + type + "\n"
 									: folders + "mkdir " + kebabCaseSystem + type + "\r\n";
 						}
+						
 						context.put("createFolders", folders);
 						contextpom.put("modules", modules);
 						
@@ -236,13 +219,12 @@ public class ScriptDeployment {
 								kebabCaseSystem = ParsingUtils.toKebabCase(selectedSys[j]);
 								
 								// If the system is a provider
-								if (selectedSysType[j] == 0) {
+								if (localCloud.getDeployedEntities().get(kebabCaseSystem).getSysDD().getRole().equals("Provider")) {
 									
 									String port = "";
-									Set<Entry<String, ArrayList<String>>> connections = localClouds.get(selectedLC).getConnections().entrySet();
-									for(Entry<String, ArrayList<String>> connection : connections)
-										if(connection.getKey().toLowerCase().contains(kebabCaseSystem.toLowerCase())) {
-											port = connection.getValue().get(4);
+									for(Entry<String, ArrayList<APXLocalCloudDesignDescription.APXConnector>> connection : localCloud.getConnectors().entrySet())
+										if(connection.getKey().split(":")[0].toLowerCase().contains(kebabCaseSystem.toLowerCase())) {
+											port = connection.getValue().get(0).getProviderPort();
 											break;
 										}
 									
@@ -300,7 +282,7 @@ public class ScriptDeployment {
 									writerProject.close();
 									
 									// Generate the Provider Main
-									ProviderMain.generateProviderMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces);
+									ProviderMain.generateProviderMain(directory, name, selectedSys[j], localCloud.getDeployedEntities());
 									// Generate the Application Properties
 									ApplicationProperties.GenerateAppProperties(directory, name, kebabCaseSystem + "-provider", "provider", port);
 
@@ -327,17 +309,16 @@ public class ScriptDeployment {
 								} 
 								
 								// If the system is a provider/consumer
-								else if (selectedSysType[j] == 2) {
+								else if (localCloud.getDeployedEntities().get(kebabCaseSystem).getSysDD().getRole().equals("ProviderConsumer")) {
 									
 									String port = "";
-									Set<Entry<String, ArrayList<String>>> connections = localClouds.get(selectedLC).getConnections().entrySet();
-									for(Entry<String, ArrayList<String>> connection : connections)
-										if(connection.getKey().toLowerCase().contains(kebabCaseSystem.toLowerCase() + "-")) { // Provider behavior
-											port = connection.getValue().get(4);
+									for(Entry<String, ArrayList<APXLocalCloudDesignDescription.APXConnector>> connection : localClouds.get(selectedLC).getConnectors().entrySet())
+										if(connection.getKey().toLowerCase().contains(kebabCaseSystem.toLowerCase() + ":")) { // Provider behavior
+											port = connection.getValue().get(0).getProviderPort();
 											break;
 										}
-										else if (connection.getKey().toLowerCase().contains("-" + kebabCaseSystem.toLowerCase())) { // Consumer behavior
-											port = connection.getValue().get(5);
+										else if (connection.getKey().toLowerCase().contains(":" + kebabCaseSystem.toLowerCase())) { // Consumer behavior
+											port = connection.getValue().get(0).getConsumerPort();
 											break;
 										}
 									
@@ -395,7 +376,7 @@ public class ScriptDeployment {
 									writerProject.close();
 
 									// Generate Provider/Consumer Main
-									ProviderMain.generateProvConsMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces, port);
+									ProviderMain.generateProvConsMain(directory, name, selectedSys[j], localCloud.getDeployedEntities());
 									// Generate Application Properties
 									ApplicationProperties.GenerateAppProperties(directory, name, kebabCaseSystem + "-provider", "provider-consumer", port);
 									
@@ -424,10 +405,9 @@ public class ScriptDeployment {
 								else {
 									
 									String port = "";
-									Set<Entry<String, ArrayList<String>>> connections = localClouds.get(selectedLC).getConnections().entrySet();
-									for(Entry<String, ArrayList<String>> connection : connections)
-										if(connection.getKey().toLowerCase().contains(kebabCaseSystem.toLowerCase())) {
-											port = connection.getValue().get(5);
+									for(Entry<String, ArrayList<APXLocalCloudDesignDescription.APXConnector>> connection : localClouds.get(selectedLC).getConnectors().entrySet())
+										if(connection.getKey().split(":")[1].toLowerCase().contains(kebabCaseSystem.toLowerCase())) {
+											port = connection.getValue().get(0).getConsumerPort();
 											break;
 										}
 									
@@ -486,7 +466,7 @@ public class ScriptDeployment {
 									// Generate Application Listener
 									ConsumerAppList.GenerateAppList(directory, name, kebabCaseSystem + "-consumer");
 									// Generate Consumer Main
-									ConsumerMain.generateConsumerMain(directory, name, selectedSys[j], systemServiceRegistry, interfaces, port);
+									ConsumerMain.generateConsumerMain(directory, name, selectedSys[j], localCloud.getDeployedEntities());
 									// Generate Application Properties
 									ApplicationProperties.GenerateAppProperties(directory, name, kebabCaseSystem + "-consumer", "consumer", port);
 								}

@@ -4,10 +4,10 @@
 -- ------------------------------------------------------
 -- Server version	5.7.21-log
 USE `arrowhead`;
-#foreach( $connectionsLC in $connectionsLCs)
-SELECT @serviceID :=id FROM service_definition WHERE service_definition='$connectionsLC[1]';
-SELECT @providerID :=id FROM system_ WHERE system_name='$connectionsLC[2]';
-SELECT @consumerID :=id FROM system_ WHERE system_name='$connectionsLC[3]';
+#foreach( $connection in $connections)
+SELECT @serviceID :=id FROM service_definition WHERE service_definition='$connection[0]';
+SELECT @providerID :=id FROM system_ WHERE system_name='$connection[1]';
+SELECT @consumerID :=id FROM system_ WHERE system_name='$connection[2]';
 SELECT @srID :=id FROM service_registry WHERE service_id=@serviceID AND system_id=@providerID;
 SELECT @interfaceID :=interface_id FROM service_registry_interface_connection WHERE service_registry_id=@srID;
 INSERT INTO `authorization_intra_cloud` (`consumer_system_id`,`provider_system_id`, `service_id`) 

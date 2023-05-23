@@ -88,13 +88,13 @@ public class GenerationUtils {
 	 * 
 	 * Checks that at least one service interface implements the CoAP protocol
 	 * 
-	 * @param serviceInterfaces List of the service interfaces registered for a system
+	 * @param serviceInterfaceList List of the service interfaces registered for a system
 	 * @return If this system implements CoAP
 	 */
-	public static boolean checkCoapProtocol(ArrayList<APXInterfaceDesignDescription> serviceInterfaces) {
+	public static boolean checkCoapProtocol(ArrayList<APXInterfaceDesignDescription> serviceInterfaceList) {
 		
-		for (int i = 0; i < serviceInterfaces.size(); i++)
-			if (serviceInterfaces.get(i).getProtocol().equalsIgnoreCase("CoAP"))
+		for (int i = 0; i < serviceInterfaceList.size(); i++)
+			if (serviceInterfaceList.get(i).getProtocol().equalsIgnoreCase("CoAP"))
 				return true;
 
 		return false;
@@ -105,13 +105,13 @@ public class GenerationUtils {
 	 * 
 	 * Checks that at least one service interface implements the HTTP protocol
 	 * 
-	 * @param serviceInterfaces List of the service interfaces registered for a system
+	 * @param serviceInterfaceList List of the service interfaces registered for a system
 	 * @return If this system implements HTTP
 	 */
-	public static boolean checkHttpProtocol(ArrayList<APXInterfaceDesignDescription> serviceInterfaces) {
+	public static boolean checkHttpProtocol(ArrayList<APXInterfaceDesignDescription> serviceInterfaceList) {
 		
-		for (int i = 0; i < serviceInterfaces.size(); i++)
-			if (serviceInterfaces.get(i).getProtocol().startsWith("HTTP"))
+		for (int i = 0; i < serviceInterfaceList.size(); i++)
+			if (serviceInterfaceList.get(i).getProtocol().startsWith("HTTP"))
 				return true;
 
 		return false;
@@ -122,38 +122,22 @@ public class GenerationUtils {
 	 * 
 	 * Build payload class
 	 * 
-	 * @param Directory The path to the file
-	 * @param name The name of the class
+	 * @param workspace The path to the file
+	 * @param localCloud The name of the class
 	 * @param system The name of the system
-	 * @param op The operation of the interface
-	 * @param systemType The type of the system (consumer/provider)
+	 * @param operation The operation of the interface
+	 * @param type The type of the system (consumer/provider)
 	 */
-	public static void objectClassGen(String Directory, String name, String system, APXInterfaceDesignDescription.APXServiceDescription op, String systemType) {
+	public static void buildDTO(String workspace, String localCloud, String system, APXInterfaceDesignDescription.APXServiceDescription operation, String type) {
 
-		if (op.isRequest()) { // If it is a request operation
-			ClassSimple Request = new ClassSimple();
-
-			for (int k = 0; k < op.getRequestPayload().size(); k++) { // Add request payload
-				ArrayList<String[]> elements_request = op.getRequestPayload().get(k).getElements();
-				if (systemType.equals("consumer"))
-					ConsumerMain.classesRequest.add(Request.classGen(elements_request, op.getName() + "RequestDTO", Directory, name, system + "-consumer"));
-				else if (systemType.equals("provider") || systemType.equals("provider-consumer"))
-					ProviderMain.classesRequest.add(Request.classGen(elements_request, op.getName() + "RequestDTO", Directory, name, system + "-provider"));
-			}
-		}
-
-		if (op.isResponse()) { // If it is a response operation
-			ClassSimple Response = new ClassSimple();
-
-			for (int j = 0; j < op.getResponsePayload().size(); j++) { // Add response payload
-				ArrayList<String[]> elements_response = op.getResponsePayload().get(j).getElements();
-				if (systemType.equals("consumer"))
-					ConsumerMain.classesResponse = Response.classGen(elements_response, op.getName() + "ResponseDTO", Directory, name, system + "-consumer");
-				else if(systemType.equals("provider") || systemType.equals("provider-consumer"))
-					ProviderMain.classesResponse = Response.classGen(elements_response, op.getName() + "ResponseDTO", Directory, name, system + "-provider");
-			}
-
-		}
+		DTOBuilder dtoBuilder = new DTOBuilder();
+		String behavior = type.equals("consumer") ? "-consumer" : "-provider";
+		
+		if(!operation.getRequestType().equals(""))
+			dtoBuilder.classGen(operation.getRequestPayload(), operation.getRequestType(), workspace, localCloud, system + behavior);
+		else if (!operation.getResponseType().equals(""))
+			dtoBuilder.classGen(operation.getResponsePayload(), operation.getResponseType(), workspace, localCloud, system + behavior);
+		
 	}
 		
 	// -------------------------------------------------------------------------------------------------
@@ -161,16 +145,16 @@ public class GenerationUtils {
 	 * 
 	 * Removes the service interface repetitions
 	 * 
-	 * @param serviceInterfaces List of the service interfaces registered for a system
+	 * @param serviceInterfaceList List of the service interfaces registered for a system
 	 * @return Set of service interfaces
 	 */
-	public static ArrayList<APXInterfaceDesignDescription> removeRepetitions(ArrayList<APXInterfaceDesignDescription> serviceInterfaces) {
+	public static ArrayList<APXInterfaceDesignDescription> removeRepetitions(ArrayList<APXInterfaceDesignDescription> serviceInterfaceList) {
 		// TODO: Look if this is correct or the problem is the service name convention
 		
 		ArrayList<APXInterfaceDesignDescription> withoutRepetitions = new ArrayList<APXInterfaceDesignDescription>();
 		
-		for (int i = 0; i < serviceInterfaces.size(); i++) {
-			APXInterfaceDesignDescription element = serviceInterfaces.get(i);
+		for (int i = 0; i < serviceInterfaceList.size(); i++) {
+			APXInterfaceDesignDescription element = serviceInterfaceList.get(i);
 			
 			if(!withoutRepetitions.contains(element))
 				withoutRepetitions.add(element);

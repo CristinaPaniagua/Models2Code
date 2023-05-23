@@ -58,8 +58,14 @@ public class DefinitionParser {
 			// Set role of the interface
 			portInterface.setRole(modelPort.isConjugated() ? "Consumer" : "Provider");
 			
-			// Set role of the system (once a provider always a provider)
-			systemDescription.setRole(portInterface.getRole().equals("Provider") ? "Provider" : "Consumer");
+			// Set role of the system
+			boolean providerConsumer = (portInterface.getRole().equals("Provider") && systemDescription.getRole().equals("Consumer")) ||
+					(portInterface.getRole().equals("Consumer") && systemDescription.getRole().equals("Provider"));
+			
+			if(providerConsumer)
+				systemDescription.setRole("ProviderConsumer");
+			else if(!systemDescription.getRole().equals("ProviderConsumer"))
+				systemDescription.setRole(portInterface.getRole());
 			
 			// Add interface as long as it's not included already
 			if(!systemDescription.getIDDs().contains(portInterface))
@@ -87,7 +93,7 @@ public class DefinitionParser {
 		interfaceDescription.setName(element.getName());
 		interfaceDescription.setProtocol(modelInterface.getProtocol().toString());
 		interfaceDescription.setEncoding(modelInterface.getEncoding().toString());
-
+		
 		// Get the operations of the interface
 		EList<Operation> modelOperations = classifier.getAllOperations();
 		ArrayList<APXServiceDescription> operationList = new ArrayList<APXServiceDescription>();
@@ -98,6 +104,7 @@ public class DefinitionParser {
 			
 			// Set name and method of the operation
 			operation.setName(modelOperation.getName());
+			operation.setPath("/" + modelOperation.getName());
 			operation.setMethod(UMLUtil.getStereotypeApplication(modelOperation, HttpOperation.class).getKind().toString());
 
 			// Get the parameters of the operation
@@ -114,7 +121,7 @@ public class DefinitionParser {
 					payload.setType(parameterType.getName());
 
 					// If it is a request parameter
-					if(modelParameter.getDirection().getName().equals("in")) {
+					if(modelParameter.getDirection().getName().equals("in")) { // Request
 						if(operation.getRequestType().equals("")) // If the request type was not set
 							operation.setRequestType(operation.getName().substring(0, 1).toUpperCase() + operation.getName().substring(1) + "RequestDTO");
 						operation.getRequestPayload().add(payload);
@@ -127,8 +134,7 @@ public class DefinitionParser {
 						operation.getResponsePayload().add(payload);
 					}		
 
-				} else // If the parameter object is not defined set response to string 
-					operation.setResponseType("String"); // TODO Check validity
+				}
 			}
 
 			operationList.add(operation);

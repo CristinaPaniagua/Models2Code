@@ -118,7 +118,7 @@ public class ParsingUtils {
 	 * 
 	 * Transforms a string from UpperCamel to kebab-case
 	 * 
-	 * @param str The string to transforme
+	 * @param str The string to transform
 	 * @return The transformed string
 	 */
 	public static String toKebabCase(String str) {
@@ -130,10 +130,22 @@ public class ParsingUtils {
 	 * 
 	 * Transforms a string from kebab-case to snake_case
 	 * 
-	 * @param str The string to transforme
+	 * @param str The string to transform
 	 * @return The transformed string
 	 */
 	public static String toSnakeCase(String str) {
 		return CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_UNDERSCORE, str);
+	}	
+	
+	// -------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * Transforms a string from kebab-case to CamelCase
+	 * 
+	 * @param str The string to transform
+	 * @return The transformed string
+	 */
+	public static String toCamelCase(String str) {
+		return CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, str);
 	}	
 }
