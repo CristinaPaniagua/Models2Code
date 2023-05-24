@@ -127,8 +127,6 @@ public class ProviderMain {
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesProvider = new ArrayList<APXInterfaceDesignDescription>();
 		ArrayList<APXInterfaceDesignDescription> serviceInterfacesConsumer = new ArrayList<APXInterfaceDesignDescription>();
 
-		ArrayList<String> dtoList = new ArrayList<String>();
-		
 		APXDeployedEntity deployedEntity = deployedEntityMap.get(ParsingUtils.toKebabCase(system));
 		ArrayList<APXInterfaceDesignDescription> serviceInterfaceList = deployedEntity.getSysDD().getIDDs();
 		String port = deployedEntity.getServerPort();
@@ -151,17 +149,15 @@ public class ProviderMain {
 		}
 		
 		// For each service that the system provides
-		for (APXInterfaceDesignDescription serviceInterface : serviceInterfacesProvider) {
+		for (APXInterfaceDesignDescription serviceInterface : serviceInterfacesProvider)
 			
 			// Generate response and request payload
 			for (APXInterfaceDesignDescription.APXServiceDescription operation : serviceInterface.getOperations())
 				GenerationUtils.buildDTO(workspace, localCloud, system, operation, "provider");
 
-			// Generate the Controller
-			providerController(serviceInterfacesProvider, system, workspace, localCloud);
-
-		}
-
+		// Generate the Controller
+		providerController(serviceInterfacesProvider, system, workspace, localCloud);
+		
 		// For each service that the system consumes
 		for (APXInterfaceDesignDescription serviceInterface : serviceInterfacesConsumer)
 			

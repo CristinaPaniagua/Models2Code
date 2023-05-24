@@ -35,7 +35,7 @@ public class ParsingSetup {
 		// Identify local clouds in workspace
 		ArrayList<String> localCloudsImplementation = new ArrayList<String>();
 		for (String project : parsing.workspace.ParsingUtils.readWorkspace(workspace, true))
-			if(project.endsWith("_ApplicationSystems"))
+			if(!project.toLowerCase().contains("systems"))
 				localCloudsImplementation.add(project);
 
 		// For each local cloud (project folder)

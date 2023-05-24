@@ -42,8 +42,10 @@ public class DefinitionParser {
 	public static APXSystemDesignDescription parseSystem(String workspace, String deployedEntityPath) {		
 		APXSystemDesignDescription systemDesignDescription = new APXSystemDesignDescription();	
 
-		// Set role of the system from the name of the folder (_Consumer || _Provider)
-		systemDesignDescription.setRole(deployedEntityPath.split("_")[1]);
+		// Set role of the system from the name of the folder (-consumer || -provider)
+		String systemRole = deployedEntityPath.split("-provider")[0].contains("-consumer") ? 
+				"consumer" : "provider";
+		systemDesignDescription.setRole(systemRole);
 
 		BufferedReader reader;
 
@@ -65,7 +67,7 @@ public class DefinitionParser {
 		}
 
 		// Build the system path
-		systemPath = workspace + "\\src\\main\\java\\eu\\arrowhead\\" + deployedEntityPath + "\\";
+		systemPath = workspace + "\\src\\main\\java\\eu\\arrowhead\\" + systemRole + "\\";
 		
 		// Set the InterfaceDesignDescription list
 		systemDesignDescription.setIDDs(parseInterface());
@@ -239,7 +241,7 @@ public class DefinitionParser {
 					if(line.contains("@") && line.contains("Mapping") && !line.contains("Request")) {
 						String nextLine = reader.readLine();
 						currentInterface = nextLine.split("public")[1].split(" ")[2].split("_")[0];
-						currentOperation = line.split("=")[1].split("\"")[1].split("/")[1];
+						currentOperation = nextLine.split("public")[1].split(" ")[2].split("_")[1];
 
 						// If the interface is registered
 						if (providerInterfaces.containsKey(currentInterface))
@@ -302,7 +304,7 @@ public class DefinitionParser {
 					if(requestType != null && !requestType.equals("String") && !requestType.equals("")) // TODO Check if "String" condition is necessary
 						// Parse the payload into a Payload object
 						operation.setRequestPayload(
-								InterfaceParsingUtils.parsePayload(operation, systemPath + operationName.substring(0, 1).toUpperCase() + operationName.substring(1) + "RequestDTO.java"));
+								InterfaceParsingUtils.parsePayload(operation, systemPath + "\\dto\\" + operationName.substring(0, 1).toUpperCase() + operationName.substring(1) + "RequestDTO.java"));
 
 					// Obtain response type of the operation
 					String responseType = providerInterfaces.get(interfaceName).get(operationName).get("responseType");
@@ -312,7 +314,7 @@ public class DefinitionParser {
 					if(responseType != null && !responseType.equals("String") && !responseType.equals(""))
 						// Parse the payload into a Payload object
 						operation.setResponsePayload(
-								InterfaceParsingUtils.parsePayload(operation, systemPath + operationName.substring(0, 1).toUpperCase() + operationName.substring(1) + "ResponseDTO.java"));
+								InterfaceParsingUtils.parsePayload(operation, systemPath + "\\dto\\" + operationName.substring(0, 1).toUpperCase() + operationName.substring(1) + "ResponseDTO.java"));
 								
 					operationList.add(operation);
 				}

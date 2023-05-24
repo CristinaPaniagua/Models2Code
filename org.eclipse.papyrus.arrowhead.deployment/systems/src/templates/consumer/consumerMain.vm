@@ -138,7 +138,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 				// Payload Generation
 			 	CBORFactory f = new CBORFactory();
 	    		ObjectMapper mapper = new ObjectMapper(f);
-	    		$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
+	    		$operation.getRequestType() request = new $operation.getRequestType()();
 				byte[] payload = mapper.writeValueAsBytes(request);
 				
 				// Service Consumption
@@ -149,7 +149,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 				// Payload Generation
 				JsonFactory jsonFactory_objMapper = new JsonFactory();
 				ObjectMapper objMapper = new ObjectMapper(jsonFactory_objMapper);
-				$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
+				$operation.getRequestType() request = new $operation.getRequestType()();
 				String payload = objMapper.writeValueAsString(request);
 				
 				// Service Consumption	
@@ -159,7 +159,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 				
 				// Payload Generation
 				ObjectMapper objMapper=new XmlMapper();
-				$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
+				$operation.getRequestType() request = new $operation.getRequestType()();
 				String payload = objMapper.writeValueAsString(request);
 				
 				// Service Consumption	
@@ -353,7 +353,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 			// Payload Generation
 		 	CBORFactory f = new CBORFactory();
     		ObjectMapper mapper = new ObjectMapper(f);
-    		$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
+    		$operation.getRequestType() request = new $operation.getRequestType()();
 			byte[] payload=mapper.writeValueAsBytes(request);
 				
 			// Service Consumption	
@@ -364,7 +364,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 			// Payload Generation
 			JsonFactory jsonFactory_objMapper = new JsonFactory();
 			ObjectMapper objMapper = new ObjectMapper(jsonFactory_objMapper);
-			$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
+			$operation.getRequestType() request = new $operation.getRequestType()();
 			String payload=objMapper.writeValueAsString(request);
 			
 			// Service Consumption	
@@ -374,7 +374,7 @@ public class ${sysName}ConsumerMain implements ApplicationRunner {
 				
 			// Payload Generation
 			ObjectMapper objMapper=new XmlMapper();
-			$operation.capitalizeService()RequestDTO request = new $operation.capitalizeService()RequestDTO();
+			$operation.getRequestType() request = new $operation.getRequestType()();
 			String payload=objMapper.writeValueAsString(request);
 			
 			// Service Consumption	

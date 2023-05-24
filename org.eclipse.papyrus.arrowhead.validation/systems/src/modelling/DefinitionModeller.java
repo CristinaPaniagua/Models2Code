@@ -75,7 +75,7 @@ public class DefinitionModeller {
 		modelSystem.setDevicedesigndesciption(null);
 		
 		// Clear the ports (interfaces) that the system implements
-		modelSystem.getBase_Class().getOwnedPorts().clear(); // TODO Check if it's necessary
+		// modelSystem.getBase_Class().getOwnedPorts().clear(); // TODO Check if it's necessary
 		
 		ArrayList<APXInterfaceDesignDescription> newInterfaceList = newSystem.getIDDs();
 		

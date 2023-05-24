@@ -297,7 +297,7 @@ public class APXInterfaceDesignDescription {
 		
 		//-------------------------------------------------------------------------------------------------
 		public String capitalizeService() {
-			return this.getName().substring(0, 1).toUpperCase() + name.substring(1, name.length());
+			return this.getName().substring(0, 1).toUpperCase() + this.getName().substring(1, name.length());
 		}
 		
 		//=================================================================================================

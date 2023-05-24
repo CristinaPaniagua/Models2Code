@@ -26,39 +26,31 @@ public class ServiceControllerHttp {
 #foreach( $interface in $interfaces )
 #set($operations=$interface.getOperations())
 	#foreach( $operation in $operations )  
-		#if($operation.getMethod() == "GET")
-			#if($operation.isResponse()==true)
+		#if($operation.getMethod() == "GET")  ## Only response type
 	@GetMapping(value="$operation.getPath()", produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
-    public $operation.capitalizeService()ResponseDTO $operation.getName() () {
+			#if($operation.getResponseType().contains("DTO"))
+    public $operation.getResponseType() $interface.getName()_$operation.getName() () {
 		// Complete with your own code
-		$operation.capitalizeService()ResponseDTO response= new $operation.capitalizeService()ResponseDTO();			
+		$operation.getResponseType() response = new $operation.getResponseType()();
+			#else
+	public String $interface.getName()_$operation.getName()() {
+		// Complete with your own code
+		String response = "";	
+			#end
 		return response;
     }
-			#else 
-	@GetMapping(value="$operation.getPath()", produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
-    public String $operation.getName() () {
-		// Complete with your own code						
-	 	String response= "";
-        return response;
-    }
-			#end
-		#else
-				#if($operation.isRequest()==true)
-    @PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$interface.getEncoding()_VALUE, produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
-	@ResponseBody public String $operation.getName() (@RequestBody final $operation.capitalizeService()RequestDTO request) {
+		#elseif($operation.getMethod() == "POST") ## Only request type (TODO Add response type)
+	@PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$interface.getEncoding()_VALUE, produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
+    		#if($operation.getRequestType().contains("DTO"))
+	@ResponseBody public String $interface.getName()_$operation.getName() (@RequestBody final $operation.getRequestType() request) {
+			#else
+	@ResponseBody public String $interface.getName()_$operation.getName() (@RequestBody final String request) {
+			#end	
 		// Complete with your own code               
        	String response= "";
     	return response;
-	}
-				#else
-   	@PostMapping(value="$operation.getPath()", consumes = MediaType.APPLICATION_$interface.getEncoding()_VALUE, produces = MediaType.APPLICATION_$interface.getEncoding()_VALUE)
-	@ResponseBody public String $operation.getName() (@RequestBody final String request) {
-		// Complete with your own code               
-    	String response= "";
-    	return response;
-	}
-				#end
-		#end    
+	} 
+		#end
 	#end   
 #end 
 }

@@ -99,77 +99,55 @@ public class PluginExecution {
 		DefinitionModeller.interfaceDescriptionStereotypeList = parsing.model.ParsingSetup.packageInterfaceDescriptionMap.
 				values().iterator().next().getAppliedStereotypes();
 		
-		parsing.workspace.ParsingSetup.parseWorkspace(workspace);
+		parsing.workspace.ParsingSetup.parseWorkspace(workspace + "\\arrowhead\\");
 		
 		System.out.println(parsing.workspace.ParsingSetup.workspaceLocalCloudList); // TODO Remove trace
-		System.out.println(parsing.model.ParsingSetup.modelLocalCloudList); // TODO Remove trace
+		// System.out.println(parsing.model.ParsingSetup.modelLocalCloudList); // TODO Remove trace
 		
 		// ************************************************************************************************ //
 		//								 	 Definition Additions Check										//
 		// ************************************************************************************************ //
 		
-		ArrayList<APXSystemDesignDescription> modelSystemList = new ArrayList<APXSystemDesignDescription>(parsing.model.ParsingSetup.modelSystemDescriptionMap.values());
-		ArrayList<APXSystemDesignDescription> workspaceSystemList = new ArrayList<APXSystemDesignDescription>(parsing.workspace.ParsingSetup.workspaceSystemDescriptionMap.values());
+		HashMap<String, APXSystemDesignDescription> modelSystemMap = parsing.model.ParsingSetup.modelSystemDescriptionMap;
+		HashMap<String, APXSystemDesignDescription> workspaceSystemMap = parsing.workspace.ParsingSetup.workspaceSystemDescriptionMap;
 		
-		ArrayList<APXInterfaceDesignDescription> modelInterfaceList = new ArrayList<APXInterfaceDesignDescription>(parsing.model.ParsingSetup.modelInterfaceDescriptionMap.values());
-		ArrayList<APXInterfaceDesignDescription> workspaceInterfaceList = new ArrayList<APXInterfaceDesignDescription>(parsing.workspace.ParsingSetup.workspaceInterfaceDescriptionMap.values());
+		HashMap<String, APXInterfaceDesignDescription> modelInterfaceMap = parsing.model.ParsingSetup.modelInterfaceDescriptionMap;
+		HashMap<String, APXInterfaceDesignDescription> workspaceInterfaceMap = parsing.workspace.ParsingSetup.workspaceInterfaceDescriptionMap;
 		
 		// Interface Design Description
-		int modelIndex = 0, workspaceIndex = 0;
-		
-		while(workspaceIndex < workspaceInterfaceList.size()) { // For each interface design description in the workspace
-			modelIndex = 0;
-			
-			// While no interface design description model has the same name
-			while(modelIndex < modelInterfaceList.size() && 
-					!modelInterfaceList.get(modelIndex).getName().equals(workspaceInterfaceList.get(workspaceIndex).getName()))
-				modelIndex++;
-
-			if(modelIndex == modelInterfaceList.size()) { // If the workspace interface is not in the model
+		for (String interfaceName : workspaceInterfaceMap.keySet()){ // For each interface design description in the workspace
+			if(modelInterfaceMap.get(interfaceName) == null) // If the workspace interface is not in the model
 				// Create a packageable element from the workspace object
 				parsing.model.ParsingSetup.packageInterfaceDescriptionMap.put(
-						workspaceInterfaceList.get(workspaceIndex).getName(),
-						DefinitionModeller.addInterfaceDesignDescription(workspaceInterfaceList.get(workspaceIndex), (Model) objectModel));
+						interfaceName,
+						DefinitionModeller.addInterfaceDesignDescription(workspaceInterfaceMap.get(interfaceName), (Model) objectModel));
 				
-				APXInterfaceDesignDescription newInterface = workspaceInterfaceList.get(workspaceIndex);
+				APXInterfaceDesignDescription newInterface = workspaceInterfaceMap.get(interfaceName);
 				
 				// Save the workspace Interface Design Description object
-				modelInterfaceList.add(newInterface);
+				modelInterfaceMap.put(interfaceName, newInterface);
 				parsing.model.ParsingSetup.modelInterfaceDescriptionMap.put(newInterface.getName(), newInterface);
 			}
-				
-			workspaceIndex++;
-		}
 		
 		// System Design Description
-		modelIndex = 0; workspaceIndex = 0;
-		
-		while(workspaceIndex < workspaceSystemList.size()) { // For each system design description in the workspace
-			modelIndex = 0;
-			
-			// While no system design description model has the same name
-			while(modelIndex < modelSystemList.size() && 
-					!modelSystemList.get(modelIndex).getName().equals(workspaceSystemList.get(workspaceIndex).getName()))
-				modelIndex++;
-
-			if(modelIndex == modelSystemList.size()) { // If the workspace system is not in the model
+		for(String systemName : workspaceSystemMap.keySet()) { // For each system design description in the workspace
+			if(modelSystemMap.get(systemName) == null) { // If the workspace system is not in the model
 				// Create a packageable element from the workspace object
 				parsing.model.ParsingSetup.packageSystemDescriptionMap.put(
-						workspaceSystemList.get(workspaceIndex).getName(),
-						DefinitionModeller.addSystemDesignDescription(workspaceSystemList.get(workspaceIndex), (Model) objectModel));
+						systemName,
+						DefinitionModeller.addSystemDesignDescription(workspaceSystemMap.get(systemName), (Model) objectModel));
 				
-				APXSystemDesignDescription newSystem = workspaceSystemList.get(workspaceIndex);
+				APXSystemDesignDescription newSystem = workspaceSystemMap.get(systemName);
 				
 				// Save the workspace System Design Description object
-				modelSystemList.add(newSystem);
+				modelSystemMap.put(systemName, newSystem);
 				parsing.model.ParsingSetup.modelSystemDescriptionMap.put(newSystem.getName(), newSystem);
 			}
 				
-			workspaceIndex++;
 		}
 		
 		// Local Cloud
-		modelIndex = 0; workspaceIndex = 0;
+		int modelIndex = 0; int workspaceIndex = 0;
 		
 		while(workspaceIndex < parsing.workspace.ParsingSetup.workspaceLocalCloudList.size()) { // For each local cloud design description in the workspace
 			modelIndex = 0;
@@ -210,18 +188,18 @@ public class PluginExecution {
 			
 			// Order model and workspace deployed entity list
 			comparator = new APXDeployedEntity.DeployedEntityComparator();
-			modelLocalCloud.getDeployedEntities().sort(comparator);
-			workspaceLocalCloud.getDeployedEntities().sort(comparator);
-
-			for(APXDeployedEntity workspaceEntity : workspaceLocalCloud.getDeployedEntities()) { // For each deployed entity in the workspace
+			
+			for(String entityName : workspaceLocalCloud.getDeployedEntities().keySet()) { // For each deployed entity in the workspace
+				APXDeployedEntity workspaceEntity = workspaceLocalCloud.getDeployedEntities().get(entityName);
+				
 				// If the deployed entity is not in the model
-				if(!modelLocalCloud.getDeployedEntities().contains(workspaceEntity))
+				if(modelLocalCloud.getDeployedEntities().get(entityName) == null)
 					// Add the deployed entity
 					PhysicalModeller.addDeployedEntity(workspaceEntity, (Model) objectModel);
 				
 				else {
 					// Check the basic attributes of the deployed entity
-					APXDeployedEntity modelEntity = modelLocalCloud.getDeployedEntities().get(modelLocalCloud.getDeployedEntities().indexOf(workspaceEntity));
+					APXDeployedEntity modelEntity = modelLocalCloud.getDeployedEntities().get(entityName);
 					if(modelEntity.checkConsistency(workspaceEntity))
 						PhysicalModeller.updateInternalDeployedEntity(workspaceEntity, null); // TODO Update basic elements of block
 					
