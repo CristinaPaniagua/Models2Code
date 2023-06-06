@@ -2,17 +2,13 @@ package parsing.workspace;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 
 import com.google.common.base.CaseFormat;
-
-import dto.APXLocalCloudDesignDescription;
 
 /**
  * This class offers a set of utils for the reading of files and folders.

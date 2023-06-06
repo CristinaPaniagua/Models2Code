@@ -1,27 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package generator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import dto.APXInterfaceDesignDescription;
 import parsing.workspace.ParsingUtils;
 import utils.CodgenUtil;
-import utils.ExecutionUtils;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.lang.model.element.Modifier;
-import java.lang.reflect.Type;
 
 /**
  *

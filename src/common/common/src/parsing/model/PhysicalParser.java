@@ -2,7 +2,6 @@ package parsing.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.DeployedEntity;
@@ -88,22 +87,21 @@ public class PhysicalParser {
 				connector.setService(role.getType().getName()); // Service provided by the system
 				
 				String connectorName = parsing.workspace.ParsingUtils.toKebabCase(end.getPartWithPort().getName()); // Name of the system
-				String connectorAddress = deployedEntities.get(connectorName).getServerAddress();
-				String connectorPort = deployedEntities.get(connectorName).getServerPort();
+				String connectorAddress = deployedEntities.get(connectorName).getServerAddress(); // Address of the system
+				String connectorPort = deployedEntities.get(connectorName).getServerPort(); // Port of the system
 				
-				if(((Port) role).isConjugated()) {
+				if(((Port) role).isConjugated()) { // If the system is consumer
 					connector.setConsumerName(connectorName);
 					connector.setConsumerAddress(connectorAddress);
 					connector.setConsumerPort(connectorPort);
-				} else {
+				} else { // If the system is provider
 					connector.setProviderName(connectorName);
 					connector.setProviderAddress(connectorAddress);
 					connector.setProviderPort(connectorPort);
 				}
 			}
 			
-			
-			String connectionName = connector.getProviderName() + ":" + connector.getConsumerName();
+			String connectionName = connector.getProviderName() + ":" + connector.getConsumerName(); // name-provider:name-consumer
 			if(localCloud.getConnectors().get(connectionName) == null) 
 				localCloud.getConnectors().put(connectionName, new ArrayList<APXConnector>());
 			

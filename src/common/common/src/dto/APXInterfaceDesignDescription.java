@@ -25,7 +25,6 @@ public class APXInterfaceDesignDescription {
 	private ArrayList<APXServiceDescription> operations; // List of operations that the interface serves
 	
 	// Legacy
-	
 	private String url; // URL Path of the interface
 	
 	

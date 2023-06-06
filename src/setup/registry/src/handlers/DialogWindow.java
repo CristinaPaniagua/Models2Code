@@ -1,13 +1,7 @@
 package handlers;
 
-import java.io.File;
-import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -15,19 +9,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import dto.APXLocalCloudDesignDescription;
-
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 
 /**
@@ -175,29 +159,13 @@ public class DialogWindow extends TitleAreaDialog {
 	// auxiliary methods
 
 	// -------------------------------------------------------------------------------------------------
-	DialogWindow(Shell parentShell) {
-		super(parentShell);
-	}
+	DialogWindow(Shell parentShell) { super(parentShell); }
 
 	// -------------------------------------------------------------------------------------------------
-	public static String getUser() {
-		return user;
-	}
-
-	public static String getHost() {
-		return host;
-	}
-
-	public static String getPassword() {
-		return password;
-	}
-
-	public static String getRootUser() {
-		return rootUser;
-	}
-
-	public static String getRootPassword() {
-		return rootPassword;
-	}
+	public static String getUser() { return user; }
+	public static String getHost() { return host; }
+	public static String getPassword() { return password; }
+	public static String getRootUser() { return rootUser; }
+	public static String getRootPassword() { return rootPassword; }
 
 }

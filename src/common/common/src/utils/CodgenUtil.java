@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Properties;
 import java.util.ServiceConfigurationError;
-import javax.net.ssl.HostnameVerifier;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;

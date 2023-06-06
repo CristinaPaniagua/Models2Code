@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Registry
+Bundle-Name: System Model-Database Validation
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.validation.registry;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Import-Package: org.apache.commons.io,

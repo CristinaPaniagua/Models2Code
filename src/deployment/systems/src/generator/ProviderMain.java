@@ -17,7 +17,6 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import parsing.workspace.ParsingUtils;
-import utils.ExecutionUtils;
 
 /**
  * 

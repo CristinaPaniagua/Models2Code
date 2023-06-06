@@ -2,7 +2,8 @@
 <feature
       id="org.eclipse.papyrus.arrowhead.common.feature"
       label="Arrowhead Papyrus Common Utilities"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="ltu">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,9 +17,12 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="org.eclipse.papyrus.arrowhead.profile.feature"
-         version="0.0.0"/>
+   <plugin
+         id="org.eclipse.papyrus.arrowhead.profile"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.papyrus.arrowhead.common"

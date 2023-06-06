@@ -24,11 +24,25 @@ import utils.CodgenUtil;
 
 import java.sql.*;
 
+/**
+ * 
+ * The class checks the Java/Maven/MySQL requirements and creates an empty Arrowhead database and user
+ * 
+ * @author fernand0labra
+ *
+ */
 public class DatabaseDeployment {
-
+	
+	// =================================================================================================
+	// attributes
+	
 	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
 	private String workspace = configuration.getProperty("workspace");
+	
+	// =================================================================================================
+	// methods
 
+	// -------------------------------------------------------------------------------------------------
 	@Execute
 	public void execute(Shell shell) throws Exception {
 		MessageBox messageBox = null;

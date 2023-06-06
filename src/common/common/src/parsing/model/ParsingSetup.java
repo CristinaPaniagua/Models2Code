@@ -1,8 +1,6 @@
 package parsing.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.EList;
@@ -38,6 +36,19 @@ public class ParsingSetup {
 	public static HashMap<String, PackageableElement> packageSystemDescriptionMap = new HashMap<String, PackageableElement>();
 	public static HashMap<String, PackageableElement> packageInterfaceDescriptionMap = new HashMap<String, PackageableElement>();
 	
+	
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * A method that parses the UML model to the structure offered by the plugins
+	 * 
+	 * @param modelPath The path to the UML model
+	 * @return The tree object of the UML model
+	 * @throws Exception If the .uml file does not follow the modelling convention
+	 */
 	public static Object parseModel(String modelPath) throws Exception{
 		modelLocalCloudMap.clear();
 		modelSystemDescriptionMap.clear();

@@ -1,0 +1,11 @@
+dialog
+dto
+generator
+handlers
+modelling
+org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile
+org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.impl
+org.eclipse.papyrus.arrowhead.profile.arrowheadsysmlprofile.util
+parsing.model
+parsing.workspace
+utils

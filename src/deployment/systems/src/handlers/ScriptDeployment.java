@@ -5,10 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -16,10 +14,8 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 import dialog.ProjectSelectWindow;
-import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import dto.APXLocalCloudDesignDescription;
 import generator.ApplicationProperties;
@@ -125,6 +121,7 @@ public class ScriptDeployment {
 					Thread.currentThread().setContextClassLoader(ScriptDeployment.class.getClassLoader());
 
 					if (!(directory == null || directory.isEmpty())) {
+						
 						// Initialise Velocity Engine
 						VelocityEngine velocityEngine = new VelocityEngine();
 						velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -164,7 +161,47 @@ public class ScriptDeployment {
 						contextpom.put("modules", modules);
 						
 						String scriptPath = "";
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\"));						
+						
+						// Generation of the temporal folder
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\"));	
+						
+						// Generation of the consumer resources folder
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\java\\eu\\arrowhead\\"));
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\certificates\\"));
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\META-INF\\"));
+						
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/consumer/.classpath"), 
+								new File(workspace + "\\.temp\\resources\\consumer\\.classpath"));
+						
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/consumer/src/main/resources/info.txt"), 
+								new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\info.txt"));
+
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/consumer/src/main/resources/META-INF/additional-spring-configuration-metadata.json"), 
+								new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\META-INF\\additional-spring-configuration-metadata.json"));
+						
+						// Generation of the provider resources folder
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\provider\\src\\main\\java\\eu\\arrowhead\\"));
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\certificates\\"));
+						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\META-INF\\"));
+
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/provider/.classpath"), 
+								new File(workspace + "\\.temp\\resources\\provider\\.classpath"));
+						
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/provider/.springBeans"), 
+								new File(workspace + "\\.temp\\resources\\provider\\.springBeans"));
+						
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/provider/src/main/resources/info.txt"), 
+								new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\info.txt"));
+						
+						FileUtils.copyURLToFile(
+								this.getClass().getResource("/resources/provider/src/main/resources/META-INF/additional-spring-configuration-metadata.json"), 
+								new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\META-INF\\additional-spring-configuration-metadata.json"));
 						
 						try {
 

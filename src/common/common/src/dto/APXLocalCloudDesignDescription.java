@@ -44,12 +44,7 @@ public class APXLocalCloudDesignDescription {
 		for (APXDeployedEntity entity : deployedEntities.values())
 			deployedEntitiesString += entity.toString();
 		
-		String connectorsString = "";
-		for (ArrayList<APXConnector> connectorList : connectors.values())
-			for (APXConnector connector : connectorList)
-				connectorsString += connector.toString();
-		
-		return name + "\n" + connectorsString +"\n" + deployedEntitiesString;
+		return name + "\n" + deployedEntitiesString;
 	}
 	
 	//-------------------------------------------------------------------------------------------------

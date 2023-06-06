@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.papyrus.arrowhead.consistency.feature"
-      label="Arrowhead Papyrus Consistency Utilities"
+      id="org.eclipse.papyrus.arrowhead.validation.feature"
+      label="Arrowhead Papyrus Validation Utilities"
       version="1.0.0.qualifier"
       provider-name="ltu">
 
@@ -18,7 +18,14 @@
    </license>
 
    <plugin
-         id="org.eclipse.papyrus.arrowhead.consistency.systems"
+         id="org.eclipse.papyrus.arrowhead.validation.registry"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.papyrus.arrowhead.validation.systems"
          download-size="0"
          install-size="0"
          version="0.0.0"

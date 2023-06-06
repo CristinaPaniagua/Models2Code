@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.papyrus.arrowhead.profile.feature_1.0.0.202305040922.jar" id="org.eclipse.papyrus.arrowhead.profile.feature" version="1.0.0.202305040922"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.common.feature_1.0.0.202306061827.jar" id="org.eclipse.papyrus.arrowhead.common.feature" version="1.0.0.202306061827"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.deployment.feature_1.0.0.202306061827.jar" id="org.eclipse.papyrus.arrowhead.deployment.feature" version="1.0.0.202306061827"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.setup.feature_1.0.0.202306061827.jar" id="org.eclipse.papyrus.arrowhead.setup.feature" version="1.0.0.202306061827"/>
+   <feature url="features/org.eclipse.papyrus.arrowhead.validation.feature_1.0.0.202306061827.jar" id="org.eclipse.papyrus.arrowhead.validation.feature" version="1.0.0.202306061827"/>
 </site>

@@ -1,6 +1,5 @@
 package handlers;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -17,24 +15,17 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
-import dialog.ModelSelectWindow;
 import dialog.ProjectSelectWindow;
-import dto.APXDeployedEntity;
 import dto.APXInterfaceDesignDescription;
 import dto.APXLocalCloudDesignDescription;
 import parsing.model.ParsingSetup;
 import parsing.workspace.ParsingUtils;
 import utils.CodgenUtil;
-import utils.ExecutionUtils;
 
 /**
  * 
@@ -51,7 +42,6 @@ public class ScriptDeployment {
 	protected static Shell shell;
 	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
 	
-	private Text Directory; // TODO Not Used
 	private String directory = "";
 	private String policyType = "";
 	private String disk = ""; // TODO Not Used
@@ -123,13 +113,14 @@ public class ScriptDeployment {
 						velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 						velocityEngine.init();
 
-						// { providerName: [serviceName, providerName, providerUrl] }
+						// { operationName-providerName: [serviceName, providerName, providerUrl] }
 						HashMap<String, String[]> serviceMap = new HashMap<String, String[]>();
 						HashSet<String> interfaceNameList = new HashSet<String>();
 						
+						// For each connection save the provided interfaces/services
 						for(Entry<String, ArrayList<APXLocalCloudDesignDescription.APXConnector>> connector : localCloud.getConnectors().entrySet()) {
 							String providerName = ParsingUtils.toKebabCase(connector.getKey().split(":")[0]);
-							String interfaceName = connector.getValue().get(0).getService();
+							String interfaceName = connector.getValue().get(0).getService(); // Get provided service
 							
 							for(APXInterfaceDesignDescription.APXServiceDescription operation : ParsingSetup.modelInterfaceDescriptionMap.get(interfaceName).getOperations()) {
 								String[] service = {
@@ -140,10 +131,10 @@ public class ScriptDeployment {
 								serviceMap.put(operation.getName() + "-" + providerName, service);
 							}
 							
-							interfaceNameList.add(interfaceName);
+							interfaceNameList.add(interfaceName); // The HashSet allows no repetition of interfaces
 						}
 						
-						// Consumer DB Registry Generation
+						// System Registry SQL Script Generation
 						if (policyType.equalsIgnoreCase("System-Service Registry")) {							
 							// { systemName: [systemName, address, port] }
 							HashMap<String, String[]> consumerMap = new HashMap<String, String[]>();
@@ -190,10 +181,11 @@ public class ScriptDeployment {
 								e.printStackTrace();
 							}
 							
-						} else {
+						} else { // Policy Rule SQL Script Generation
 							HashSet<String[]> connections = new HashSet<String[]>(); // [serviceName, providerName, consumerName, priority]
 							HashMap<String, Integer> priorities = new HashMap<String, Integer>();
 							
+							// For each connector build a connection between provider and consumer
 							for (ArrayList<APXLocalCloudDesignDescription.APXConnector> connectorList : localCloud.getConnectors().values())
 								for (APXLocalCloudDesignDescription.APXConnector connector : connectorList) {
 									
@@ -205,6 +197,7 @@ public class ScriptDeployment {
 									while(index < serviceProviderArray.length && !serviceProviderArray[index].contains("-" + consumerName))
 										index++;
 									
+									// If a the list of providers contains the system's name it is a provider, else a consumer
 									String providerConsumer = index < serviceProviderArray.length ? "-provider" : "-consumer";
 									
 									String providerName = connector.getProviderName();
@@ -219,7 +212,7 @@ public class ScriptDeployment {
 									priorities.put(connector.getService(), priority+1);
 								}
 							
-							// Orchestration DB Rule Generation
+							// Orchestration Rule SQL Script Generation
 							if (policyType.equalsIgnoreCase("orchestration")) {
 								
 								Template t = velocityEngine.getTemplate("templates/orchstore.vm");
@@ -236,7 +229,7 @@ public class ScriptDeployment {
 								}
 							} 
 							
-							// Security DB Rule Generation
+							// Security Rule SQL Script Generation
 							else if(policyType.equalsIgnoreCase("security")){ 
 	
 								Template t = velocityEngine.getTemplate("templates/security.vm");

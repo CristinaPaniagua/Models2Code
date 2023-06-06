@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.papyrus.arrowhead.setup.feature"
-      label="Core System Setup Plugin"
-      version="1.0.0.qualifier">
+      label="Arrowhead Papyrus Setup Utilities"
+      version="1.0.0.qualifier"
+      provider-name="ltu">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

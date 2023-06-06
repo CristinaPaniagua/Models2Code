@@ -176,8 +176,6 @@ public class ScriptDeployment {
 						} else
 							ExecutionUtils.executesh(workspace + "\\.temp\\", "init");
 
-						FileUtils.forceDelete(new File(workspace + "\\.temp\\"));
-						
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (InterruptedException e) {

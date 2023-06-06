@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Systems Code-Model Consistency
+Bundle-Name: Systems Code-Model Validation
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.validation.systems;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: handlers

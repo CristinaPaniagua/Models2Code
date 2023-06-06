@@ -1,6 +1,5 @@
 package handlers;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;

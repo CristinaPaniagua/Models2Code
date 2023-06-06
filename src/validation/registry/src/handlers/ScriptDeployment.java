@@ -1,60 +1,49 @@
 package handlers;
 
 import java.io.File;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 import org.eclipse.jface.window.Window;
 
 import dialog.ProjectSelectWindow;
 import dto.APXDeployedEntity;
 import dto.APXLocalCloudDesignDescription;
-import dto.APXSystemDesignDescription;
 import parsing.workspace.ParsingUtils;
-import utils.CodgenUtil;
-import utils.ExecutionUtils;
 
+/**
+ * Generation and Execution of Scripts
+ * 
+ * @author fernand0labra
+ *
+ */
 public class ScriptDeployment {
 
-	private static Properties configuration = CodgenUtil.getProperties("WorkSpaceConfiguration");
-	private String workspace = configuration.getProperty("workspace");
-
+	// =================================================================================================
+	// attributes
+	
 	@Execute
 	public void execute(Shell shell) throws Exception {
 		IProject[] projects= ParsingUtils.readWorkspace(); // Read projects from workspace
@@ -78,13 +67,16 @@ public class ScriptDeployment {
 			
 		}
 		
-		parsing.model.ParsingSetup.parseModel(modelPath);
+		parsing.model.ParsingSetup.parseModel(modelPath); // Parse UML model
 		System.out.println(parsing.model.ParsingSetup.modelSystemDescriptionMap);
 		
-		ArrayList<String> databaseSystems = new ArrayList<String>();
+		ArrayList<String> databaseSystems = new ArrayList<String>(); // Registered DB Systems
 		
 		try {
+			// Connect to the database
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/arrowhead", "arrowhead", "");
+			
+			// Select systems from system_ table
 			Statement stmt  = conn.createStatement();
 			ResultSet result = stmt.executeQuery("SELECT * FROM arrowhead.system_;");
 
@@ -99,10 +91,15 @@ public class ScriptDeployment {
 		
 		ArrayList<String> localClouds = new ArrayList<String>();
 		ArrayList<String> nonSavedSystems = new ArrayList<String>();
-		HashMap<String, String> deployedEntityID = new HashMap<String, String>();
 		
+		// UML Model Deployed Entity Identifier
+		HashMap<String, String> deployedEntityID = new HashMap<String, String>(); 
+		
+		// For each local cloud in the UML model
 		for(APXLocalCloudDesignDescription localCloud : parsing.model.ParsingSetup.modelLocalCloudMap.values()) {
 			localClouds.add(localCloud.getName());
+			
+			// For each deployed entity in the UML model
 			for(APXDeployedEntity deployedEntity : localCloud.getDeployedEntities().values()) {
 				String deployedEntityKebab = ParsingUtils.toKebabCase(deployedEntity.getName());
 				
@@ -110,20 +107,23 @@ public class ScriptDeployment {
 				while(index < databaseSystems.size() && !databaseSystems.get(index).contains(deployedEntityKebab))
 					index ++;
 				
-				if(index == databaseSystems.size())
+				// Add the deployed entity if it's not registered in the database
+				if(index == databaseSystems.size()) 
 					nonSavedSystems.add(deployedEntity.getName());
 			}
 		}
 
+		// Build XML Document Reader
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 		documentBuilderFactory.setNamespaceAware(true);
 		
+		// Parse XML Document (UML Model)
 		Document model = builder.parse(new InputSource(modelPath));
 		Node child = model.getDocumentElement().getFirstChild().getNextSibling();
 		child = child.getFirstChild();
 		
-		while(child.getNextSibling() != null) {
+		while(child.getNextSibling() != null) { // Iterate over XML nodes
 			child = child.getNextSibling();
 			
 			if(child.getNodeName().equals("#text")) // Skip text nodes
@@ -140,6 +140,7 @@ public class ScriptDeployment {
 			Node aggregation = child.getAttributes().getNamedItem("aggregation");
 			
 			if(aggregation != null)
+				// If we have found the deployed entity tag
 				if(aggregation.getNodeValue().equals("shared"))
 					deployedEntityID.put( // Save the system identifier
 							child.getAttributes().getNamedItem("name").getNodeValue(), 
@@ -150,23 +151,26 @@ public class ScriptDeployment {
 		// ############################################################################################################
 		
 		
+		// Parse XML Document (UML Notation)
 		String notationPath = modelPath.split(".uml")[0] + ".notation";
 		Document notation = builder.parse(new InputSource(notationPath));
 		
 		child = notation.getDocumentElement().getFirstChild();
 		ArrayList<Node> compositeStructures = new ArrayList<Node>(); // Local Clouds
 		
-		while(child.getNextSibling() != null) {
+		while(child.getNextSibling() != null) { // Iterate over XML nodes
 			child = child.getNextSibling();
 			
 			if(child.getNodeName().equals("#text")) // Skip text nodes
 				continue;
 			
 			if(child.getAttributes().getNamedItem("type") != null)
+				// If we have found the local cloud tag
 				if(child.getAttributes().getNamedItem("type").getNodeValue().equals("CompositeStructure"))
 					compositeStructures.add(child);
 		}
 
+		// UML Notation Deployed Entity Identifier
 		HashMap<String, Node> classShapeID = new HashMap<String, Node>();
 		
 		for(Node compositeStructure : compositeStructures) { // For each local cloud
@@ -174,7 +178,7 @@ public class ScriptDeployment {
 			
 			Node propertyNode = null;
 			
-			while(child.getNextSibling() != null) {
+			while(child.getNextSibling() != null) { // Iterate over XML nodes
 				child = child.getNextSibling();
 				
 				if(child.getNodeName().equals("#text"))
@@ -183,36 +187,45 @@ public class ScriptDeployment {
 				if(child.getAttributes().getNamedItem("type") != null) {
 					String type = child.getAttributes().getNamedItem("type").getNodeValue();
 					
+					// If we have found the local cloud parent
 					if(type.equals("Class_StructureCompartment") || type.equals("Class_Shape"))
 						child = child.getFirstChild();
 					
+					// If we have found the deployed entity parent
 					else if(type.equals("Property_Shape")) {
 						propertyNode = child;
 						child = child.getFirstChild();
 					}
 				}
 				
+				// If we have found a deployed entity
 				else if(child.getAttributes().getNamedItem("xmi:type") != null && child.getAttributes().getNamedItem("href") != null) {
 					String xmiType = child.getAttributes().getNamedItem("xmi:type").getNodeValue();
 					String[] href = child.getAttributes().getNamedItem("href").getNodeValue().split("#");
 				
-					if(xmiType.equals("uml:Property") && localClouds.contains(href[0].split(".uml")[0])) {
-						classShapeID.put(href[1], propertyNode);
-						child = child.getParentNode().getNextSibling();
+					// If the local cloud is registered in the UML model
+					if(xmiType.equals("uml:Property") && localClouds.contains(href[0].split(".uml")[0])) { // example-cloud.uml#ID
+						classShapeID.put(href[1], propertyNode); // Save the UML Notation ID
+						child = child.getParentNode().getNextSibling(); // Continue to the next deployed entity
 					}
 				}
 			}	
 		}
 
-		for(String deployedEntity : deployedEntityID.keySet())
-			((Element)classShapeID.get(deployedEntityID.get(deployedEntity))).setAttribute("fillColor", // "13420443"); // Default
+		for(String deployedEntity : deployedEntityID.keySet()) // For each deployed entity in the UML Model
+			// Set color to red if not registered in the database, else set color to green
+			
+			// Color == Attribute in Notation XML node
+			// deployedEntity == Name in UML Model Node
+			
+			((Element)classShapeID.get(deployedEntityID.get(deployedEntity))).setAttribute("fillColor",
 					nonSavedSystems.contains(deployedEntity) ? "10265827" : "10011046");
 		
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		Result output = new StreamResult(new File(notationPath));
 		Source input = new DOMSource(notation);
 		
-		transformer.transform(input, output);
+		transformer.transform(input, output); // Save Notation XML file
 	}
 	
 }
