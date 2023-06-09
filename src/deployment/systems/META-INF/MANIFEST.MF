@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Arrowhead Papyrus Systems Deployment
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.deployment.systems;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: handlers
+Export-Package: deployment.systems.handlers
 Require-Bundle: org.eclipse.ui.browser;bundle-version="3.7.100",
  org.eclipse.ui.cheatsheets;bundle-version="3.7.300",
  org.eclipse.ui.console;bundle-version="3.11.100",
@@ -38,7 +38,8 @@ Bundle-ClassPath: .,
  lib/jackson-dataformat-smile-2.11.0.jar,
  lib/jackson-dataformat-xml-2.9.8.jar,
  lib/jackson-datatype-jsr310-2.12.3.jar,
- lib/jackson-jaxrs-json-provider-2.9.7.jar
+ lib/jackson-jaxrs-json-provider-2.9.7.jar,
+ bin/
 Import-Package: org.apache.commons.io,
  org.eclipse.core.resources,
  org.eclipse.core.runtime;version="3.7.0"

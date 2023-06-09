@@ -16,7 +16,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="handlers.Generation"
+            class="deployment.policies.handlers.Generation"
             commandId="org.eclipse.papyrus.arrowhead.deployment.policies.command">
       </handler>
    </extension>

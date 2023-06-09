@@ -30,7 +30,8 @@ Bundle-ClassPath: lib/commons-lang3-3.1.jar,
  lib/swing2swt.jar,
  lib/velocity-engine-core-2.3.jar,
  .,
- lib/mysql-connector-j-8.0.31.jar
+ lib/mysql-connector-j-8.0.31.jar,
+ bin/
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: .,
  com.mysql.jdbc,
@@ -41,8 +42,16 @@ Export-Package: .,
    javax.lang.model.type,
    javax.annotation.processing,
    javax.lang.model.element",
- dialog,
- dto,
+ common.dialog,
+ common.dto,
+ common.parsing.model;uses:="org.eclipse.uml2.uml,dto",
+ common.parsing.workspace;
+  uses:="com.squareup.javapoet,
+   org.eclipse.uml2.uml,
+   org.eclipse.swt.widgets,
+   org.eclipse.jface.dialogs,
+   org.eclipse.core.resources",
+ common.utils,
  org.apache.velocity;uses:="org.apache.velocity.context,org.apache.velocity.runtime.resource",
  org.apache.velocity.app;
   uses:="org.apache.velocity.runtime,
@@ -79,12 +88,4 @@ Export-Package: .,
    org.eclipse.emf.common.notify.impl,
    org.eclipse.emf.ecore.resource,
    org.eclipse.emf.ecore.util",
- parsing.model;uses:="org.eclipse.uml2.uml,dto",
- parsing.workspace;
-  uses:="com.squareup.javapoet,
-   org.eclipse.uml2.uml,
-   org.eclipse.swt.widgets,
-   org.eclipse.jface.dialogs,
-   org.eclipse.core.resources",
- swing2swt.layout;uses:="org.eclipse.swt.graphics,org.eclipse.swt.widgets",
- utils
+ swing2swt.layout;uses:="org.eclipse.swt.graphics,org.eclipse.swt.widgets"

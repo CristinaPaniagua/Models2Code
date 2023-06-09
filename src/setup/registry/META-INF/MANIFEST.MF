@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Arrowhead Papyrus Database Setup
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.setup.registry;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: handlers
+Export-Package: setup.registry.handlers
 Import-Package: org.apache.commons.io,
  org.eclipse.core.commands,
  org.eclipse.core.resources,
@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.papyrus.arrowhead.common;bundle-version="1.0.0"
 Automatic-Module-Name: org.eclipse.papyrus.arrowhead.deployment.registry
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/mysql-connector-j-8.0.31.jar
+ lib/mysql-connector-j-8.0.31.jar,
+ bin/
 Bundle-RequiredExecutionEnvironment: JavaSE-11

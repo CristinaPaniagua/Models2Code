@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Arrowhead Papyrus Policies Deployment
 Bundle-SymbolicName: org.eclipse.papyrus.arrowhead.deployment.policies;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: handlers;
+Export-Package: deployment.policies.handlers;
   uses:="org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs,
    org.eclipse.core.resources,
@@ -21,4 +21,5 @@ Require-Bundle: org.eclipse.papyrus.arrowhead.common;bundle-version="1.0.0"
 Automatic-Module-Name: eu.arrowhead.policies.deployment
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ bin/

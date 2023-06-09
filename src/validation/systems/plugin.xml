@@ -16,7 +16,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="handlers.PluginDeployment"
+            class="validation.systems.handlers.PluginDeployment"
             commandId="org.eclipse.papyrus.arrowhead.validation.systems.command">
       </handler>
    </extension>

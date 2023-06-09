@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.papyrus.arrowhead.common.feature_1.0.0.202306090928.jar" id="org.eclipse.papyrus.arrowhead.common.feature" version="1.0.0.202306090928">
+      <category name="requirements"/>
+   </feature>
+   <feature url="features/org.eclipse.papyrus.arrowhead.deployment.feature_1.0.0.202306090928.jar" id="org.eclipse.papyrus.arrowhead.deployment.feature" version="1.0.0.202306090928">
+      <category name="installation"/>
+   </feature>
+   <feature url="features/org.eclipse.papyrus.arrowhead.setup.feature_1.0.0.202306090928.jar" id="org.eclipse.papyrus.arrowhead.setup.feature" version="1.0.0.202306090928">
+      <category name="installation"/>
+   </feature>
+   <feature url="features/org.eclipse.papyrus.arrowhead.validation.feature_1.0.0.202306090928.jar" id="org.eclipse.papyrus.arrowhead.validation.feature" version="1.0.0.202306090928">
+      <category name="installation"/>
+   </feature>
+   <category-def name="requirements" label="Step 1 - Utility Requirements">
+      <description>
+         Library requirements necessary for utilities&apos; installation and execution.
+      </description>
+   </category-def>
+   <category-def name="installation" label="Step 2 - Utilities Installation">
+      <description>
+         Utilities&apos; code libraries.
+      </description>
+   </category-def>
+</site>
