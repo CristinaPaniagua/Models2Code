@@ -15,6 +15,7 @@ The [Arrowhead Framework](https://github.com/eclipse-arrowhead) is addressing Io
 [Eclipse Papyrus](https://www.eclipse.org/papyrus/) is an open-source Model-Based Engineering tool that enables model-based techniques such as simulation, formal testing, safety analysis, performance/trade-offs analysis, and architecture exploration. It is a Domain Specific Language (DSL) platform based on the Unified Modeling Language (UML) and aims to implement the complete UML specification..
 
 ## Pre-Release Utilities
+### Installation
 This plugin offers a set of utilities for the systems' engineering automation of the **setup, deployment and validation** with the modeling help of Papyrus. The installation can be performed through Eclipse by selecting the released zip file of the plugin site in:
 * Help -> Install New Software -> Add -> Archive
 
@@ -24,6 +25,11 @@ In the image below we can see that two plugin categories are offered. The instal
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5e2088c4-316c-4b0a-9a41-b59bef3116c3">
 </p>
 
+Once everything is installed the upgraded workspace user interface should have a new menu *Arrowhead* containing **Setup, Deployment & Validation** tags for the execution of the plugins as seen in the image below.
+
+<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/12077c7e-6534-4cdd-8618-d56d7daa3e35" width="348" height="76"/>
+<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/3ab4db6a-ca66-41e0-8648-3238913961b8" width="281" height="78"/>
+<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0225a7d9-0297-466d-af82-5fc809dd86b9" width="352" height="92"/>
 
 ### UML/SysML Model
 The release includes a UML model example of a distributed local cloud system. It is compound by a set of sensors, terminals, a middleware collector and a database. There are two interfaces offered *DataService* and *ConfigurationService* for respectively the obtention and update of data from sensor/database in different elements of the system and configuring the sampling ratio of the sensors.
@@ -39,14 +45,11 @@ In the left view we can see a high level description of the Local Clouds, System
 The requirements plugin includes the common libraries shared by the plugins, the [Arrowhead Papyrus Profile (APP)](https://github.com/eclipse-arrowhead/profile-library-sysml/) for the UML/SysML modeling with Papyrus Eclipse, a common API for parsing the UML model and the generated code into APX (approximate) objects of the APP stereotype implementations, the APX class definitions and other utilities for e.g. script execution in different OS.
 
 ### Setup Plugins
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/f374ae9b-2735-49af-91ab-572887abc888" width="20" height="20"/>
 
 #### Service Registry
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/4de13128-6144-469c-9bb5-29cdd46ea93e" width="20" height="20"/>
 
 ### Deployment Plugins
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/52e4c6a8-6b61-4681-a222-8c5e00d65fd3" width="20" height="20"/>
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/c0e9e4f1-4fb0-455a-a2be-390396d78b1d" width="20" height="20"/>
 
 #### Local Cloud Core Systems
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/48982fdd-03d2-474c-a1c5-5701c81bbfa5" width="20" height="20"/>
@@ -59,7 +62,6 @@ The requirements plugin includes the common libraries shared by the plugins, the
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/73045a60-429f-4a1d-870f-32d5e8050a17" width="20" height="20"/>
 
 ### Validation Plugins
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/79cff281-e52d-4824-9209-ae42c980c517" width="20" height="20"/>
 
 #### Database Validation
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/e1bd2556-8e0e-4b41-b0d3-0efc56432600" width="20" height="20"/>
