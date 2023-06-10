@@ -18,8 +18,25 @@ The [Arrowhead Framework](https://github.com/eclipse-arrowhead) is addressing Io
 This plugin offers a set of utilities for the systems' engineering automation of the **setup, deployment and validation** with the modeling help of Papyrus. The installation can be performed through Eclipse by selecting the released zip file of the plugin site in:
 * Help -> Install New Software -> Add -> Archive
 
+In the image below we can see that two plugin categories are offered. The installation process must be done in two separate steps, first the common utilities (*Step 1*) followed by the plugins (*Step 2*).
+
+<p align="center">
+<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5e2088c4-316c-4b0a-9a41-b59bef3116c3">
+</p>
+
+
 ### UML/SysML Model
-![example](https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/e2d6af14-88b3-4cb4-b5f3-957a970081f8)
+The release includes a UML model example of a distributed local cloud system. It is compound by a set of sensors, terminals, a middleware collector and a database. There are two interfaces offered *DataService* and *ConfigurationService* for respectively the obtention and update of data from sensor/database in different elements of the system and configuring the sampling ratio of the sensors.
+
+In the left view we can see a high level description of the Local Clouds, System Design Descriptions (SysDDs) and Interface Design Descriptions (IDDs). In contrast, the right view shows the internal display or low level description of a Local Cloud where a set of Deployed Entities based on the previously defined SysDDs and IDDs are interconnected, displaying the consumer and provider interactions.
+
+<p align="center">
+<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/e2d6af14-88b3-4cb4-b5f3-957a970081f8">
+</p>
+
+### Common Requirements Plugin
+
+The requirements plugin includes the common libraries shared by the plugins, the [Arrowhead Papyrus Profile (APP)](https://github.com/eclipse-arrowhead/profile-library-sysml/) for the UML/SysML modeling with Papyrus Eclipse, a common API for parsing the UML model and the generated code into APX (approximate) objects of the APP stereotype implementations, the APX class definitions and other utilities for e.g. script execution in different OS.
 
 ### Setup Plugins
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/f374ae9b-2735-49af-91ab-572887abc888" width="20" height="20"/>
