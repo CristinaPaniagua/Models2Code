@@ -73,8 +73,7 @@ The setup plugins are meant to define the configuration for the governing core o
 This plugin performs two actions, the installation of the AH database and the creation of a user (default name *arrowhead*) with admin permits on the AH tables. The plugin requires the existing root and the new arrowhead users with their respective passwords. If the database already exists, the plugin resets the tables.
 
 <p align="center">
-  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/4de13128-6144-469c-9bb5-29cdd46ea93e" width="541" height="329" hspace="25"/>
-  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/620ff3fa-e23d-454a-8b83-da5e346889f6" width="318" height="401"/>
+  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/4de13128-6144-469c-9bb5-29cdd46ea93e" width="486" height="296"/>
 </p>
 
 ### Deployment Plugins
@@ -123,7 +122,7 @@ Once the papyrus project with the UML model has been selected, the following scr
 * The current implementation works for Windows OS and Java. 
 
 <p align="center">
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/dcc9f37c-6ef0-4796-9f08-583306e50b07" width="473" height="432"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/dcc9f37c-6ef0-4796-9f08-583306e50b07" width="473" height="432"/>
 </p>
 
 In the following tree-like schema, we can see the structure of a providing and consuming system that has been generated with the plugin from the example UML/SysML model. It contains three packages for respectively the controller, the data and the security. 
@@ -160,11 +159,14 @@ collector-provider/src/main                                 Provider & Consumer 
 
 #### Database System, Orchestration and Security Rules
 
-This plugin allows the generation of SQL scripts for registering (1) the providing and consuming systems with their respective services, (2) the Orchestrator Store rules without Authorization check and (3) the Intra-cloud Security rules with Authorization check. The following extracts of the different scripts display the results of executing the plugin over the example UML/SysML model:
-1. **system-service-registry.sql** inserts the systems' information onto *system_*, *service_definition* and *service_registry*.
+This plugin allows the generation of SQL scripts for registering (1) the providing and consuming systems with their respective services, (2) the Orchestrator Store rules without Authorization check and (3) the Intra-cloud Security rules with Authorization check. The following extracts of the different scripts display the results of executing the plugin over the example UML/SysML model.
 
 <p align="center">
-  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1d9429c1-855a-4382-85b0-69cff18e83e6" width="474" height="429" hspace="25"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1d9429c1-855a-4382-85b0-69cff18e83e6" width="474" height="429" hspace="25"/>
+</p>
+
+1. **system-service-registry.sql** inserts the systems' information onto *system_*, *service_definition* and *service_registry*.
+<p align="center">
   <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/b6a64847-4240-4a15-974a-6142326a6551" width="483" height="381"/>
 </p>
 
