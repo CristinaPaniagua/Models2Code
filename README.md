@@ -13,7 +13,7 @@
     5. [Deployment Plugins](#deployment-plugins)
         1. [Local Cloud Core Systems](#local-cloud-core-systems)
         2. [Local Cloud Provider/Consumer Systems](#local-cloud-providerconsumer-systems)
-        3. [Database System, Orchestration and Security Rules](#database-system-orchestration-and-security-rules)
+        3. [Database System, Orchestration & Security Rules](#database-system-orchestration-and-security-rules)
 
 ## Introduction
 ### About Arrowhead
@@ -138,9 +138,9 @@ collector-provider/src/main                                 Provider & Consumer 
 └───java
 │   └───eu/arrowhead
 │       └───provider
-│       │   CollectorProviderMain.java                      Main Function                             (Consumer behavior)
-│       │   ProviderApplicationInitListener.java            Service Registry Service Definition       (Provider behavior)
-│       │   ServiceControllerHttp.java                      Service Controller                        (Provider behavior)
+│       │   CollectorProviderMain.java                      Main Function         (Consumer behavior)
+│       │   ProviderApplicationInitListener.java            Application Listener  (Provider behavior)
+│       │   ServiceControllerHttp.java                      Service Controller    (Provider behavior)
 │       └───dto
 │       │   ConfigureRequestDTO.java
 │       │   GetDataResponseDTO.java
@@ -162,7 +162,7 @@ collector-provider/src/main                                 Provider & Consumer 
 This plugin allows the generation of SQL scripts for registering (1) the providing and consuming systems with their respective services, (2) the Orchestrator Store rules without Authorization check and (3) the Intra-cloud Security rules with Authorization check. The following extracts of the different scripts display the results of executing the plugin over the example UML/SysML model.
 
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1d9429c1-855a-4382-85b0-69cff18e83e6" width="474" height="429" hspace="25"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1d9429c1-855a-4382-85b0-69cff18e83e6" width="426" height="386" hspace="25"/>
 </p>
 
 1. **system-service-registry.sql** inserts the systems' information onto *system_*, *service_definition* and *service_registry*.
@@ -183,7 +183,12 @@ This plugin allows the generation of SQL scripts for registering (1) the providi
 [//]: # (### Validation Plugins)
 
 [//]: # (#### Database Validation)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/e1bd2556-8e0e-4b41-b0d3-0efc56432600" width="20" height="20"/>)
+
+[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0f806e8a-77ca-4f28-921f-9551dff4ba70" width="20" height="20"/>)
+[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/dac9be20-6683-436b-a16e-e6ec811f0493" width="20" height="20"/>)
+[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5666c16a-d257-4773-9ec6-182b95c0c3e2" width="20" height="20"/>)
+[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/bb875dd3-db61-468e-8280-777b759b854a" width="20" height="20"/>)
+
 
 [//]: # (#### Code Validation)
 [//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/c85b926e-c212-42d7-8a71-0f1d249ea1f3" width="20" height="20"/>)
