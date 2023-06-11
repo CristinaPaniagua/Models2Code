@@ -165,20 +165,58 @@ This plugin allows the generation of SQL scripts for registering (1) the providi
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1d9429c1-855a-4382-85b0-69cff18e83e6" width="426" height="386" hspace="25"/>
 </p>
 
-1. **system-service-registry.sql** inserts the systems' information onto *system_*, *service_definition* and *service_registry*.
-<p align="center">
-  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/b6a64847-4240-4a15-974a-6142326a6551" width="483" height="381"/>
-</p>
+1. **system-service-registry.sql** inserts the systems' information onto *system_*, *service_definition*, *service_registry* and *service_registry_interface_connection*.
+```
+USE `arrowhead`;
+INSERT INTO `system_` (`system_name`,`address`, `port`) 
+VALUES ('collector-provider','127.0.0.1','8888');
+...
+
+INSERT INTO `service_definition` (`service_definition`)
+VALUES ('ConfigurationService');
+INSERT INTO `service_definition` (`service_definition`)
+VALUES ('DataService');
+
+SELECT @serviceID :=id FROM service_definition WHERE service_definition='DataService';
+SELECT @systemID :=id FROM system_ WHERE system_name='collector-provider';
+INSERT INTO `service_registry` (`service_id`,`system_id`, `service_uri`) 
+VALUES (@serviceID,@systemID, '/getData');
+
+SELECT @serviceRegistryID :=id FROM service_registry WHERE service_id=@serviceID AND system_id=@systemID;
+INSERT INTO `service_registry_interface_connection` (`service_registry_id`,`interface_id`) 
+VALUES (@serviceRegistryID, 2);
+...
+```
 
 2. **orchestrator-rules.sql** inserts the connections' information onto *orchestrator_store*.
-<p align="center">
-  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/eb6568bb-502f-4bc7-9dec-49eceec28dfa" width="780" height="144"/>
-</p>
+```
+USE `arrowhead`;
+SELECT @serviceID :=id FROM service_definition WHERE service_definition='ConfigurationService';
+SELECT @providerID :=id FROM system_ WHERE system_name='sensor-a-provider';
+SELECT @consumerID :=id FROM system_ WHERE system_name='collector-provider';
+SELECT @srID :=id FROM service_registry WHERE service_id=@serviceID AND system_id=@providerID;
+SELECT @interfaceID :=interface_id FROM service_registry_interface_connection WHERE service_registry_id=@srID;
+INSERT INTO `orchestrator_store` (`consumer_system_id`,`provider_system_id`, `service_id`, `service_interface_id`, `priority`) 
+VALUES (@consumerID,@providerID,@serviceID,@interfaceID,'2');
+...
+```
 
 3. **security-rules.sql** inserts the connections' information onto *authorization_intra_cloud* and *authorization_intra_cloud_interface_connection*.
-<p align="center">
-  <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/d1a3514b-2c17-4619-bac4-6438a6b08da7" width="715" height="207"/>
-</p>
+```
+USE `arrowhead`;
+SELECT @serviceID :=id FROM service_definition WHERE service_definition='ConfigurationService';
+SELECT @providerID :=id FROM system_ WHERE system_name='sensor-b-provider';
+SELECT @consumerID :=id FROM system_ WHERE system_name='collector-provider';
+SELECT @srID :=id FROM service_registry WHERE service_id=@serviceID AND system_id=@providerID;
+SELECT @interfaceID :=interface_id FROM service_registry_interface_connection WHERE service_registry_id=@srID;
+INSERT INTO `authorization_intra_cloud` (`consumer_system_id`,`provider_system_id`, `service_id`) 
+VALUES (@consumerID,@providerID,@serviceID);
+
+SELECT @authoID :=id FROM authorization_intra_cloud WHERE service_id=@serviceID AND provider_system_id=@providerID;
+INSERT INTO `authorization_intra_cloud_interface_connection` (`authorization_intra_cloud_id`,`interface_id`) 
+VALUES (@authoID,@interfaceID);
+...
+```
 
 [//]: # (### Validation Plugins)
 
