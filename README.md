@@ -42,9 +42,11 @@ In the image below we can see that two plugin categories are offered. The instal
 
 Once everything is installed the upgraded workspace user interface should have a new menu *Arrowhead* containing **Setup, Deployment & Validation** tags for the execution of the plugins as seen in the image below.
 
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/12077c7e-6534-4cdd-8618-d56d7daa3e35" width="348" height="78"/>
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/3ab4db6a-ca66-41e0-8648-3238913961b8" width="281" height="78"/>
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0225a7d9-0297-466d-af82-5fc809dd86b9" width="300" height="78"/>
+<p align="center">
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/12077c7e-6534-4cdd-8618-d56d7daa3e35" width="330" height="78"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/3ab4db6a-ca66-41e0-8648-3238913961b8" width="267" height="78"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0225a7d9-0297-466d-af82-5fc809dd86b9" width="300" height="78"/>
+</p>
 
 ### UML/SysML Model
 The release includes a UML model example of a distributed local cloud system. It is compound by a set of sensors, terminals, a middleware collector and a database. There are two interfaces offered *DataService* and *ConfigurationService* for respectively the obtention and update of data from sensor/database in different elements of the system and configuring the sampling ratio of the sensors.
@@ -52,7 +54,7 @@ The release includes a UML model example of a distributed local cloud system. It
 In the left view we can see a high level description of the Local Cloud Design Descriptions (LCDDs), System Design Descriptions (SysDDs) and Interface Design Descriptions (IDDs). In contrast, the right view shows the internal display or low level description of a Local Cloud where a set of Deployed Entities based on the previously defined SysDDs and IDDs are interconnected, displaying the consumer and provider interactions.
 
 <p align="center">
-<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/e2d6af14-88b3-4cb4-b5f3-957a970081f8">
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/e2d6af14-88b3-4cb4-b5f3-957a970081f8">
 </p>
 
 ### Common Requirements Plugin
