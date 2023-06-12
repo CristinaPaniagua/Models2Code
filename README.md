@@ -43,12 +43,10 @@ In the image below we can see that two plugin categories are offered. The instal
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5e2088c4-316c-4b0a-9a41-b59bef3116c3">
 </p>
 
-Once everything is installed the upgraded workspace user interface should have a new menu *Arrowhead* containing **Setup, Deployment & Validation** tags for the execution of the plugins as seen in the image below.
+Once everything is installed the upgraded workspace user interface should have a new menu *Arrowhead* containing **Setup, Deployment & Validation** tags for the execution of the plugins as well as three new buttons for each of the deployment plugins as seen in the image below.
 
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/12077c7e-6534-4cdd-8618-d56d7daa3e35" width="330" height="78"/>
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/3ab4db6a-ca66-41e0-8648-3238913961b8" width="267" height="78"/>
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0225a7d9-0297-466d-af82-5fc809dd86b9" width="300" height="78"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/8614a0b8-cbf9-4152-93d5-daca48061161" width="751" height="176"/>
 </p>
 
 ### UML/SysML Model
@@ -238,14 +236,14 @@ The block information can be displayed in different ways by using the actions:
 
 #### Database Validation
 
+This plugin checks the list of systems defined in the Arrowhead database and compares them with the deployed entities defined on each of the local clouds. The block's color will be updated with green or red depending on the system being registered or not in the database.
+
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0f806e8a-77ca-4f28-921f-9551dff4ba70" width="500" height="228"/>
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/dac9be20-6683-436b-a16e-e6ec811f0493" width="500" height="228"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/926d09ea-0c65-47fa-a3db-fe58aa8edcb2" width="1000" height="245"/>
 </p>
 
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5666c16a-d257-4773-9ec6-182b95c0c3e2" width="500" height="228"/>
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/bb875dd3-db61-468e-8280-777b759b854a" width="500" height="228"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/54117380-56f1-490c-ae33-24ebb510ff9e" width="1010" height="245"/>
 </p>
 
 
