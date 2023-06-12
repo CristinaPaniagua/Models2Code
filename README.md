@@ -15,7 +15,8 @@
         2. [Local Cloud Provider/Consumer Systems](#local-cloud-providerconsumer-systems)
         3. [Database System, Orchestration & Security Rules](#database-system-orchestration-and-security-rules)
     6. [Validation Plugins](#validation-plugins)
-        1. [Database Validation](#database-validation)
+        1. [Code Validation](#code-validation)
+        2. [Database Validation](#database-validation)
 
 ## Introduction
 ### About Arrowhead
@@ -233,6 +234,17 @@ The block information can be displayed in different ways by using the actions:
 * **Right Click** -> Filters -> Show/Hide Contents
 * **Right Click** -> Filters -> Show/Hide Compartments
 
+#### Code Validation
+
+This plugin checks the model systems workspace under **arrowhead/local-cloud-name/cloud-systems** and parses every system onto an APX object. The parsed workspace is compared with the parsed model and based on the inconsistencies the plugin modifies the UML model to maintain a similarity between both.
+
+As an example, a terminal is replicated with name **terminal-c** on the workspace. After the plugin is executed the resulting UML view displays, as seen in the left, that the new system has been added. Moreover, when synchronizing the view with the model the new SysDD **TerminalC** with the same services as its terminal peers can be seen.
+
+<p align="center">
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/628cad4a-c763-4480-b2d0-1aec72c8892d" width="379" height="260" hspace="25"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/9a33b744-07d7-4a08-80cd-d289fe544e70" width="565" height="173"/>
+</p>
+    
 #### Database Validation
 
 This plugin checks the list of systems defined in the Arrowhead database and compares them with the deployed entities defined on each of the local clouds. The block's color will be updated with green or red depending on the system being registered or not in the database.
@@ -243,15 +255,7 @@ From the example model, we have the following low level description view of the 
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/926d09ea-0c65-47fa-a3db-fe58aa8edcb2" width="800" height="204"/>
 </p>
 
-After adding a new system **terminalC** to our model and displaying it as a reference of the SysDD **TerminalC** together with its connections with the other systems, we execute again the validation plugin to see that this system was not in the database.
+After adding a new deployed entity **terminalC** to our model and displaying it as a reference to the SysDD **TerminalC** together with its connections with the other systems, we execute again the validation plugin to see that this system was not in the database.
 <p align="center">
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1de96319-f452-466b-a603-b7ba9cac38f2" width="800" height="204"/>
 </p>
-
-[//]: # (#### Code Validation)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/c85b926e-c212-42d7-8a71-0f1d249ea1f3" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/765f9b90-3cd3-4841-959c-bf6b1b838e80" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/16e3e9ba-6a68-454a-a0b6-b5d4a4cd9940" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/df64dd22-1c24-4723-a1fe-1547c0b74921" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/fdd88066-ed5a-4b2d-8ad4-843bd09f63e2" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/24e96ca5-619d-4c6d-9e3d-962ccd9cadeb" width="20" height="20"/>)
