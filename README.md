@@ -241,7 +241,7 @@ This plugin checks the model systems workspace under **arrowhead/local-cloud-nam
 As an example, a terminal is replicated with name **terminal-c** on the workspace. After the plugin is executed the resulting UML view displays, as seen in the left, that the new system has been added. Moreover, when synchronizing the view with the model the new SysDD **TerminalC** with the same services as its terminal peers can be seen.
 
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/628cad4a-c763-4480-b2d0-1aec72c8892d" width="360" height="247" hspace="25"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/628cad4a-c763-4480-b2d0-1aec72c8892d" width="360" height="247"/>
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/9a33b744-07d7-4a08-80cd-d289fe544e70" width="536" height="164"/>
 </p>
     
