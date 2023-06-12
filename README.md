@@ -245,9 +245,8 @@ From the example model, we have the following low level description view of the 
 
 After adding a new system **terminalC** to our model and displaying it as a reference of the SysDD **TerminalC** together with its connections with the other systems, we execute again the validation plugin to see that this system was not in the database.
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/54117380-56f1-490c-ae33-24ebb510ff9e" width="1010" height="245"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1de96319-f452-466b-a603-b7ba9cac38f2" width="1010" height="245"/>
 </p>
-
 
 [//]: # (#### Code Validation)
 [//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/c85b926e-c212-42d7-8a71-0f1d249ea1f3" width="20" height="20"/>)
