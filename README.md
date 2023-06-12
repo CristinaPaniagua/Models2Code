@@ -242,7 +242,7 @@ As an example, a terminal is replicated with name **terminal-c** on the workspac
 
 <p align="center">
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/628cad4a-c763-4480-b2d0-1aec72c8892d" width="324" height="222"/>
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/9a33b744-07d7-4a08-80cd-d289fe544e70" width="536" height="164"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/9a33b744-07d7-4a08-80cd-d289fe544e70" width="482" height="147"/>
 </p>
     
 #### Database Validation
