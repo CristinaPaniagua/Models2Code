@@ -14,6 +14,9 @@
         1. [Local Cloud Core Systems](#local-cloud-core-systems)
         2. [Local Cloud Provider/Consumer Systems](#local-cloud-providerconsumer-systems)
         3. [Database System, Orchestration & Security Rules](#database-system-orchestration-and-security-rules)
+    6. [Validation Plugins](#validation-plugins)
+        1. [Database Validation](#database-validation)
+        2. [Code Validation](#code-validation)
 
 ## Introduction
 ### About Arrowhead
@@ -220,14 +223,30 @@ VALUES (@authoID,@interfaceID);
 ...
 ```
 
-[//]: # (### Validation Plugins)
+### Validation Plugins
 
-[//]: # (#### Database Validation)
+The validation plugins are meant to maintain the consistency of the model, the database (i.e. Service Registry) and the code that has been generated and possibly edited. The consistency is kept by editing both the UML model and the notation file defining the interface view.
 
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0f806e8a-77ca-4f28-921f-9551dff4ba70" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/dac9be20-6683-436b-a16e-e6ec811f0493" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5666c16a-d257-4773-9ec6-182b95c0c3e2" width="20" height="20"/>)
-[//]: # (<img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/bb875dd3-db61-468e-8280-777b759b854a" width="20" height="20"/>)
+When the plugins are executed there are three actions that can be done for updating the view:
+* **Right Click** -> Filters -> Synchronized with Model
+* **F5** (Refresh the Current Diagram)
+* Close and Re-open the Papyrus Diagram
+
+The block information can be displayed in different ways by using the actions:
+* **Right Click** -> Filters -> Show/Hide Contents
+* **Right Click** -> Filters -> Show/Hide Compartments
+
+#### Database Validation
+
+<p align="center">
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/0f806e8a-77ca-4f28-921f-9551dff4ba70" width="500" height="228"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/dac9be20-6683-436b-a16e-e6ec811f0493" width="500" height="228"/>
+</p>
+
+<p align="center">
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5666c16a-d257-4773-9ec6-182b95c0c3e2" width="500" height="228"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/bb875dd3-db61-468e-8280-777b759b854a" width="500" height="228"/>
+</p>
 
 
 [//]: # (#### Code Validation)
