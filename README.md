@@ -16,7 +16,6 @@
         3. [Database System, Orchestration & Security Rules](#database-system-orchestration-and-security-rules)
     6. [Validation Plugins](#validation-plugins)
         1. [Database Validation](#database-validation)
-        2. [Code Validation](#code-validation)
 
 ## Introduction
 ### About Arrowhead
@@ -30,7 +29,7 @@ The [Arrowhead Framework](https://github.com/eclipse-arrowhead) is addressing Io
 * Scalability of automation systems
 
 ### About Papyrus
-[Eclipse Papyrus](https://www.eclipse.org/papyrus/) is an open-source Model-Based Engineering tool that enables model-based techniques such as simulation, formal testing, safety analysis, performance/trade-offs analysis, and architecture exploration. It is a Domain Specific Language (DSL) platform based on the Unified Modeling Language (UML) and aims to implement the complete UML specification..
+[Eclipse Papyrus](https://www.eclipse.org/papyrus/) is an open-source Model-Based Engineering tool that enables model-based techniques such as simulation, formal testing, safety analysis, performance/trade-offs analysis, and architecture exploration. It is a Domain Specific Language (DSL) platform based on the Unified Modeling Language (UML) and aims to implement the complete UML specification.
 
 ## Pre-Release Utilities
 ### Installation
@@ -43,7 +42,7 @@ In the image below we can see that two plugin categories are offered. The instal
 <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/5e2088c4-316c-4b0a-9a41-b59bef3116c3">
 </p>
 
-Once everything is installed the upgraded workspace user interface should have a new menu *Arrowhead* containing **Setup, Deployment & Validation** tags for the execution of the plugins as well as three new buttons for each of the deployment plugins as seen in the image below.
+Once everything is installed the upgraded workspace user interface should have a new menu *Arrowhead* containing **Setup, Deployment & Validation** tags for the execution of the plugins as well as three new buttons for each of the deployment plugins as seen in the left side of the image below.
 
 <p align="center">
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/8614a0b8-cbf9-4152-93d5-daca48061161" width="751" height="176"/>
@@ -238,10 +237,13 @@ The block information can be displayed in different ways by using the actions:
 
 This plugin checks the list of systems defined in the Arrowhead database and compares them with the deployed entities defined on each of the local clouds. The block's color will be updated with green or red depending on the system being registered or not in the database.
 
+From the example model, we have the following low level description view of the deployed entities. After executing the database validation plugin, the resulting view can be seen on the right where it has identified every system to be in the database due to the execution of the **system-service-registry.sql** script as explained in the section [Database System, Orchestration and Security Rules](#database-system-orchestration-and-security-rules).
+
 <p align="center">
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/926d09ea-0c65-47fa-a3db-fe58aa8edcb2" width="1000" height="245"/>
 </p>
 
+After adding a new system **terminalC** to our model and displaying it as a reference of the SysDD **TerminalC** together with its connections with the other systems, we execute again the validation plugin to see that this system was not in the database.
 <p align="center">
     <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/54117380-56f1-490c-ae33-24ebb510ff9e" width="1010" height="245"/>
 </p>
