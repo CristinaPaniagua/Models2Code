@@ -240,12 +240,12 @@ This plugin checks the list of systems defined in the Arrowhead database and com
 From the example model, we have the following low level description view of the deployed entities. After executing the database validation plugin, the resulting view can be seen on the right where it has identified every system to be in the database due to the execution of the **system-service-registry.sql** script as explained in the section [Database System, Orchestration and Security Rules](#database-system-orchestration-and-security-rules).
 
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/926d09ea-0c65-47fa-a3db-fe58aa8edcb2" width="1000" height="245"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/926d09ea-0c65-47fa-a3db-fe58aa8edcb2" width="1000" height="255"/>
 </p>
 
 After adding a new system **terminalC** to our model and displaying it as a reference of the SysDD **TerminalC** together with its connections with the other systems, we execute again the validation plugin to see that this system was not in the database.
 <p align="center">
-    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1de96319-f452-466b-a603-b7ba9cac38f2" width="1010" height="245"/>
+    <img src="https://github.com/fernand0labra/arrowhead-papyrus-utilities/assets/70638694/1de96319-f452-466b-a603-b7ba9cac38f2" width="1010" height="255"/>
 </p>
 
 [//]: # (#### Code Validation)
