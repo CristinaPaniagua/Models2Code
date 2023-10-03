@@ -61,7 +61,7 @@ public class ScriptDeployment {
 			
 			for(String file : projectFiles)
 				if(file.endsWith(".uml"))
-					modelPath = projectLocation.toString() + "/" + file;
+					modelPath = projectLocation.toString() + File.separator  + file;
 
 			if(modelPath.equals("")) // If there is no .uml file
 				throw new Exception("The selected project does not have an .uml file.");

@@ -1,5 +1,6 @@
 package validation.systems.handlers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class PluginExecution {
 			
 			for(String file : projectFiles)
 				if(file.endsWith(".uml"))
-					modelPath = projectLocation.toString() + "/" + file;
+					modelPath = projectLocation.toString() + File.separator  + file;
 
 			if(modelPath.equals("")) // If there is no .uml file
 				throw new Exception("The selected project does not have an .uml file.");
@@ -99,7 +100,7 @@ public class PluginExecution {
 		DefinitionModeller.interfaceDescriptionStereotypeList = common.parsing.model.ParsingSetup.packageInterfaceDescriptionMap.
 				values().iterator().next().getAppliedStereotypes();
 		
-		common.parsing.workspace.ParsingSetup.parseWorkspace(workspace + "\\arrowhead\\");
+		common.parsing.workspace.ParsingSetup.parseWorkspace(workspace + File.separator +"arrowhead"+File.separator );
 		
 		System.out.println(common.parsing.workspace.ParsingSetup.workspaceLocalCloudMap); // TODO Remove trace
 		System.out.println(common.parsing.model.ParsingSetup.modelLocalCloudMap); // TODO Remove trace

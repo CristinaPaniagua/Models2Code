@@ -1,4 +1,8 @@
 cd ${outputDirectory}
-mkdir ${name}_ApplicationSystems
-cd ${name}_ApplicationSystems
+mkdir arrowhead
+cd arrowhead
+mkdir ${name}
+cd ${name}
+mkdir cloud-systems
+cd cloud-systems
 ${createFolders}

@@ -107,7 +107,10 @@ public class ScriptDeployment {
 
 					try {
 						Writer writer = null;
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\"));
+						
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp" +File.separator ));
+						
+						///*************** MAC/LINUX *****************************************************//
 						
 						if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) {
 
@@ -117,14 +120,18 @@ public class ScriptDeployment {
 							Template tInit = velocityEngine.getTemplate("/templates/initUnix.vm");
 							VelocityContext contextInit = new VelocityContext();
 							contextInit.put("terminal", terminal);
-							Writer wInit = new FileWriter(new File(workspace + "\\.temp\\init.sh"));
+							Writer wInit = new FileWriter(new File(workspace + File.separator +".temp" +File.separator+"init.sh"));
 							tInit.merge(contextInit, wInit);
 							wInit.flush();
 							wInit.close();
 
 							// Generation of the corescript.sh
 							context.put("fileEnd", "sh");
-							writer = new FileWriter(new File(workspace + "\\.temp\\corescript.sh"));
+							writer = new FileWriter(new File(workspace + File.separator +".temp" +File.separator+"corescript.sh"));
+							
+							// Start-Stop TODO
+						
+						///*************** WINDOWS *****************************************************//
 						} else {
 							// Generation of the init.bat script
 							Template tInit = velocityEngine.getTemplate("/templates/initWin.vm");
@@ -174,7 +181,7 @@ public class ScriptDeployment {
 						if (os.equalsIgnoreCase("windows")) {
 							ExecutionUtils.executebat(workspace + "\\.temp\\init.bat");
 						} else
-							ExecutionUtils.executesh(workspace + "\\.temp\\", "init");
+							ExecutionUtils.executesh(workspace + File.separator +".temp" +File.separator, "init");
 
 					} catch (IOException e) {
 						e.printStackTrace();

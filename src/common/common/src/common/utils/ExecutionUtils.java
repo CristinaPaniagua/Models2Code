@@ -63,7 +63,7 @@ public class ExecutionUtils {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		processBuilder.command("sh", "-c", "sh ./" + file + ".sh");
-		processBuilder.directory(new File(directory + "\\src\\scripts\\"));
+		processBuilder.directory(new File(directory));
 
 		try {
 			Process process = processBuilder.start();

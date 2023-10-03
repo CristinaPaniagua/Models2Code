@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import common.utils.CodgenUtil;
+import common.utils.ExecutionUtils;
 
 import java.sql.*;
 
@@ -45,7 +46,10 @@ public class DatabaseDeployment {
 	// -------------------------------------------------------------------------------------------------
 	@Execute
 	public void execute(Shell shell) throws Exception {
+		
 		MessageBox messageBox = null;
+		/*
+		//ONLY WORKING FOR WINDOWS TODO: Adapt to all OS
 
 		// Check java/maven/mysql requirements
 		String[] versionCheck = { "11#java -version#Java#2", "3.5#mvn -version#Maven#2", "5.7#mysql -V#MySQL#3" };
@@ -72,6 +76,7 @@ public class DatabaseDeployment {
 				throw new Exception(errorMessage);
 			}
 		}
+		*/
 
 		DialogWindow dialog = new DialogWindow(shell);
 		Connection conn = null;
@@ -81,7 +86,7 @@ public class DatabaseDeployment {
 			String rootPassword = DialogWindow.getRootPassword();
 			String host = DialogWindow.getHost();
 
-			FileUtils.forceMkdir(new File(workspace + "\\.temp\\"));
+			FileUtils.forceMkdir(new File(workspace + File.separator + ".temp" + File.separator ));
 
 			final ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
 			Thread.currentThread().setContextClassLoader(DatabaseDeployment.class.getClassLoader());
@@ -112,13 +117,52 @@ public class DatabaseDeployment {
 
 			for (String directory : scriptDirectories)
 				for (String file : files.get(directory).split("#"))
-					FileUtils.copyURLToFile(this.getClass().getResource("/scripts/" + directory + "/" + file + ".sql"),
-							new File(workspace + "\\.temp\\" + file + ".sql"));
+					FileUtils.copyURLToFile(this.getClass().getResource(File.separator + "scripts" + File.separator +  directory + File.separator +  file + ".sql"),
+							new File(workspace + File.separator + ".temp" + File.separator +  file + ".sql"));
 
 			// Database creation script execution
-			String command = "cd " + workspace + "\\.temp\\" + "& mysql --user=" + rootUser + " --password="
+			String command = "cd " + workspace + File.separator + ".temp" + File.separator +  " & mysql --user=" + rootUser + " --password="
 					+ rootPassword + " --host=" + host + " < " + "createEmptyArrowheadDB.sql";
-			new ProcessBuilder("cmd.exe", "/c", command).start();
+			
+			//WINDOWS: new ProcessBuilder("cmd.exe", "/c", command).start();
+			
+			
+			
+			
+			
+			String scriptPath = workspace + File.separator +".temp" +File.separator+"createDatabase.sh";
+			Template t = velocityEngine.getTemplate("templates/createDatabaseUnix.vm");
+			Writer writer = new FileWriter(scriptPath);
+			VelocityContext context = new VelocityContext();
+			context.put("workspace", workspace);
+			context.put("user",rootUser);
+			context.put("password",rootPassword);
+			context.put("host", host);
+			t.merge(context, writer);
+			writer.flush();
+			writer.close();
+			
+			String os="mac";
+			
+			String terminal = os.equalsIgnoreCase("linux") ? "gnome-terminal" : "open -a terminal";
+
+			// Generation of the init.sh script
+			Template tInit = velocityEngine.getTemplate("/templates/initUnix.vm");
+			VelocityContext contextInit = new VelocityContext();
+			contextInit.put("terminal", terminal);
+			Writer wInit = new FileWriter(new File(workspace + File.separator +".temp" +File.separator+"init.sh"));
+			tInit.merge(contextInit, wInit);
+			wInit.flush();
+			wInit.close();
+			
+			
+			
+			
+			
+			
+			
+			
+			
 
 			messageBox = new MessageBox(new Shell(), SWT.ICON_INFORMATION);
 			messageBox.setMessage("Database created correctly");
@@ -132,27 +176,31 @@ public class DatabaseDeployment {
 				conn = DriverManager.getConnection("jdbc:mysql://" + host + ":3306/arrowhead", user, password);
 			} catch (Exception noArrowheadUser) { // Non existing user
 				// User creation query generation
-				Template template = velocityEngine.getTemplate("templates/createArrowheadUser.vm");
-				VelocityContext context = new VelocityContext();
-				context.put("user", user);
-				context.put("password", password);
-				context.put("host", host);
+				Template template_db = velocityEngine.getTemplate("templates/createArrowheadUser.vm");
+				VelocityContext context_db = new VelocityContext();
+				context_db.put("user", user);
+				context_db.put("password", password);
+				context_db.put("host", host);
 
-				Writer writer = new FileWriter(new File(workspace + "\\.temp\\createArrowheadUser.sql"));
-				template.merge(context, writer);
-				writer.flush();
-				writer.close();
+				Writer writer_db = new FileWriter(new File(workspace + File.separator + ".temp" + File.separator + "createArrowheadUser.sql"));
+				template_db.merge(context_db, writer_db);
+				writer_db.flush();
+				writer_db.close();
 
 				// User creation query execution
-				command = "mysql --user=" + rootUser + " --password=" + rootPassword + " --host=" + host + " < "
-						+ workspace + "\\.temp\\" + "createArrowheadUser.sql";
-				new ProcessBuilder("cmd.exe", "/c", command).start();
+				//command = "mysql --user=" + rootUser + " --password=" + rootPassword + " --host=" + host + " < "
+				//		+ workspace + File.separator + ".temp" + File.separator  + "createArrowheadUser.sql";
+			
+				//WINDOWS: new ProcessBuilder("cmd.exe", "/c", command).start();
+			
 
 				messageBox = new MessageBox(new Shell(), SWT.ICON_INFORMATION);
 				messageBox.setMessage("User created correctly");
 				messageBox.open();
 			}
 
+			ExecutionUtils.executesh(workspace + File.separator +".temp" +File.separator, "init");
+				
 			// FileUtils.forceDelete(new File(workspace + "\\.temp\\"));
 
 			// Set back default class loader

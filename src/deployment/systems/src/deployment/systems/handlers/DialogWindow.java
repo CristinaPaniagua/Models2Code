@@ -137,7 +137,8 @@ public class DialogWindow extends TitleAreaDialog {
 		lblSystems.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 		lblSystems.setText("Systems:");
 		List listsys = new List(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
-		listsys.setItems(" ");
+		String[] items = {"", ""};
+		listsys.setItems(items);
 		
 		GridData gd_listsys = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_listsys.widthHint = 331;

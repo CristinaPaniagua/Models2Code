@@ -80,7 +80,7 @@ public class ProviderMain {
 			context.put("sysName", system);
 			context.put("coap", coap);
 
-			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(workspace + File.separator +"arrowhead"+ File.separator + localCloud + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -91,7 +91,7 @@ public class ProviderMain {
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider");
 				
-				Writer writerc = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(workspace + File.separator +"arrowhead"+ File.separator + localCloud + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + "ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -189,7 +189,7 @@ public class ProviderMain {
 			context.put("coapFlag", consumerCoap);
 			context.put("dtos", dtoList);
 
-			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\" + system + "ProviderMain.java"));
+			Writer writer = new FileWriter(new File(workspace + File.separator +"arrowhead"+ File.separator + localCloud + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + system + "ProviderMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -200,7 +200,7 @@ public class ProviderMain {
 				VelocityContext contextc = new VelocityContext();
 				contextc.put("packagename", "provider");
 
-				Writer writerc = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServerApplication.java"));
+				Writer writerc = new FileWriter(new File(workspace + File.separator +"arrowhead"+ File.separator + localCloud + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + "ServerApplication.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();
@@ -244,7 +244,7 @@ public class ProviderMain {
 			context.put("type", providerConsumer ? "provider-consumer" : "provider");
 			context.put("dtos", dtoList);
 
-			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ProviderApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(workspace + File.separator +"arrowhead"+ File.separator + localCloud + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + "ProviderApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
@@ -294,7 +294,7 @@ public class ProviderMain {
 				contexth.put("interfaces", serviceInterfacesHttp);
 				contexth.put("dtos", dtoList);
 				
-				Writer writerh = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerHttp.java"));
+				Writer writerh = new FileWriter(new File(Directory + File.separator +"arrowhead"+ File.separator + name + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + "ServiceControllerHttp.java"));
 				th.merge(contexth, writerh);
 				writerh.flush();
 				writerh.close();
@@ -307,7 +307,7 @@ public class ProviderMain {
 				contextc.put("packagename", "provider");
 				contextc.put("interfaces", serviceInterfacesCoap);
 
-				Writer writerc = new FileWriter(new File(Directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\ServiceControllerCoap.java"));
+				Writer writerc = new FileWriter(new File(Directory + File.separator +"arrowhead"+ File.separator + name + File.separator +"cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-provider"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "provider"+ File.separator + "ServiceControllerCoap.java"));
 				tc.merge(contextc, writerc);
 				writerc.flush();
 				writerc.close();

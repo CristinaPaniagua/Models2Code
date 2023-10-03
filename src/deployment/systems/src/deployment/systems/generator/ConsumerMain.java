@@ -83,7 +83,7 @@ public class ConsumerMain {
 			context.put("coapFlag", coapFlag);
 			context.put("dtos", dtoList);
 
-			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\" + system + "ConsumerMain.java"));
+			Writer writer = new FileWriter(new File(workspace + File.separator + "arrowhead"+ File.separator +  localCloud + File.separator + "cloud-systems"+ File.separator + ParsingUtils.toKebabCase(system) + "-consumer"+ File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "consumer"+ File.separator +  system + "ConsumerMain.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

@@ -163,50 +163,54 @@ public class ScriptDeployment {
 						String scriptPath = "";
 						
 						// Generation of the temporal folder
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\"));	
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+File.separator));	
 						
 						// Generation of the consumer resources folder
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\java\\eu\\arrowhead\\"));
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\certificates\\"));
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\META-INF\\"));
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"consumer"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+File.separator));
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"consumer"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"certificates"+File.separator));
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"consumer"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"META-INF"+File.separator));
 						
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/consumer/.classpath"), 
-								new File(workspace + "\\.temp\\resources\\consumer\\.classpath"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"consumer"+ File.separator +".classpath"));
 						
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/consumer/src/main/resources/info.txt"), 
-								new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\info.txt"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"consumer"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"info.txt"));
 
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/consumer/src/main/resources/META-INF/additional-spring-configuration-metadata.json"), 
-								new File(workspace + "\\.temp\\resources\\consumer\\src\\main\\resources\\META-INF\\additional-spring-configuration-metadata.json"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"consumer"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"META-INF"+ File.separator +"additional-spring-configuration-metadata.json"));
 						
 						// Generation of the provider resources folder
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\provider\\src\\main\\java\\eu\\arrowhead\\"));
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\certificates\\"));
-						FileUtils.forceMkdir(new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\META-INF\\"));
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+File.separator));
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"certificates"+File.separator));
+						FileUtils.forceMkdir(new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"META-INF"+File.separator));
 
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/provider/.classpath"), 
-								new File(workspace + "\\.temp\\resources\\provider\\.classpath"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +".classpath"));
 						
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/provider/.springBeans"), 
-								new File(workspace + "\\.temp\\resources\\provider\\.springBeans"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +".springBeans"));
 						
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/provider/src/main/resources/info.txt"), 
-								new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\info.txt"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"info.txt"));
 						
 						FileUtils.copyURLToFile(
 								this.getClass().getResource("/resources/provider/src/main/resources/META-INF/additional-spring-configuration-metadata.json"), 
-								new File(workspace + "\\.temp\\resources\\provider\\src\\main\\resources\\META-INF\\additional-spring-configuration-metadata.json"));
+								new File(workspace + File.separator +".temp"+ File.separator +"resources"+ File.separator +"provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"resources"+ File.separator +"META-INF"+ File.separator +"additional-spring-configuration-metadata.json"));
 						
 						try {
+							
+							
+							///*************** MAC/LINUX *****************************************************//
 
 							if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Folder Generation
-								scriptPath = workspace + "\\.temp\\folderGenUnix.sh";
+								scriptPath = workspace + File.separator +".temp" +File.separator+"folderGenUnix.sh";
+								System.out.println(scriptPath);
 								
 								Template t = velocityEngine.getTemplate("templates/general/folderGenUnix.vm");
 								Writer writer = new FileWriter(scriptPath);
@@ -215,11 +219,15 @@ public class ScriptDeployment {
 								writer.flush();
 								writer.close();
 
-								ExecutionUtils.executesh(workspace + "\\.temp\\", "folderGenUnix.sh");
+								ExecutionUtils.executesh(workspace + File.separator +".temp" +File.separator, "folderGenUnix");
 							} 
 							
+							
+							
+							///*************** WINDOWS *****************************************************//
+							
 							else { // Windows Folder Generation
-								scriptPath = workspace + "\\.temp\\folderGenWin.bat";
+								scriptPath = workspace + File.separator +".temp"+ File.separator +"folderGenWin.bat";
 								
 								Writer writer = new FileWriter(scriptPath);
 								Template t = velocityEngine.getTemplate("templates/general/folderGenWin.vm");
@@ -231,13 +239,15 @@ public class ScriptDeployment {
 
 								ExecutionUtils.executebat(scriptPath);
 							}
+							///********************************************************************//
 
 							String kebabCaseSystem = ParsingUtils.toKebabCase(selectedSys[selectedSys.length - 1]);
 							
 							// While the local cloud directory hasn't been created wait
-							while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + type + "\\").exists()) {}
+							System.out.println(directory + File.separator +"arrowhead" + File.separator + name + File.separator + "cloud-systems" + File.separator + kebabCaseSystem + type + File.separator);
+							while (!new File(directory + File.separator +"arrowhead" + File.separator + name + File.separator + "cloud-systems" + File.separator + kebabCaseSystem + type + File.separator ).exists()) {}
 
-							Writer writerpom = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\pom.xml"));
+							Writer writerpom = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+ File.separator +"pom.xml"));
 							tpom.merge(contextpom, writerpom);
 							writerpom.flush();
 							writerpom.close();
@@ -246,7 +256,7 @@ public class ScriptDeployment {
 							Template tProject = velocityEngine.getTemplate("templates/general/cloudProject.vm");
 							VelocityContext projectContext = new VelocityContext();
 							projectContext.put("name", dialog.getName());
-							Writer writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\.project"));
+							Writer writerProject = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+ File.separator +".project"));
 							tProject.merge(projectContext, writerProject);
 							writerProject.flush();
 							writerProject.close();
@@ -255,7 +265,7 @@ public class ScriptDeployment {
 								
 								kebabCaseSystem = ParsingUtils.toKebabCase(selectedSys[j]);
 								
-								// If the system is a provider
+								// If the system is a PROVIDER
 								if (localCloud.getDeployedEntities().get(kebabCaseSystem).getSysDD().getRole().equals("Provider")) {
 									
 									String port = "";
@@ -271,7 +281,7 @@ public class ScriptDeployment {
 									VelocityContext contextpomPro = new VelocityContext();
 									contextpomPro.put("name", name);
 									contextpomPro.put("sysName", kebabCaseSystem);
-									Writer writerpomPro = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\pom.xml"));
+									Writer writerpomPro = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"pom.xml"));
 									tpomPro.merge(contextpomPro, writerpomPro);
 									writerpomPro.flush();
 									writerpomPro.close();
@@ -283,9 +293,12 @@ public class ScriptDeployment {
 									contextFoldPro.put("disk", disk);
 									contextFoldPro.put("workspace", workspace);
 									contextFoldPro.put("sysName", kebabCaseSystem);
+									
+									///*************** MAC/LINUX *****************************************************//
 
 									if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Provider Folder Generation
-										scriptPath = workspace + "\\.temp\\" + kebabCaseSystem + "ProviderStructure.sh";
+										scriptPath = workspace + File.separator +".temp" +File.separator + kebabCaseSystem + "ProviderStructure.sh";
+										System.out.println(scriptPath);
 										
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
 										Template tFoldPro = velocityEngine.getTemplate("templates/provider/structureUnix.vm");
@@ -293,10 +306,14 @@ public class ScriptDeployment {
 										writerFoldPro.flush();
 										writerFoldPro.close();
 										
-										ExecutionUtils.executesh(workspace + "\\.temp\\", kebabCaseSystem + "ProviderStructure.sh");
+										ExecutionUtils.executesh(workspace + File.separator +".temp" +File.separator, kebabCaseSystem + "ProviderStructure");
 									} 
+									
+									
+									///*************** WINDOWS *****************************************************//
+									
 									else { // Windows Provider Folder Generation
-										scriptPath = workspace + "\\.temp\\" + kebabCaseSystem + "ProviderStructure.bat";
+										scriptPath = workspace + File.separator +".temp"+File.separator + kebabCaseSystem + "ProviderStructure.bat";
 										
 										contextFoldPro.put("disk", disk);
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
@@ -307,13 +324,14 @@ public class ScriptDeployment {
 										
 										ExecutionUtils.executebat(scriptPath);
 									}
+									///********************************************************************//
 									
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
+									while (!new File(directory + File.separator +"arrowhead" + File.separator + name + File.separator + "cloud-systems" + File.separator +  kebabCaseSystem + "-provider" + File.separator +"src" + File.separator +"main" + File.separator +"java" + File.separator +"eu" + File.separator +"arrowhead" + File.separator +"provider" + File.separator +"dto" + File.separator ).exists()) {}
 									
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "Provider");
-									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\.project"));
+									writerProject = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +".project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
 									writerProject.close();
@@ -325,19 +343,19 @@ public class ScriptDeployment {
 
 									// Security files generation
 									VelocityContext contextSecurity = new VelocityContext();
-									Writer writerSecurity1 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderTokenSecurityFilter.java"));
+									Writer writerSecurity1 = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"security"+ File.separator +"ProviderTokenSecurityFilter.java"));
 									Template tsec1 = velocityEngine.getTemplate("templates/provider/tokenSecurityFilter.vm");
 									tsec1.merge(contextSecurity, writerSecurity1);
 									writerSecurity1.flush();
 									writerSecurity1.close();
 
-									Writer writerSecurity2 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderSecurityConfig.java"));
+									Writer writerSecurity2 = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"security"+ File.separator +"ProviderSecurityConfig.java"));
 									Template tsec2 = velocityEngine.getTemplate("templates/provider/securityConfig.vm");
 									tsec2.merge(contextSecurity, writerSecurity2);
 									writerSecurity2.flush();
 									writerSecurity2.close();
 
-									Writer writerSecurity3 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderAccessControlFilter.java"));
+									Writer writerSecurity3 = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"security"+ File.separator +"ProviderAccessControlFilter.java"));
 									Template tsec3 = velocityEngine.getTemplate("templates/provider/accessControlFilter.vm");
 									tsec3.merge(contextSecurity, writerSecurity3);
 									writerSecurity3.flush();
@@ -364,7 +382,7 @@ public class ScriptDeployment {
 									VelocityContext contextpomPro = new VelocityContext();
 									contextpomPro.put("name", name);
 									contextpomPro.put("sysName", kebabCaseSystem);
-									Writer writerpomPro = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\pom.xml"));
+									Writer writerpomPro = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"pom.xml"));
 									tpomPro.merge(contextpomPro, writerpomPro);
 									writerpomPro.flush();
 									writerpomPro.close();
@@ -376,21 +394,26 @@ public class ScriptDeployment {
 									contextFoldPro.put("disk", disk);
 									contextFoldPro.put("workspace", workspace);
 									contextFoldPro.put("sysName", kebabCaseSystem);
+									
+									///*************** MAC/LINUX *****************************************************//
 
 									if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Provider/Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + kebabCaseSystem + "ProviderStructure.sh";
-												
+										scriptPath = workspace + File.separator +".temp"+File.separator + kebabCaseSystem + "ProviderStructure.sh";
+										
+										System.out.println(scriptPath);
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
 										Template tFoldPro = velocityEngine.getTemplate("templates/provider/structureUnix.vm");
 										tFoldPro.merge(contextFoldPro, writerFoldPro);
 										writerFoldPro.flush();
 										writerFoldPro.close();
 										
-										ExecutionUtils.executesh(workspace + "\\.temp\\", kebabCaseSystem + "ProviderStructure.sh");
+										ExecutionUtils.executesh(workspace + File.separator +".temp"+File.separator, kebabCaseSystem + "ProviderStructure");
 									} 
 									
+									///*************** WINDOWS *****************************************************//
+									
 									else { // Windows Provider/Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + kebabCaseSystem + "ProviderStructure.bat";
+										scriptPath = workspace + File.separator +".temp"+File.separator + kebabCaseSystem + "ProviderStructure.bat";
 										
 										contextFoldPro.put("disk", disk);
 										Writer writerFoldPro = new FileWriter(new File(scriptPath));
@@ -400,14 +423,16 @@ public class ScriptDeployment {
 										writerFoldPro.close();
 										ExecutionUtils.executebat(scriptPath);
 									}
+									
+									///********************************************************************//
 
 									// While the provider/consumer directories haven't been created wait
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\dto\\").exists()) {}
+									while (!new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"dto"+File.separator).exists()) {}
 					
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "ProviderConsumer");
-									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\.project"));
+									writerProject = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +".project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
 									writerProject.close();
@@ -419,19 +444,19 @@ public class ScriptDeployment {
 									
 									// Security files generation
 									VelocityContext contextSecurity = new VelocityContext();
-									Writer writerSecurity1 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderTokenSecurityFilter.java"));
+									Writer writerSecurity1 = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"security"+ File.separator +"ProviderTokenSecurityFilter.java"));
 									Template tsec1 = velocityEngine.getTemplate("templates/provider/tokenSecurityFilter.vm");
 									tsec1.merge(contextSecurity, writerSecurity1);
 									writerSecurity1.flush();
 									writerSecurity1.close();
 
-									Writer writerSecurity2 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderSecurityConfig.java"));
+									Writer writerSecurity2 = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"security"+ File.separator +"ProviderSecurityConfig.java"));
 									Template tsec2 = velocityEngine.getTemplate("templates/provider/securityConfig.vm");
 									tsec2.merge(contextSecurity, writerSecurity2);
 									writerSecurity2.flush();
 									writerSecurity2.close();
 
-									Writer writerSecurity3 = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-provider\\src\\main\\java\\eu\\arrowhead\\provider\\security\\ProviderAccessControlFilter.java"));
+									Writer writerSecurity3 = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-provider"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"provider"+ File.separator +"security"+ File.separator +"ProviderAccessControlFilter.java"));
 									Template tsec3 = velocityEngine.getTemplate("templates/provider/accessControlFilter.vm");
 									tsec3.merge(contextSecurity, writerSecurity3);
 									writerSecurity3.flush();
@@ -453,7 +478,7 @@ public class ScriptDeployment {
 									VelocityContext contextpomCons = new VelocityContext();
 									contextpomCons.put("name", name);
 									contextpomCons.put("sysName", kebabCaseSystem);
-									Writer writerpomCons = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-consumer\\pom.xml"));
+									Writer writerpomCons = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-consumer"+ File.separator +"pom.xml"));
 									tpomcon.merge(contextpomCons, writerpomCons);
 									writerpomCons.flush();
 									writerpomCons.close();
@@ -465,19 +490,24 @@ public class ScriptDeployment {
 									contextFoldCon.put("disk", disk);
 									contextFoldCon.put("workspace", workspace);
 									contextFoldCon.put("sysName", kebabCaseSystem);
+									
+									///*************** MAC/LINUX *****************************************************//
 
 									if (os.equalsIgnoreCase("linux") || os.equalsIgnoreCase("mac")) { // Linux Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + kebabCaseSystem + "ConsumerStructure.sh";
+										scriptPath = workspace + File.separator +".temp"+File.separator + kebabCaseSystem + "ConsumerStructure.sh";
 										
 										Template tFoldCon = velocityEngine.getTemplate("templates/consumer/structureUnix.vm");
 										Writer writerFoldCon = new FileWriter(new File(scriptPath));
 										tFoldCon.merge(contextFoldCon, writerFoldCon);
 										writerFoldCon.flush();
 										writerFoldCon.close();
+								
+										ExecutionUtils.executesh(workspace + File.separator +".temp"+File.separator, kebabCaseSystem + "ConsumerStructure");
 										
-										ExecutionUtils.executesh(workspace + "\\.temp\\", kebabCaseSystem + "ConsumerStructure.sh");
+										///*************** WINDOWS *****************************************************//
+										
 									} else { // Windows Consumer Folder Generation
-										scriptPath = workspace + "\\.temp\\" + kebabCaseSystem + "ConsumerStructure.bat";
+										scriptPath = workspace + File.separator +".temp"+File.separator + kebabCaseSystem + "ConsumerStructure.bat";
 										
 										Template tFoldCon = velocityEngine.getTemplate("templates/consumer/structureWin.vm");
 										Writer writerFoldCon = new FileWriter(new File(scriptPath));
@@ -488,14 +518,17 @@ public class ScriptDeployment {
 										
 										ExecutionUtils.executebat(scriptPath);
 									}
+									
+									///********************************************************************//
+									
 
 									// While the provider/consumer directories haven't been created wait
-									while (!new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-consumer\\src\\main\\java\\eu\\arrowhead\\consumer\\").exists()) {}
+									while (!new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-consumer"+ File.separator +"src"+ File.separator +"main"+ File.separator +"java"+ File.separator +"eu"+ File.separator +"arrowhead"+ File.separator +"consumer"+File.separator).exists()) {}
 									
 									// Project file generation
 									tProject = velocityEngine.getTemplate("templates/general/systemProject.vm");
 									projectContext.put("name", selectedSys[j] + "Consumer");
-									writerProject = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + kebabCaseSystem + "-consumer\\.project"));
+									writerProject = new FileWriter(new File(directory + File.separator +"arrowhead"+File.separator + name + File.separator +"cloud-systems"+File.separator + kebabCaseSystem + "-consumer"+ File.separator +".project"));
 									tProject.merge(projectContext, writerProject);
 									writerProject.flush();
 									writerProject.close();
@@ -509,7 +542,7 @@ public class ScriptDeployment {
 								}
 							}
 						
-							FileUtils.forceDelete(new File(workspace + "\\.temp\\"));
+							FileUtils.forceDelete(new File(workspace + File.separator +".temp"+File.separator));
 						} catch (IOException e) {
 							e.printStackTrace();
 						} catch (InterruptedException e) {

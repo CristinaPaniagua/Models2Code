@@ -1,5 +1,8 @@
-cp -a ${workspace}/eu.arrowhead.skeletons.deployment/src/resources/provider/. ${outputDirectory}/${name}_ApplicationSystems/${sysName}_Provider
-cd ${outputDirectory}/${name}_ApplicationSystems/${sysName}_Provider/src/main/java/eu/arrowhead
+cp -r ${workspace}/.temp/resources/provider/. ${outputDirectory}/arrowhead/${name}/cloud-systems/${sysName}-provider
+cd ${outputDirectory}/arrowhead/${name}/cloud-systems/${sysName}-provider/src/main/java/eu/arrowhead
 echo ...
-mkdir ${sysName}_Provider
+mkdir provider
+cd provider
 mkdir security
+mkdir dto
+echo ...

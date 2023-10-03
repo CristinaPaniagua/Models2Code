@@ -10,6 +10,7 @@ import common.dto.APXInterfaceDesignDescription;
 import common.parsing.workspace.ParsingUtils;
 import common.utils.CodgenUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -233,7 +234,7 @@ public class DTOBuilder {
 		JavaFile javaFile = JavaFile.builder(packageName, typeSpec).addFileComment("Auto generated").build();
 		
 		try {
-			javaFile.writeTo(Paths.get(directory + "\\arrowhead\\" + foldername + "\\cloud-systems\\" + ParsingUtils.toKebabCase(system) + "\\src\\main\\java\\"));
+			javaFile.writeTo(Paths.get(directory + File.separator +"arrowhead" + File.separator + foldername + File.separator + "cloud-systems" + File.separator +  ParsingUtils.toKebabCase(system) + File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator ));
 		} catch (IOException ex) {
 			System.err.print("ERROR:" + ex.getMessage());
 		}

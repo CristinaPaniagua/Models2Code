@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/Users/cristina.paniagua/Desktop/EclipseWorkSpace/ModelstoCode-main/src/common/common/lib/org.eclipse.swt.cocoa.macosx.x86_64-4.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

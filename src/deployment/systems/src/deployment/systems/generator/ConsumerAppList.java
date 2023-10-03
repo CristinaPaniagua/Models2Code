@@ -44,7 +44,7 @@ public class ConsumerAppList {
 			Template t = velocityEngine.getTemplate("templates/consumer/applicationListener.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("packagename", "consumer");
-			Writer writer = new FileWriter(new File(workspace + "\\arrowhead\\" + localCloud + "\\cloud-systems\\" + system + "\\src\\main\\java\\eu\\arrowhead\\consumer\\ConsumerApplicationInitListener.java"));
+			Writer writer = new FileWriter(new File(workspace + File.separator + "arrowhead"+ File.separator +  localCloud + File.separator + "cloud-systems"+ File.separator +  system +  File.separator + "src"+ File.separator + "main"+ File.separator + "java"+ File.separator + "eu"+ File.separator + "arrowhead"+ File.separator + "consumer"+ File.separator + "ConsumerApplicationInitListener.java"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();

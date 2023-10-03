@@ -48,7 +48,7 @@ public class ApplicationProperties {
 			context.put("type", SysType);
 			context.put("sysName", SysName);
 			
-			Writer writer = new FileWriter(new File(directory + "\\arrowhead\\" + name + "\\cloud-systems\\" + SysName + "\\src\\main\\resources\\application.properties"));
+			Writer writer = new FileWriter(new File(directory + File.separator + "arrowhead"+ File.separator +  name + File.separator + "cloud-systems"+ File.separator +  SysName +  File.separator + "src"+ File.separator + "main"+ File.separator + "resources"+ File.separator + "application.properties"));
 			t.merge(context, writer);
 			writer.flush();
 			writer.close();
